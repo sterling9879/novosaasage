@@ -14,6 +14,7 @@ import {
   FiX,
   FiCheck,
   FiAlertCircle,
+  FiDownload,
 } from 'react-icons/fi';
 import Link from 'next/link';
 
@@ -188,6 +189,30 @@ export default function AdminUsersPage() {
     }
   };
 
+  const exportUsers = async () => {
+    try {
+      const response = await fetch('/api/admin/users/export');
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `usuarios_sage_ia_${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        setSuccess('Backup exportado com sucesso!');
+        setTimeout(() => setSuccess(''), 3000);
+      } else {
+        throw new Error('Erro ao exportar');
+      }
+    } catch (err) {
+      setError('Erro ao exportar usuários');
+      setTimeout(() => setError(''), 3000);
+    }
+  };
+
   if (status === 'loading' || !session?.user?.isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[rgb(17,24,39)]">
@@ -216,13 +241,22 @@ export default function AdminUsersPage() {
                 <h1 className="text-lg font-bold text-white">Gerenciar Usuários</h1>
               </div>
             </div>
-            <button
-              onClick={openCreateModal}
-              className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors"
-            >
-              <FiPlus className="w-4 h-4" />
-              Novo Usuário
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={exportUsers}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-xl font-medium transition-colors"
+              >
+                <FiDownload className="w-4 h-4" />
+                Exportar
+              </button>
+              <button
+                onClick={openCreateModal}
+                className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-medium transition-colors"
+              >
+                <FiPlus className="w-4 h-4" />
+                Novo Usuário
+              </button>
+            </div>
           </div>
         </div>
       </header>
