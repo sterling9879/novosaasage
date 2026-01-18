@@ -26,7 +26,7 @@ export default function ChatArea({ onSendMessage }: ChatAreaProps) {
   return (
     <div className="flex-1 flex flex-col h-full bg-gradient-to-b from-[rgb(249,250,251)] to-white">
       {/* Header */}
-      <header className="border-b border-[rgba(79,89,102,0.08)] px-6 py-4 flex items-center justify-between bg-white/80 backdrop-blur-lg sticky top-0 z-10">
+      <header className="px-6 py-4 flex items-center justify-between bg-transparent sticky top-0 z-10">
         <div className="flex items-center gap-4">
           {selectedBot ? (
             <>
