@@ -501,6 +501,77 @@ body {
   }
 }
 
+/* ===== MOBILE UTILITIES ===== */
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area for notched phones (iPhone X, etc.) */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* Touch-friendly tap highlights */
+@media (hover: none) and (pointer: coarse) {
+  button, a {
+    -webkit-tap-highlight-color: rgba(104, 65, 234, 0.1);
+  }
+
+  /* Disable hover effects on touch devices */
+  .card-hover:hover {
+    transform: none;
+  }
+
+  /* Make touch targets larger */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Better mobile input handling */
+@media (max-width: 640px) {
+  input, textarea {
+    font-size: 16px !important; /* Prevents zoom on iOS */
+  }
+
+  /* Reduce animations on mobile for performance */
+  .animate-fadeInUp {
+    animation-duration: 0.2s;
+  }
+
+  .animate-fadeIn {
+    animation-duration: 0.15s;
+  }
+}
+
+/* Smooth momentum scrolling on iOS */
+.smooth-scroll {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix for 100vh on mobile browsers */
+.h-screen-mobile {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Pull to refresh prevention when not needed */
+.no-pull-refresh {
+  overscroll-behavior-y: contain;
+}
+
 /* Print styles */
 @media print {
   .no-print {
