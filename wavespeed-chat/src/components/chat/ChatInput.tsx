@@ -179,10 +179,10 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
           <div className="flex items-center justify-between mt-2.5 px-1">
             <div className="flex items-center gap-3">
               <p className="text-[11px] text-[rgb(170,170,180)]">
-                <kbd className="px-1.5 py-0.5 bg-[rgb(245,245,245)] rounded text-[10px] font-mono">Enter</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border border-[rgba(79,89,102,0.1)] rounded text-[10px] font-mono">Enter</kbd>
                 {' '}enviar
                 {' '}<span className="mx-1 text-[rgb(200,200,210)]">•</span>{' '}
-                <kbd className="px-1.5 py-0.5 bg-[rgb(245,245,245)] rounded text-[10px] font-mono">Shift+Enter</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border border-[rgba(79,89,102,0.1)] rounded text-[10px] font-mono">Shift+Enter</kbd>
                 {' '}nova linha
               </p>
             </div>
