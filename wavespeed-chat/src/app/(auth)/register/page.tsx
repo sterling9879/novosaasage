@@ -62,7 +62,7 @@ export default function RegisterPage() {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] shadow-lg mb-4">
             <span className="text-3xl">🚀</span>
           </div>
-          <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">WaveSpeed Chat</h1>
+          <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">Sage IA</h1>
           <p className="text-[rgb(134,134,146)] mt-1">Crie sua conta gratuita</p>
         </div>
 

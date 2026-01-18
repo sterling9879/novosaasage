@@ -129,7 +129,7 @@ function WelcomeScreen() {
         <div className="text-center mb-12 animate-fadeIn">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#6841ea10] text-[#6841ea] rounded-full text-sm font-medium mb-6">
             <FiZap className="w-4 h-4" />
-            <span>Powered by WaveSpeed AI</span>
+            <span>Sage IA - Inteligência Artificial</span>
           </div>
           <h1 className="text-4xl font-bold text-[rgb(38,38,38)] mb-3">
             {greeting}! <span className="animate-float inline-block">👋</span>

@@ -6,8 +6,8 @@ import SessionProvider from '@/providers/SessionProvider';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'WaveSpeed Chat',
-  description: 'Chat com IA usando WaveSpeed API',
+  title: 'Sage IA',
+  description: 'Seu assistente de inteligência artificial',
 };
 
 export default function RootLayout({
