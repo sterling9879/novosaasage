@@ -25,6 +25,20 @@ export async function POST(request: NextRequest) {
     let conversation;
     let existingMessages: Array<{ role: string; content: string }> = [];
 
+    // Debug: Check if user exists
+    const userExists = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    });
+    console.log('Session user ID:', session.user.id);
+    console.log('User exists in DB:', !!userExists);
+
+    if (!userExists) {
+      return NextResponse.json(
+        { error: `Usuário não encontrado no banco. ID: ${session.user.id}. Faça logout e login novamente.` },
+        { status: 401 }
+      );
+    }
+
     if (conversationId) {
       conversation = await prisma.conversation.findUnique({
         where: { id: conversationId, userId: session.user.id },
