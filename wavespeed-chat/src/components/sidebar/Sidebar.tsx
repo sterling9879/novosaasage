@@ -67,15 +67,7 @@ export default function Sidebar({
   if (isSidebarCollapsed) {
     return (
       <>
-        {/* Mobile menu button */}
-        <button
-          onClick={toggleSidebar}
-          className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-white rounded-xl shadow-lg border border-[rgba(79,89,102,0.08)] hover:bg-[rgb(245,245,245)] transition-all"
-        >
-          <FiMenu className="w-5 h-5 text-[rgb(38,38,38)]" />
-        </button>
-
-        {/* Collapsed Sidebar */}
+        {/* Collapsed Sidebar - Desktop only */}
         <aside className="hidden lg:flex fixed lg:static inset-y-0 left-0 z-40 w-[72px] bg-white border-r border-[rgba(79,89,102,0.08)] flex-col items-center py-4 transition-all duration-300">
           {/* Logo */}
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#6841ea25] mb-4">
@@ -171,14 +163,6 @@ export default function Sidebar({
   // Full sidebar
   return (
     <>
-      {/* Mobile menu button */}
-      <button
-        onClick={toggleSidebar}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2.5 bg-white rounded-xl shadow-lg border border-[rgba(79,89,102,0.08)] hover:bg-[rgb(245,245,245)] transition-all"
-      >
-        <FiMenu className="w-5 h-5 text-[rgb(38,38,38)]" />
-      </button>
-
       {/* Overlay for mobile */}
       {isSidebarOpen && (
         <div
@@ -191,7 +175,7 @@ export default function Sidebar({
       <aside
         className={`
           fixed lg:static inset-y-0 left-0 z-40
-          w-[300px] bg-white border-r border-[rgba(79,89,102,0.08)] flex flex-col
+          w-[280px] sm:w-[300px] bg-white border-r border-[rgba(79,89,102,0.08)] flex flex-col
           transform transition-all duration-300 ease-out shadow-xl lg:shadow-none
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}

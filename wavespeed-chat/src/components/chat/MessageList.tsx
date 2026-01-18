@@ -22,10 +22,10 @@ function MessageActions({ content, onRegenerate }: { content: string; onRegenera
   };
 
   return (
-    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+    <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
       <button
         onClick={handleCopy}
-        className="p-1.5 rounded-lg hover:bg-[rgba(104,65,234,0.1)] text-[rgb(134,134,146)] hover:text-[#6841ea] transition-all"
+        className="p-1.5 rounded-lg hover:bg-[rgba(104,65,234,0.1)] active:bg-[rgba(104,65,234,0.15)] text-[rgb(134,134,146)] hover:text-[#6841ea] transition-all"
         title="Copiar"
       >
         {copied ? <FiCheck className="w-3.5 h-3.5" /> : <FiCopy className="w-3.5 h-3.5" />}
@@ -33,7 +33,7 @@ function MessageActions({ content, onRegenerate }: { content: string; onRegenera
       {onRegenerate && (
         <button
           onClick={onRegenerate}
-          className="p-1.5 rounded-lg hover:bg-[rgba(104,65,234,0.1)] text-[rgb(134,134,146)] hover:text-[#6841ea] transition-all"
+          className="p-1.5 rounded-lg hover:bg-[rgba(104,65,234,0.1)] active:bg-[rgba(104,65,234,0.15)] text-[rgb(134,134,146)] hover:text-[#6841ea] transition-all"
           title="Regenerar"
         >
           <FiRefreshCw className="w-3.5 h-3.5" />
@@ -110,7 +110,7 @@ export default function MessageList() {
   const botColor = selectedBot?.color || '#6841ea';
 
   return (
-    <div ref={containerRef} className="flex-1 overflow-y-auto p-6 space-y-6">
+    <div ref={containerRef} className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
       {messages.map((message, index) => {
         const isUser = message.role === 'USER';
         const isLast = index === messages.length - 1;
@@ -119,13 +119,13 @@ export default function MessageList() {
         return (
           <div
             key={message.id}
-            className={`group flex gap-3 animate-fadeInUp ${isUser ? 'justify-end' : 'justify-start'}`}
+            className={`group flex gap-2 sm:gap-3 animate-fadeInUp ${isUser ? 'justify-end' : 'justify-start'}`}
             style={{ animationDelay: `${Math.min(index * 50, 200)}ms` }}
           >
             {/* Avatar AI */}
             {!isUser && (
               <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 text-xl shadow-sm transition-transform duration-200 hover:scale-105"
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0 text-lg sm:text-xl shadow-sm transition-transform duration-200 hover:scale-105"
                 style={{ backgroundColor: `${botColor}15` }}
               >
                 {botIcon}
@@ -133,21 +133,21 @@ export default function MessageList() {
             )}
 
             {/* Message Content */}
-            <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[75%]`}>
+            <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[85%] sm:max-w-[75%]`}>
               <div
-                className={`relative rounded-2xl px-4 py-3 transition-all duration-200 ${
+                className={`relative rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-200 ${
                   isUser
                     ? 'bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] text-white rounded-br-md shadow-lg shadow-[#6841ea25]'
-                    : 'bg-white border border-[rgba(79,89,102,0.08)] text-[rgb(38,38,38)] rounded-bl-md shadow-sm hover:shadow-md'
+                    : 'bg-white border border-[rgba(79,89,102,0.08)] text-[rgb(38,38,38)] rounded-bl-md shadow-sm sm:hover:shadow-md'
                 }`}
               >
-                <p className="whitespace-pre-wrap text-[15px] leading-relaxed">{message.content}</p>
+                <p className="whitespace-pre-wrap text-[14px] sm:text-[15px] leading-relaxed">{message.content}</p>
               </div>
 
               {/* Message Footer */}
-              <div className={`flex items-center gap-2 mt-1.5 px-1 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
+              <div className={`flex items-center gap-2 mt-1 sm:mt-1.5 px-1 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {showTime && (
-                  <span className="text-[11px] text-[rgb(170,170,180)]">
+                  <span className="text-[10px] sm:text-[11px] text-[rgb(170,170,180)]">
                     {formatTime(new Date(message.createdAt))}
                   </span>
                 )}
@@ -155,9 +155,9 @@ export default function MessageList() {
               </div>
             </div>
 
-            {/* Avatar User */}
+            {/* Avatar User - Hidden on mobile to save space */}
             {isUser && (
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[rgb(235,235,240)] to-[rgb(225,225,230)] flex items-center justify-center flex-shrink-0 shadow-sm transition-transform duration-200 hover:scale-105">
+              <div className="hidden sm:flex w-10 h-10 rounded-2xl bg-gradient-to-br from-[rgb(235,235,240)] to-[rgb(225,225,230)] items-center justify-center flex-shrink-0 shadow-sm transition-transform duration-200 hover:scale-105">
                 <FiUser className="w-5 h-5 text-[rgb(100,100,110)]" />
               </div>
             )}
