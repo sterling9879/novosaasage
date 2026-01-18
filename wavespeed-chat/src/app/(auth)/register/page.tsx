@@ -3,8 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
+import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiArrowRight } from 'react-icons/fi';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -12,6 +11,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,72 +55,152 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">WaveSpeed Chat</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">Crie sua conta</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f3ff] via-white to-[#ede9fe] py-12 px-4">
+      <div className="w-full max-w-md">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] shadow-lg mb-4">
+            <span className="text-3xl">🚀</span>
+          </div>
+          <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">WaveSpeed Chat</h1>
+          <p className="text-[rgb(134,134,146)] mt-1">Crie sua conta gratuita</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
+        {/* Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-[rgba(79,89,102,0.08)] p-8">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Nome */}
+            <div>
+              <label htmlFor="name" className="block text-sm font-medium text-[rgb(38,38,38)] mb-1.5">
+                Nome
+              </label>
+              <div className="relative">
+                <FiUser className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[rgb(134,134,146)]" />
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Seu nome"
+                  className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                />
+              </div>
             </div>
-          )}
 
-          <div className="space-y-4">
-            <Input
-              id="name"
-              type="text"
-              label="Nome"
-              placeholder="Seu nome"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-[rgb(38,38,38)] mb-1.5">
+                Email
+              </label>
+              <div className="relative">
+                <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[rgb(134,134,146)]" />
+                <input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="seu@email.com"
+                  required
+                  className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                />
+              </div>
+            </div>
 
-            <Input
-              id="email"
-              type="email"
-              label="Email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            {/* Senha */}
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-[rgb(38,38,38)] mb-1.5">
+                Senha
+              </label>
+              <div className="relative">
+                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[rgb(134,134,146)]" />
+                <input
+                  id="password"
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Mínimo 6 caracteres"
+                  required
+                  className="w-full pl-10 pr-12 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgb(134,134,146)] hover:text-[rgb(38,38,38)] transition-colors"
+                >
+                  {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
 
-            <Input
-              id="password"
-              type="password"
-              label="Senha"
-              placeholder="Mínimo 6 caracteres"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            {/* Confirmar Senha */}
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-[rgb(38,38,38)] mb-1.5">
+                Confirmar Senha
+              </label>
+              <div className="relative">
+                <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[rgb(134,134,146)]" />
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Repita a senha"
+                  required
+                  className="w-full pl-10 pr-12 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[rgb(134,134,146)] hover:text-[rgb(38,38,38)] transition-colors"
+                >
+                  {showConfirmPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
 
-            <Input
-              id="confirmPassword"
-              type="password"
-              label="Confirmar Senha"
-              placeholder="Repita a senha"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#6841ea30]"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>
+                  Criar Conta
+                  <FiArrowRight className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="my-6 flex items-center gap-3">
+            <div className="flex-1 h-px bg-[rgba(79,89,102,0.08)]" />
+            <span className="text-xs text-[rgb(134,134,146)]">ou</span>
+            <div className="flex-1 h-px bg-[rgba(79,89,102,0.08)]" />
           </div>
 
-          <Button type="submit" className="w-full" isLoading={isLoading}>
-            Criar Conta
-          </Button>
-
-          <p className="text-center text-sm text-gray-600">
+          {/* Login Link */}
+          <p className="text-center text-sm text-[rgb(134,134,146)]">
             Já tem uma conta?{' '}
-            <Link href="/login" className="text-primary-600 hover:text-primary-500 font-medium">
+            <Link href="/login" className="text-[#6841ea] hover:text-[#5b35d4] font-medium transition-colors">
               Entrar
             </Link>
           </p>
-        </form>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-xs text-[rgb(134,134,146)] mt-6">
+          Ao criar uma conta, você concorda com nossos Termos de Uso
+        </p>
       </div>
     </div>
   );

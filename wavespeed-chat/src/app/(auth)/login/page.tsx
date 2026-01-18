@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,53 +38,84 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">WaveSpeed Chat</h2>
-          <p className="mt-2 text-center text-sm text-gray-600">Entre na sua conta</p>
+    <div className="min-h-screen flex items-center justify-center bg-[rgb(249,250,251)] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#6841ea] flex items-center justify-center">
+            <span className="text-3xl">💬</span>
+          </div>
+          <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">WaveSpeed Chat</h1>
+          <p className="mt-2 text-[rgb(134,134,146)]">Entre na sua conta para continuar</p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
+        {/* Form Card */}
+        <div className="bg-white rounded-2xl border border-[rgba(79,89,102,0.08)] p-8 shadow-sm">
+          <form onSubmit={handleSubmit} className="space-y-5">
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                {error}
+              </div>
+            )}
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-[rgb(38,38,38)] mb-1.5">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[15px] placeholder-[rgb(134,134,146)] focus:outline-none focus:ring-2 focus:ring-[#6841ea] focus:border-transparent transition-all"
+              />
             </div>
-          )}
 
-          <div className="space-y-4">
-            <Input
-              id="email"
-              type="email"
-              label="Email"
-              placeholder="seu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-[rgb(38,38,38)] mb-1.5">
+                Senha
+              </label>
+              <input
+                id="password"
+                type="password"
+                placeholder="Sua senha"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[15px] placeholder-[rgb(134,134,146)] focus:outline-none focus:ring-2 focus:ring-[#6841ea] focus:border-transparent transition-all"
+              />
+            </div>
 
-            <Input
-              id="password"
-              type="password"
-              label="Senha"
-              placeholder="Sua senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-3 px-4 bg-[#6841ea] text-white font-medium rounded-xl hover:bg-[#5b35d4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {isLoading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Entrando...
+                </span>
+              ) : (
+                'Entrar'
+              )}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-[rgb(134,134,146)]">
+              Não tem uma conta?{' '}
+              <Link href="/register" className="text-[#6841ea] hover:underline font-medium">
+                Cadastre-se
+              </Link>
+            </p>
           </div>
-
-          <Button type="submit" className="w-full" isLoading={isLoading}>
-            Entrar
-          </Button>
-
-          <p className="text-center text-sm text-gray-600">
-            Não tem uma conta?{' '}
-            <Link href="/register" className="text-primary-600 hover:text-primary-500 font-medium">
-              Cadastre-se
-            </Link>
-          </p>
-        </form>
+        </div>
       </div>
     </div>
   );

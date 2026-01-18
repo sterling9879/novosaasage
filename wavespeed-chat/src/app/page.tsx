@@ -6,6 +6,7 @@ import { useEffect, useCallback } from 'react';
 import Sidebar from '@/components/sidebar/Sidebar';
 import ChatArea from '@/components/chat/ChatArea';
 import { useChatStore } from '@/store/chatStore';
+import { getBotById } from '@/lib/bots';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -16,11 +17,13 @@ export default function Home() {
     setMessages,
     addMessage,
     selectedModel,
+    selectedBotId,
     currentConversationId,
     setIsLoading,
     reset,
     addConversation,
     setSidebarOpen,
+    setSelectedBotId,
   } = useChatStore();
 
   useEffect(() => {
@@ -56,6 +59,7 @@ export default function Home() {
   const handleSelectConversation = useCallback(
     async (id: string) => {
       setCurrentConversationId(id);
+      setSelectedBotId(null);
       setSidebarOpen(false);
 
       try {
@@ -68,7 +72,7 @@ export default function Home() {
         console.error('Error fetching conversation:', error);
       }
     },
-    [setCurrentConversationId, setMessages, setSidebarOpen]
+    [setCurrentConversationId, setMessages, setSidebarOpen, setSelectedBotId]
   );
 
   const handleDeleteConversation = useCallback(
@@ -104,6 +108,9 @@ export default function Home() {
       };
       addMessage(tempUserMessage);
 
+      // Get bot info for title
+      const bot = selectedBotId ? getBotById(selectedBotId) : null;
+
       try {
         const response = await fetch('/api/chat', {
           method: 'POST',
@@ -112,6 +119,7 @@ export default function Home() {
             message,
             conversationId: currentConversationId,
             model: selectedModel,
+            botId: selectedBotId,
           }),
         });
 
@@ -124,9 +132,10 @@ export default function Home() {
         // Update conversation ID if it's a new conversation
         if (!currentConversationId && data.conversationId) {
           setCurrentConversationId(data.conversationId);
+          const title = bot ? `${bot.icon} ${bot.name}` : message.substring(0, 50);
           addConversation({
             id: data.conversationId,
-            title: message.substring(0, 50),
+            title,
             model: selectedModel,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -135,6 +144,9 @@ export default function Home() {
 
         // Add assistant message
         addMessage(data.assistantMessage);
+
+        // Refresh conversations list
+        fetchConversations();
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Erro ao enviar mensagem';
         // Add error message
@@ -151,6 +163,7 @@ export default function Home() {
     [
       currentConversationId,
       selectedModel,
+      selectedBotId,
       setIsLoading,
       addMessage,
       setCurrentConversationId,
@@ -160,8 +173,8 @@ export default function Home() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[rgb(249,250,251)]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6841ea]"></div>
       </div>
     );
   }
@@ -171,7 +184,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className="h-screen flex overflow-hidden bg-[rgb(249,250,251)]">
       <Sidebar
         onNewConversation={handleNewConversation}
         onSelectConversation={handleSelectConversation}

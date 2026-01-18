@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { chatWithAI, buildPromptWithHistory } from '@/lib/wavespeed';
+import { getBotById } from '@/lib/bots';
 
 export async function POST(request: NextRequest) {
   try {
@@ -11,11 +12,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { message, conversationId, model } = await request.json();
+    const { message, conversationId, model, botId } = await request.json();
 
     if (!message?.trim()) {
       return NextResponse.json({ error: 'Mensagem vazia' }, { status: 400 });
     }
+
+    // Get bot system prompt if a bot is selected
+    const bot = botId ? getBotById(botId) : null;
+    const systemPrompt = bot?.systemPrompt || null;
 
     let conversation;
     let existingMessages: Array<{ role: string; content: string }> = [];
@@ -29,10 +34,11 @@ export async function POST(request: NextRequest) {
     }
 
     if (!conversation) {
+      const title = bot ? `${bot.icon} ${bot.name}` : message.substring(0, 50);
       conversation = await prisma.conversation.create({
         data: {
           userId: session.user.id,
-          title: message.substring(0, 50),
+          title,
           model: model || 'google/gemini-2.5-flash',
         },
       });
@@ -48,8 +54,8 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Build prompt with history
-    const prompt = buildPromptWithHistory(existingMessages, message);
+    // Build prompt with history and system prompt
+    const prompt = buildPromptWithHistory(existingMessages, message, systemPrompt);
 
     // Call WaveSpeed API
     const aiResponse = await chatWithAI(prompt, model || conversation.model);
