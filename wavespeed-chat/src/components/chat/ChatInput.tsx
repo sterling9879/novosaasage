@@ -75,7 +75,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   const isOverLimit = charCount > MAX_CHARS;
 
   return (
-    <div className="border-t border-[rgba(79,89,102,0.08)] bg-white/80 backdrop-blur-lg">
+    <div className="bg-transparent">
       {/* Quick Prompts */}
       {showQuickPrompts && messages.length === 0 && (
         <div className="px-4 py-3 border-b border-[rgba(79,89,102,0.08)] animate-fadeIn">
@@ -100,10 +100,10 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
       <form onSubmit={handleSubmit} className="p-4">
         <div className="max-w-4xl mx-auto">
           <div
-            className={`relative bg-[rgb(249,250,251)] rounded-2xl border transition-all duration-300 ${
+            className={`relative bg-white rounded-2xl border transition-all duration-300 ${
               isFocused
                 ? 'border-[#6841ea] ring-4 ring-[#6841ea10] shadow-lg shadow-[#6841ea08]'
-                : 'border-[rgba(79,89,102,0.08)]'
+                : 'border-[rgba(79,89,102,0.12)] shadow-sm'
             } ${isLoading ? 'opacity-75' : ''}`}
           >
             {/* Selected Bot Badge */}
