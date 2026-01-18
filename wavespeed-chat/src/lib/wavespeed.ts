@@ -42,7 +42,25 @@ export async function chatWithAI(prompt: string, model: string): Promise<string>
   }
 
   const data = await response.json();
-  return data.outputs?.[0] || data.output || '';
+  console.log('WaveSpeed API response:', JSON.stringify(data));
+
+  // A API retorna outputs como array
+  if (data.outputs && Array.isArray(data.outputs) && data.outputs.length > 0) {
+    return data.outputs[0];
+  }
+
+  // Fallback para outros formatos
+  if (data.output) {
+    return data.output;
+  }
+
+  // Se tiver data.data.outputs (resposta aninhada)
+  if (data.data?.outputs?.[0]) {
+    return data.data.outputs[0];
+  }
+
+  console.error('WaveSpeed: Formato de resposta inesperado:', data);
+  throw new Error('Resposta vazia da API');
 }
 
 export function buildPromptWithHistory(
