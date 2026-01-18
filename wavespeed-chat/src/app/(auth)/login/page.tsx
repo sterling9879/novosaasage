@@ -45,7 +45,7 @@ export default function LoginPage() {
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#6841ea] flex items-center justify-center">
             <span className="text-3xl">💬</span>
           </div>
-          <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">WaveSpeed Chat</h1>
+          <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">Sage IA</h1>
           <p className="mt-2 text-[rgb(134,134,146)]">Entre na sua conta para continuar</p>
         </div>
 
