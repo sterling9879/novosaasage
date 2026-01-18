@@ -1,0 +1,15 @@
+{
+  "name": "novosaasage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sage IA - Chat application with admin panel",
+  "scripts": {
+    "dev:chat": "cd wavespeed-chat && npm run dev",
+    "dev:admin": "cd admin-panel && npm run dev",
+    "build:chat": "cd wavespeed-chat && npm run build",
+    "build:admin": "cd admin-panel && npm run build",
+    "start:chat": "cd wavespeed-chat && npm run start",
+    "start:admin": "cd admin-panel && npm run start",
+    "install:all": "cd wavespeed-chat && npm install && cd ../admin-panel && npm install"
+  }
+}

@@ -141,15 +141,13 @@ export default function Sidebar({
             >
               {isDarkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
             </button>
-            {session?.user?.isAdmin && (
-              <Link
-                href="/admin"
-                className="w-11 h-11 rounded-xl text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] flex items-center justify-center transition-all"
-                title="Configurações"
-              >
-                <FiSettings className="w-5 h-5" />
-              </Link>
-            )}
+            <Link
+              href="/settings"
+              className="w-11 h-11 rounded-xl text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] flex items-center justify-center transition-all"
+              title="Configurações"
+            >
+              <FiSettings className="w-5 h-5" />
+            </Link>
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
               className="w-11 h-11 rounded-xl text-red-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-all"
@@ -371,15 +369,13 @@ export default function Sidebar({
             >
               <FiHelpCircle className="w-4 h-4" />
             </button>
-            {session?.user?.isAdmin && (
-              <Link
-                href="/admin"
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] rounded-xl transition-all"
-                title="Configurações"
-              >
-                <FiSettings className="w-4 h-4" />
-              </Link>
-            )}
+            <Link
+              href="/settings"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] rounded-xl transition-all"
+              title="Configurações"
+            >
+              <FiSettings className="w-4 h-4" />
+            </Link>
           </div>
           <button
             onClick={() => signOut({ callbackUrl: '/login' })}
