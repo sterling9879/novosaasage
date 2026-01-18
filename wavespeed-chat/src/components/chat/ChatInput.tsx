@@ -97,13 +97,13 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-4">
+      <form onSubmit={handleSubmit} className="p-4 bg-white">
         <div className="max-w-4xl mx-auto">
           <div
             className={`relative bg-white rounded-2xl border transition-all duration-300 ${
               isFocused
                 ? 'border-[#6841ea] ring-4 ring-[#6841ea10] shadow-lg shadow-[#6841ea08]'
-                : 'border-[rgba(79,89,102,0.12)] shadow-sm'
+                : 'border-[rgba(79,89,102,0.15)]'
             } ${isLoading ? 'opacity-75' : ''}`}
           >
             {/* Selected Bot Badge */}
