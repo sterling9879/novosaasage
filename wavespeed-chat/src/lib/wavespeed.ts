@@ -1,10 +1,20 @@
 import { prisma } from './prisma';
 
 export async function getApiKey(): Promise<string | null> {
-  const setting = await prisma.settings.findUnique({
-    where: { key: 'wavespeed_api_key' },
-  });
-  return setting?.value || null;
+  // Try to get from database first
+  try {
+    const setting = await prisma.settings.findUnique({
+      where: { key: 'wavespeed_api_key' },
+    });
+    if (setting?.value) {
+      return setting.value;
+    }
+  } catch (error) {
+    console.error('Error fetching API key from database:', error);
+  }
+
+  // Fallback to environment variable
+  return process.env.WAVESPEED_API_KEY || null;
 }
 
 export async function setApiKey(apiKey: string): Promise<void> {
