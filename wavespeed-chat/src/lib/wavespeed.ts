@@ -42,7 +42,7 @@ export async function chatWithAI(prompt: string, model: string): Promise<string>
   }
 
   const data = await response.json();
-  return data.output || '';
+  return data.outputs?.[0] || data.output || '';
 }
 
 export function buildPromptWithHistory(
