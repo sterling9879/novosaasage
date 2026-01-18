@@ -65,9 +65,15 @@ export async function chatWithAI(prompt: string, model: string): Promise<string>
 
 export function buildPromptWithHistory(
   messages: Array<{ role: string; content: string }>,
-  newMessage: string
+  newMessage: string,
+  systemPrompt?: string | null
 ): string {
   let prompt = '';
+
+  // Add system prompt if provided
+  if (systemPrompt) {
+    prompt += `Sistema: ${systemPrompt}\n\n---\n\n`;
+  }
 
   const recentMessages = messages.slice(-10);
 
