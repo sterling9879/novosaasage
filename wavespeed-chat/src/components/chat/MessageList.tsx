@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { FiUser, FiCopy, FiCheck, FiRefreshCw } from 'react-icons/fi';
+import Image from 'next/image';
+import { FiUser, FiCopy, FiCheck, FiRefreshCw, FiImage } from 'react-icons/fi';
 import { useChatStore } from '@/store/chatStore';
 import { getBotById } from '@/lib/bots';
 
@@ -134,6 +135,19 @@ export default function MessageList() {
 
             {/* Message Content */}
             <div className={`flex flex-col ${isUser ? 'items-end' : 'items-start'} max-w-[85%] sm:max-w-[75%]`}>
+              {/* Image attachment for user messages */}
+              {isUser && message.imageUrl && (
+                <div className="mb-2 rounded-xl overflow-hidden shadow-md">
+                  <Image
+                    src={message.imageUrl}
+                    alt="Imagem anexada"
+                    width={200}
+                    height={200}
+                    className="object-cover max-w-[200px] max-h-[200px]"
+                    style={{ width: 'auto', height: 'auto' }}
+                  />
+                </div>
+              )}
               <div
                 className={`relative rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-200 ${
                   isUser
@@ -141,6 +155,13 @@ export default function MessageList() {
                     : 'bg-white border border-[rgba(30,58,47,0.08)] text-[#1E3A2F] rounded-bl-md shadow-sm sm:hover:shadow-md'
                 }`}
               >
+                {/* Image indicator for user messages with images */}
+                {isUser && message.imageUrl && (
+                  <div className="flex items-center gap-1 text-white/70 text-xs mb-1">
+                    <FiImage className="w-3 h-3" />
+                    <span>Imagem analisada</span>
+                  </div>
+                )}
                 <p className="whitespace-pre-wrap text-[14px] sm:text-[15px] leading-relaxed">{message.content}</p>
               </div>
 

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { chatWithAI, buildPromptWithHistory } from '@/lib/wavespeed';
+import { chatWithAI, buildPromptWithHistory, getImageDescription, buildPromptWithImage } from '@/lib/wavespeed';
 import { getBotById } from '@/lib/bots';
 
 export async function POST(request: NextRequest) {
@@ -12,10 +12,23 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
     }
 
-    const { message, conversationId, model, botId } = await request.json();
+    const { message, conversationId, model, botId, imageUrl } = await request.json();
 
     if (!message?.trim()) {
       return NextResponse.json({ error: 'Mensagem vazia' }, { status: 400 });
+    }
+
+    // Process image if provided
+    let imageDescription: string | null = null;
+    if (imageUrl) {
+      try {
+        console.log('Processing image:', imageUrl);
+        imageDescription = await getImageDescription(imageUrl);
+        console.log('Image description obtained');
+      } catch (imageError) {
+        console.error('Error processing image:', imageError);
+        // Continue without image description if it fails
+      }
     }
 
     // Get bot system prompt if a bot is selected
@@ -68,8 +81,10 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Build prompt with history and system prompt
-    const prompt = buildPromptWithHistory(existingMessages, message, systemPrompt);
+    // Build prompt with history, system prompt, and image description if available
+    const prompt = imageDescription
+      ? buildPromptWithImage(existingMessages, message, imageDescription, systemPrompt)
+      : buildPromptWithHistory(existingMessages, message, systemPrompt);
 
     // Call WaveSpeed API
     const aiResponse = await chatWithAI(prompt, model || conversation.model);
@@ -104,6 +119,7 @@ export async function POST(request: NextRequest) {
         role: 'USER',
         content: message,
         createdAt: userMessage.createdAt,
+        imageUrl: imageUrl || null,
       },
       assistantMessage: {
         id: assistantMessage.id,

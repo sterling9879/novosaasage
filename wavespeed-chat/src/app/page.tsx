@@ -96,7 +96,7 @@ export default function Home() {
   );
 
   const handleSendMessage = useCallback(
-    async (message: string) => {
+    async (message: string, imageUrl?: string) => {
       setIsLoading(true);
 
       // Add user message optimistically
@@ -105,6 +105,7 @@ export default function Home() {
         role: 'USER' as const,
         content: message,
         createdAt: new Date().toISOString(),
+        imageUrl: imageUrl || null,
       };
       addMessage(tempUserMessage);
 
@@ -120,6 +121,7 @@ export default function Home() {
             conversationId: currentConversationId,
             model: selectedModel,
             botId: selectedBotId,
+            imageUrl,
           }),
         });
 

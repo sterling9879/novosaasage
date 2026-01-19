@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { FiSend, FiMic, FiImage, FiSmile, FiCommand } from 'react-icons/fi';
+import { FiSend, FiMic, FiImage, FiSmile, FiCommand, FiX } from 'react-icons/fi';
+import Image from 'next/image';
 import { useChatStore } from '@/store/chatStore';
 import { getBotById } from '@/lib/bots';
 
 interface ChatInputProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, imageUrl?: string) => void;
 }
 
 const MAX_CHARS = 4000;
@@ -22,7 +23,11 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   const [message, setMessage] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [showQuickPrompts, setShowQuickPrompts] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const { isLoading, selectedBotId, messages } = useChatStore();
   const selectedBot = selectedBotId ? getBotById(selectedBotId) : null;
 
@@ -38,12 +43,78 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
     textareaRef.current?.focus();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Tipo de arquivo não suportado. Use JPEG, PNG, GIF ou WebP.');
+        return;
+      }
+      // Validate file size (10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('Arquivo muito grande. Máximo 10MB.');
+        return;
+      }
+      setSelectedImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+    // Reset input
+    if (e.target) {
+      e.target.value = '';
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+      setImagePreview(null);
+    }
+  };
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Erro ao fazer upload');
+    }
+
+    const data = await response.json();
+    return data.url;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() && !isLoading && message.length <= MAX_CHARS) {
-      onSendMessage(message.trim());
+    if (message.trim() && !isLoading && !isUploading && message.length <= MAX_CHARS) {
+      let imageUrl: string | undefined;
+
+      // Upload image if selected
+      if (selectedImage) {
+        setIsUploading(true);
+        try {
+          imageUrl = await uploadImage(selectedImage);
+        } catch (error) {
+          console.error('Error uploading image:', error);
+          alert('Erro ao fazer upload da imagem. Tente novamente.');
+          setIsUploading(false);
+          return;
+        }
+        setIsUploading(false);
+      }
+
+      onSendMessage(message.trim(), imageUrl);
       setMessage('');
       setShowQuickPrompts(false);
+      removeImage();
     }
   };
 
@@ -98,13 +169,50 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
       )}
 
       <form onSubmit={handleSubmit} className="p-3 sm:p-4 bg-white border-t border-[rgba(30,58,47,0.05)]">
+        {/* Hidden file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg,image/png,image/gif,image/webp"
+          onChange={handleImageSelect}
+          className="hidden"
+        />
+
         <div className="max-w-4xl mx-auto">
+          {/* Image Preview */}
+          {imagePreview && (
+            <div className="mb-2 relative inline-block">
+              <div className="relative rounded-xl overflow-hidden border border-[rgba(30,58,47,0.15)] bg-[#F5F5F0]">
+                <Image
+                  src={imagePreview}
+                  alt="Preview"
+                  width={120}
+                  height={120}
+                  className="object-cover"
+                  style={{ maxWidth: '120px', maxHeight: '120px' }}
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  className="absolute top-1 right-1 p-1 bg-black/50 hover:bg-black/70 text-white rounded-full transition-colors"
+                >
+                  <FiX className="w-3 h-3" />
+                </button>
+              </div>
+              {isUploading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-xl">
+                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                </div>
+              )}
+            </div>
+          )}
+
           <div
             className={`relative bg-white rounded-2xl border transition-all duration-300 ${
               isFocused
                 ? 'border-[#4A7C59] ring-2 sm:ring-4 ring-[#4A7C5910] shadow-lg shadow-[#4A7C5908]'
                 : 'border-[rgba(30,58,47,0.15)]'
-            } ${isLoading ? 'opacity-75' : ''}`}
+            } ${isLoading || isUploading ? 'opacity-75' : ''}`}
           >
             {/* Selected Bot Badge */}
             {selectedBot && (
@@ -146,8 +254,13 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
               </button>
               <button
                 type="button"
-                className="hidden sm:block p-2 text-[#8B8B8B] hover:text-[#6B6B6B] hover:bg-[#EEEEE8] rounded-xl transition-all duration-200"
-                title="Imagem"
+                onClick={() => fileInputRef.current?.click()}
+                className={`p-2 rounded-xl transition-all duration-200 ${
+                  selectedImage
+                    ? 'bg-[#4A7C59]/10 text-[#4A7C59]'
+                    : 'text-[#8B8B8B] hover:text-[#6B6B6B] hover:bg-[#EEEEE8]'
+                }`}
+                title="Anexar imagem"
               >
                 <FiImage className="w-4.5 h-4.5" />
               </button>
@@ -161,14 +274,14 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
               {/* Send button - always visible */}
               <button
                 type="submit"
-                disabled={!message.trim() || isLoading || isOverLimit}
+                disabled={!message.trim() || isLoading || isUploading || isOverLimit}
                 className={`p-2.5 sm:p-2.5 rounded-xl transition-all duration-300 ${
-                  message.trim() && !isLoading && !isOverLimit
+                  message.trim() && !isLoading && !isUploading && !isOverLimit
                     ? 'bg-gradient-to-r from-[#4A7C59] to-[#1E3A2F] text-white shadow-lg shadow-[#4A7C5930] hover:shadow-xl hover:shadow-[#4A7C5940] active:scale-95 sm:hover:scale-105'
                     : 'bg-[rgb(230,230,235)] text-[#8B8B8B] cursor-not-allowed'
                 }`}
               >
-                {isLoading ? (
+                {isLoading || isUploading ? (
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                 ) : (
                   <FiSend className="w-5 h-5" />

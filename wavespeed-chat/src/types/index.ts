@@ -3,6 +3,7 @@ export interface Message {
   role: 'USER' | 'ASSISTANT';
   content: string;
   model?: string;
+  imageUrl?: string | null;
   createdAt: Date | string;
 }
 
