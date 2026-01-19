@@ -23,6 +23,7 @@ import {
 import { useChatStore } from '@/store/chatStore';
 import ConversationList from './ConversationList';
 import { MODELS, getProviderLogo } from '@/lib/models';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface SidebarProps {
   onNewConversation: () => void;
@@ -49,18 +50,13 @@ export default function Sidebar({
   } = useChatStore();
   const [showModelDropdown, setShowModelDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const { isDark, toggleTheme } = useTheme();
 
   const selectedModelData = MODELS.find((m) => m.id === selectedModel) || MODELS[0];
 
   const handleNewChat = () => {
     setSelectedBotId(null);
     onNewConversation();
-  };
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
   };
 
   // Collapsed sidebar (mini version)
@@ -127,11 +123,11 @@ export default function Sidebar({
           {/* Footer Actions */}
           <div className="flex flex-col gap-2">
             <button
-              onClick={toggleDarkMode}
+              onClick={toggleTheme}
               className="w-11 h-11 rounded-xl text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] flex items-center justify-center transition-all"
-              title={isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
+              title={isDark ? 'Modo Claro' : 'Modo Escuro'}
             >
-              {isDarkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
+              {isDark ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
             </button>
             <Link
               href="/settings"
@@ -341,11 +337,11 @@ export default function Sidebar({
         <div className="border-t border-[rgba(30,58,47,0.08)] p-3">
           <div className="flex items-center gap-1 mb-2">
             <button
-              onClick={toggleDarkMode}
+              onClick={toggleTheme}
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
-              title={isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
+              title={isDark ? 'Modo Claro' : 'Modo Escuro'}
             >
-              {isDarkMode ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
+              {isDark ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
             </button>
             <button
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
