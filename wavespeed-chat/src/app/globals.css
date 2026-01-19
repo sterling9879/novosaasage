@@ -1,54 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  /* ===== SAGE IA - Paleta de Cores ===== */
+
+  /* Cores Principais */
+  --sage-green: #4A7C59;
+  --deep-forest: #1E3A2F;
+  --off-white: #F5F5F0;
+
+  /* Cores de Apoio */
+  --gold-accent: #C9A227;
+  --warm-gray: #6B6B6B;
+  --error-red: #C44536;
+
+  /* Gradiente Assinatura */
+  --sage-gradient: linear-gradient(135deg, #4A7C59 0%, #1E3A2F 100%);
+
   /* Light mode colors */
-  --bg-main: rgb(249, 250, 251);
-  --bg-sidebar: rgb(255, 255, 255);
-  --bg-card: rgb(255, 255, 255);
-  --bg-input: rgb(245, 246, 248);
-  --bg-message-user: linear-gradient(135deg, rgb(104, 65, 234), rgb(139, 92, 246));
-  --bg-message-ai: rgb(255, 255, 255);
-  --text-primary: rgb(38, 38, 38);
-  --text-secondary: rgb(134, 134, 146);
-  --text-tertiary: rgb(170, 170, 180);
-  --accent-purple: rgb(104, 65, 234);
-  --accent-purple-light: rgba(104, 65, 234, 0.1);
-  --accent-purple-hover: rgb(89, 55, 200);
-  --accent-green: rgb(34, 197, 94);
-  --accent-blue: rgb(59, 130, 246);
-  --accent-orange: rgb(249, 115, 22);
-  --border-light: rgba(79, 89, 102, 0.08);
-  --border-medium: rgba(79, 89, 102, 0.15);
-  --hover-bg: rgba(104, 65, 234, 0.05);
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
-  --shadow-purple: 0 4px 14px rgba(104, 65, 234, 0.25);
+  --bg-main: #F5F5F0;
+  --bg-sidebar: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-input: #EEEEE8;
+  --bg-message-user: linear-gradient(135deg, #4A7C59 0%, #1E3A2F 100%);
+  --bg-message-ai: #FFFFFF;
+  --text-primary: #1E3A2F;
+  --text-secondary: #6B6B6B;
+  --text-tertiary: #8B8B8B;
+  --accent-primary: #4A7C59;
+  --accent-primary-light: rgba(74, 124, 89, 0.1);
+  --accent-primary-hover: #3D6A4A;
+  --accent-gold: #C9A227;
+  --accent-green: #4A7C59;
+  --accent-blue: #3B7A8C;
+  --accent-orange: #C9A227;
+  --border-light: rgba(30, 58, 47, 0.08);
+  --border-medium: rgba(30, 58, 47, 0.15);
+  --hover-bg: rgba(74, 124, 89, 0.05);
+  --shadow-sm: 0 1px 2px rgba(30, 58, 47, 0.04);
+  --shadow-md: 0 4px 12px rgba(30, 58, 47, 0.08);
+  --shadow-lg: 0 8px 24px rgba(30, 58, 47, 0.12);
+  --shadow-sage: 0 4px 14px rgba(74, 124, 89, 0.25);
 }
 
 .dark {
-  /* Dark mode colors */
-  --bg-main: rgb(17, 17, 21);
-  --bg-sidebar: rgb(24, 24, 30);
-  --bg-card: rgb(30, 30, 38);
-  --bg-input: rgb(38, 38, 46);
-  --bg-message-user: linear-gradient(135deg, rgb(104, 65, 234), rgb(139, 92, 246));
-  --bg-message-ai: rgb(38, 38, 46);
-  --text-primary: rgb(248, 248, 252);
-  --text-secondary: rgb(156, 156, 170);
-  --text-tertiary: rgb(100, 100, 115);
-  --accent-purple: rgb(124, 85, 254);
-  --accent-purple-light: rgba(124, 85, 254, 0.15);
-  --accent-purple-hover: rgb(144, 105, 255);
-  --border-light: rgba(255, 255, 255, 0.06);
-  --border-medium: rgba(255, 255, 255, 0.1);
-  --hover-bg: rgba(124, 85, 254, 0.1);
+  /* Dark mode colors - Deep Forest */
+  --bg-main: #1E3A2F;
+  --bg-sidebar: #162A22;
+  --bg-card: #1E3A2F;
+  --bg-input: #2A4A3C;
+  --bg-message-user: linear-gradient(135deg, #4A7C59 0%, #3D6A4A 100%);
+  --bg-message-ai: #2A4A3C;
+  --text-primary: #F5F5F0;
+  --text-secondary: #B8C4B8;
+  --text-tertiary: #7A8A7A;
+  --accent-primary: #5A9C6A;
+  --accent-primary-light: rgba(90, 156, 106, 0.15);
+  --accent-primary-hover: #6AAC7A;
+  --accent-gold: #D4B237;
+  --border-light: rgba(245, 245, 240, 0.06);
+  --border-medium: rgba(245, 245, 240, 0.1);
+  --hover-bg: rgba(90, 156, 106, 0.1);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-purple: 0 4px 14px rgba(124, 85, 254, 0.3);
+  --shadow-sage: 0 4px 14px rgba(90, 156, 106, 0.3);
 }
 
 html,
@@ -56,9 +75,17 @@ body {
   height: 100%;
   background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+code, pre, .font-mono {
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 #__next {
@@ -86,8 +113,8 @@ body {
 
 /* Seleção de texto */
 ::selection {
-  background-color: var(--accent-purple-light);
-  color: var(--accent-purple);
+  background-color: var(--accent-primary-light);
+  color: var(--accent-primary);
 }
 
 /* ===== ANIMAÇÕES ===== */
@@ -259,7 +286,7 @@ body {
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(135deg, var(--accent-purple), transparent, var(--accent-purple));
+  background: linear-gradient(135deg, var(--accent-primary), transparent, var(--accent-primary));
   opacity: 0;
   transition: opacity 0.3s ease;
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -275,15 +302,15 @@ body {
 
 /* Botão primário */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-purple), rgb(139, 92, 246));
+  background: linear-gradient(135deg, #4A7C59 0%, #1E3A2F 100%);
   color: white;
   transition: all 0.25s ease;
-  box-shadow: var(--shadow-purple);
+  box-shadow: var(--shadow-sage);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(104, 65, 234, 0.35);
+  box-shadow: 0 6px 20px rgba(74, 124, 89, 0.35);
 }
 
 .btn-primary:active {
@@ -299,7 +326,7 @@ body {
 
 .btn-ghost:hover {
   background: var(--hover-bg);
-  color: var(--accent-purple);
+  color: var(--accent-primary);
 }
 
 /* Input estilizado */
@@ -314,8 +341,8 @@ body {
 
 .input-styled:focus {
   outline: none;
-  border-color: var(--accent-purple);
-  box-shadow: 0 0 0 3px var(--accent-purple-light);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px var(--accent-primary-light);
 }
 
 .input-styled::placeholder {
@@ -324,7 +351,7 @@ body {
 
 /* Badge NEW */
 .badge-new {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+  background: linear-gradient(135deg, #C9A227, #B8911E);
   color: white;
   font-size: 10px;
   padding: 2px 8px;
@@ -332,7 +359,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 8px rgba(238, 90, 90, 0.3);
+  box-shadow: 0 2px 8px rgba(201, 162, 39, 0.3);
 }
 
 /* Badge genérico */
@@ -343,19 +370,24 @@ body {
   font-weight: 500;
 }
 
-.badge-purple {
-  background: var(--accent-purple-light);
-  color: var(--accent-purple);
+.badge-sage {
+  background: var(--accent-primary-light);
+  color: var(--accent-primary);
 }
 
 .badge-green {
-  background: rgba(34, 197, 94, 0.1);
-  color: var(--accent-green);
+  background: rgba(74, 124, 89, 0.1);
+  color: #4A7C59;
+}
+
+.badge-gold {
+  background: rgba(201, 162, 39, 0.1);
+  color: #C9A227;
 }
 
 .badge-blue {
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--accent-blue);
+  background: rgba(59, 122, 140, 0.1);
+  color: #3B7A8C;
 }
 
 /* Tooltip */
@@ -414,7 +446,7 @@ body {
 }
 
 .dark .glass {
-  background: rgba(30, 30, 38, 0.8);
+  background: rgba(30, 58, 47, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -432,7 +464,7 @@ body {
 }
 
 .status-dot.busy {
-  background: var(--accent-orange);
+  background: var(--accent-gold);
 }
 
 /* Message bubble styles */
@@ -469,7 +501,7 @@ body {
   position: absolute;
   inset: -3px;
   border-radius: 50%;
-  border: 2px solid var(--accent-purple);
+  border: 2px solid var(--accent-primary);
   opacity: 0.3;
 }
 
@@ -491,7 +523,7 @@ body {
 /* Focus ring customizado */
 .focus-ring:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--accent-purple-light);
+  box-shadow: 0 0 0 3px var(--accent-primary-light);
 }
 
 /* Responsive utilities */
@@ -525,7 +557,7 @@ body {
 /* Touch-friendly tap highlights */
 @media (hover: none) and (pointer: coarse) {
   button, a {
-    -webkit-tap-highlight-color: rgba(104, 65, 234, 0.1);
+    -webkit-tap-highlight-color: rgba(74, 124, 89, 0.1);
   }
 
   /* Disable hover effects on touch devices */

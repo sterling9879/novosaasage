@@ -68,16 +68,16 @@ export default function Sidebar({
     return (
       <>
         {/* Collapsed Sidebar - Desktop only */}
-        <aside className="hidden lg:flex fixed lg:static inset-y-0 left-0 z-40 w-[72px] bg-white border-r border-[rgba(79,89,102,0.08)] flex-col items-center py-4 transition-all duration-300">
+        <aside className="hidden lg:flex fixed lg:static inset-y-0 left-0 z-40 w-[72px] bg-white border-r border-[rgba(30,58,47,0.08)] flex-col items-center py-4 transition-all duration-300">
           {/* Logo */}
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#6841ea25] mb-4">
+          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#4A7C5925] mb-4">
             S
           </div>
 
           {/* Expand button */}
           <button
             onClick={toggleSidebarCollapsed}
-            className="p-2.5 text-[rgb(134,134,146)] hover:text-[#6841ea] hover:bg-[rgb(245,245,245)] rounded-xl transition-all mb-4"
+            className="p-2.5 text-[#6B6B6B] hover:text-[#4A7C59] hover:bg-[#EEEEE8] rounded-xl transition-all mb-4"
             title="Expandir sidebar"
           >
             <FiChevronsRight className="w-5 h-5" />
@@ -86,14 +86,14 @@ export default function Sidebar({
           {/* New Chat */}
           <button
             onClick={handleNewChat}
-            className="w-11 h-11 rounded-xl bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white flex items-center justify-center shadow-lg shadow-[#6841ea25] hover:shadow-xl hover:scale-105 transition-all mb-4"
+            className="w-11 h-11 rounded-xl bg-gradient-to-r from-[#4A7C59] to-[#1E3A2F] text-white flex items-center justify-center shadow-lg shadow-[#4A7C5925] hover:shadow-xl hover:scale-105 transition-all mb-4"
             title="Nova Conversa"
           >
             <FiPlus className="w-5 h-5" />
           </button>
 
           {/* Divider */}
-          <div className="w-8 h-px bg-[rgba(79,89,102,0.08)] my-2" />
+          <div className="w-8 h-px bg-[rgba(30,58,47,0.08)] my-2" />
 
           {/* Tabs */}
           <div className="flex flex-col gap-2">
@@ -101,8 +101,8 @@ export default function Sidebar({
               onClick={() => setActiveTab('chat')}
               className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
                 activeTab === 'chat'
-                  ? 'bg-[#6841ea] text-white shadow-md'
-                  : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)]'
+                  ? 'bg-[#4A7C59] text-white shadow-md'
+                  : 'text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F]'
               }`}
               title="Chat"
             >
@@ -112,8 +112,8 @@ export default function Sidebar({
               onClick={() => setActiveTab('bots')}
               className={`w-11 h-11 rounded-xl flex items-center justify-center transition-all ${
                 activeTab === 'bots'
-                  ? 'bg-[#6841ea] text-white shadow-md'
-                  : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)]'
+                  ? 'bg-[#4A7C59] text-white shadow-md'
+                  : 'text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F]'
               }`}
               title="Ferramentas"
             >
@@ -128,14 +128,14 @@ export default function Sidebar({
           <div className="flex flex-col gap-2">
             <button
               onClick={toggleDarkMode}
-              className="w-11 h-11 rounded-xl text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] flex items-center justify-center transition-all"
+              className="w-11 h-11 rounded-xl text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] flex items-center justify-center transition-all"
               title={isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
             >
               {isDarkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
             </button>
             <Link
               href="/settings"
-              className="w-11 h-11 rounded-xl text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] flex items-center justify-center transition-all"
+              className="w-11 h-11 rounded-xl text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] flex items-center justify-center transition-all"
               title="Configurações"
             >
               <FiSettings className="w-5 h-5" />
@@ -151,7 +151,7 @@ export default function Sidebar({
 
           {/* User Avatar */}
           <div className="mt-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] flex items-center justify-center text-white font-bold shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] flex items-center justify-center text-white font-bold shadow-md">
               {session?.user?.name?.[0] || session?.user?.email?.[0]?.toUpperCase() || 'U'}
             </div>
           </div>
@@ -175,30 +175,30 @@ export default function Sidebar({
       <aside
         className={`
           fixed lg:static inset-y-0 left-0 z-40
-          w-[280px] sm:w-[300px] bg-white border-r border-[rgba(79,89,102,0.08)] flex flex-col
+          w-[280px] sm:w-[300px] bg-white border-r border-[rgba(30,58,47,0.08)] flex flex-col
           transform transition-all duration-300 ease-out shadow-xl lg:shadow-none
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         `}
       >
         {/* Header with User */}
-        <div className="p-4 border-b border-[rgba(79,89,102,0.08)]">
+        <div className="p-4 border-b border-[rgba(30,58,47,0.08)]">
           <div className="flex items-center gap-3 mb-4">
             <div className="relative group">
-              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#6841ea25] transition-transform group-hover:scale-105">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-[#4A7C5925] transition-transform group-hover:scale-105">
                 {session?.user?.name?.[0] || session?.user?.email?.[0]?.toUpperCase() || 'U'}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-[rgb(38,38,38)] truncate">
+              <p className="text-sm font-semibold text-[#1E3A2F] truncate">
                 {session?.user?.name || 'Usuário'}
               </p>
-              <p className="text-xs text-[rgb(134,134,146)] truncate">{session?.user?.email}</p>
+              <p className="text-xs text-[#6B6B6B] truncate">{session?.user?.email}</p>
             </div>
             {/* Collapse button (desktop) */}
             <button
               onClick={toggleSidebarCollapsed}
-              className="hidden lg:flex p-2 hover:bg-[rgb(245,245,245)] rounded-xl transition-colors text-[rgb(134,134,146)] hover:text-[rgb(38,38,38)]"
+              className="hidden lg:flex p-2 hover:bg-[#EEEEE8] rounded-xl transition-colors text-[#6B6B6B] hover:text-[#1E3A2F]"
               title="Minimizar sidebar"
             >
               <FiChevronsLeft className="w-5 h-5" />
@@ -206,28 +206,28 @@ export default function Sidebar({
             {/* Close button (mobile) */}
             <button
               onClick={toggleSidebar}
-              className="lg:hidden p-2 hover:bg-[rgb(245,245,245)] rounded-xl transition-colors"
+              className="lg:hidden p-2 hover:bg-[#EEEEE8] rounded-xl transition-colors"
             >
-              <FiX className="w-5 h-5 text-[rgb(134,134,146)]" />
+              <FiX className="w-5 h-5 text-[#6B6B6B]" />
             </button>
           </div>
 
           {/* Search */}
           <div className="relative mb-3 group">
-            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[rgb(170,170,180)] group-focus-within:text-[#6841ea] transition-colors" />
+            <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8B8B8B] group-focus-within:text-[#4A7C59] transition-colors" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar conversas..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[rgb(249,250,251)] border border-transparent rounded-xl text-sm text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea15] transition-all"
+              className="w-full pl-10 pr-4 py-2.5 bg-[#F5F5F0] border border-transparent rounded-xl text-sm text-[#1E3A2F] placeholder-[#8B8B8B] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5915] transition-all"
             />
           </div>
 
           {/* New Chat Button */}
           <button
             onClick={handleNewChat}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white rounded-xl font-medium hover:opacity-90 transition-all shadow-lg shadow-[#6841ea25] hover:shadow-xl hover:shadow-[#6841ea30] active:scale-[0.98]"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#4A7C59] to-[#1E3A2F] text-white rounded-xl font-medium hover:opacity-90 transition-all shadow-lg shadow-[#4A7C5925] hover:shadow-xl hover:shadow-[#4A7C5930] active:scale-[0.98]"
           >
             <FiPlus className="w-5 h-5" />
             <span>Nova Conversa</span>
@@ -235,13 +235,13 @@ export default function Sidebar({
         </div>
 
         {/* Tabs */}
-        <div className="flex p-2 gap-1 border-b border-[rgba(79,89,102,0.08)]">
+        <div className="flex p-2 gap-1 border-b border-[rgba(30,58,47,0.08)]">
           <button
             onClick={() => setActiveTab('chat')}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'chat'
-                ? 'bg-[#6841ea] text-white shadow-md shadow-[#6841ea20]'
-                : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)]'
+                ? 'bg-[#4A7C59] text-white shadow-md shadow-[#4A7C5920]'
+                : 'text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F]'
             }`}
           >
             <FiMessageSquare className="w-4 h-4" />
@@ -251,8 +251,8 @@ export default function Sidebar({
             onClick={() => setActiveTab('bots')}
             className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all relative ${
               activeTab === 'bots'
-                ? 'bg-[#6841ea] text-white shadow-md shadow-[#6841ea20]'
-                : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)]'
+                ? 'bg-[#4A7C59] text-white shadow-md shadow-[#4A7C5920]'
+                : 'text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F]'
             }`}
           >
             <FiGrid className="w-4 h-4" />
@@ -261,14 +261,14 @@ export default function Sidebar({
         </div>
 
         {/* Model Selector */}
-        <div className="p-3 border-b border-[rgba(79,89,102,0.08)]">
-          <p className="text-[10px] font-semibold text-[rgb(170,170,180)] uppercase tracking-wider mb-2 px-1">
+        <div className="p-3 border-b border-[rgba(30,58,47,0.08)]">
+          <p className="text-[10px] font-semibold text-[#8B8B8B] uppercase tracking-wider mb-2 px-1">
             Modelo
           </p>
           <div className="relative">
             <button
               onClick={() => setShowModelDropdown(!showModelDropdown)}
-              className="w-full flex items-center gap-3 p-2.5 bg-[rgb(249,250,251)] hover:bg-[rgb(245,245,245)] rounded-xl transition-all group"
+              className="w-full flex items-center gap-3 p-2.5 bg-[#F5F5F0] hover:bg-[#EEEEE8] rounded-xl transition-all group"
             >
               <Image
                 src={getProviderLogo(selectedModelData.provider)}
@@ -278,11 +278,11 @@ export default function Sidebar({
                 className="rounded-lg"
               />
               <div className="flex-1 text-left">
-                <p className="text-sm font-medium text-[rgb(38,38,38)]">{selectedModelData.name}</p>
-                <p className="text-[10px] text-[rgb(170,170,180)]">{selectedModelData.provider}</p>
+                <p className="text-sm font-medium text-[#1E3A2F]">{selectedModelData.name}</p>
+                <p className="text-[10px] text-[#8B8B8B]">{selectedModelData.provider}</p>
               </div>
               <FiChevronDown
-                className={`w-4 h-4 text-[rgb(134,134,146)] transition-transform ${
+                className={`w-4 h-4 text-[#6B6B6B] transition-transform ${
                   showModelDropdown ? 'rotate-180' : ''
                 }`}
               />
@@ -290,7 +290,7 @@ export default function Sidebar({
 
             {/* Dropdown */}
             {showModelDropdown && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[rgba(79,89,102,0.08)] rounded-xl shadow-xl z-50 py-1 animate-scaleIn overflow-hidden max-h-[300px] overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-[rgba(30,58,47,0.08)] rounded-xl shadow-xl z-50 py-1 animate-scaleIn overflow-hidden max-h-[300px] overflow-y-auto">
                 {MODELS.map((model) => (
                   <button
                     key={model.id}
@@ -300,8 +300,8 @@ export default function Sidebar({
                     }}
                     className={`w-full flex items-center gap-3 px-3 py-2.5 transition-colors ${
                       selectedModel === model.id
-                        ? 'bg-[#6841ea10] text-[#6841ea]'
-                        : 'hover:bg-[rgb(249,250,251)] text-[rgb(38,38,38)]'
+                        ? 'bg-[#4A7C5910] text-[#4A7C59]'
+                        : 'hover:bg-[#F5F5F0] text-[#1E3A2F]'
                     }`}
                   >
                     <Image
@@ -313,10 +313,10 @@ export default function Sidebar({
                     />
                     <div className="flex-1 text-left">
                       <p className="text-sm font-medium">{model.name}</p>
-                      <p className="text-[10px] text-[rgb(170,170,180)]">{model.provider}</p>
+                      <p className="text-[10px] text-[#8B8B8B]">{model.provider}</p>
                     </div>
                     {selectedModel === model.id && (
-                      <div className="w-2 h-2 bg-[#6841ea] rounded-full" />
+                      <div className="w-2 h-2 bg-[#4A7C59] rounded-full" />
                     )}
                   </button>
                 ))}
@@ -327,7 +327,7 @@ export default function Sidebar({
 
         {/* Conversations */}
         <div className="flex-1 overflow-hidden flex flex-col">
-          <p className="text-[10px] font-semibold text-[rgb(170,170,180)] uppercase tracking-wider px-4 pt-3 pb-2">
+          <p className="text-[10px] font-semibold text-[#8B8B8B] uppercase tracking-wider px-4 pt-3 pb-2">
             Conversas Recentes
           </p>
           <ConversationList
@@ -338,24 +338,24 @@ export default function Sidebar({
         </div>
 
         {/* Footer */}
-        <div className="border-t border-[rgba(79,89,102,0.08)] p-3">
+        <div className="border-t border-[rgba(30,58,47,0.08)] p-3">
           <div className="flex items-center gap-1 mb-2">
             <button
               onClick={toggleDarkMode}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
               title={isDarkMode ? 'Modo Claro' : 'Modo Escuro'}
             >
               {isDarkMode ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
             </button>
             <button
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
               title="Ajuda"
             >
               <FiHelpCircle className="w-4 h-4" />
             </button>
             <Link
               href="/settings"
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] hover:text-[rgb(38,38,38)] rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
               title="Configurações"
             >
               <FiSettings className="w-4 h-4" />

@@ -78,15 +78,15 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
     <div className="bg-transparent safe-area-bottom">
       {/* Quick Prompts */}
       {showQuickPrompts && messages.length === 0 && (
-        <div className="px-3 sm:px-4 py-3 border-b border-[rgba(79,89,102,0.08)] animate-fadeIn">
+        <div className="px-3 sm:px-4 py-3 border-b border-[rgba(30,58,47,0.08)] animate-fadeIn">
           <div className="max-w-4xl mx-auto">
-            <p className="text-xs text-[rgb(134,134,146)] mb-2">Sugestões rápidas</p>
+            <p className="text-xs text-[#6B6B6B] mb-2">Sugestões rápidas</p>
             <div className="flex flex-wrap gap-2">
               {quickPrompts.map((prompt, i) => (
                 <button
                   key={i}
                   onClick={() => handleQuickPrompt(prompt.text)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm bg-[rgb(249,250,251)] hover:bg-[rgba(104,65,234,0.1)] active:bg-[rgba(104,65,234,0.15)] text-[rgb(38,38,38)] hover:text-[#6841ea] rounded-full border border-[rgba(79,89,102,0.08)] transition-all duration-200"
+                  className="flex items-center gap-2 px-3 py-2 text-sm bg-[#F5F5F0] hover:bg-[#4A7C59,0.1)] active:bg-[#4A7C59,0.15)] text-[#1E3A2F] hover:text-[#4A7C59] rounded-full border border-[rgba(30,58,47,0.08)] transition-all duration-200"
                 >
                   <span>{prompt.icon}</span>
                   <span className="text-xs sm:text-sm">{prompt.text}</span>
@@ -97,18 +97,18 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-3 sm:p-4 bg-white border-t border-[rgba(79,89,102,0.05)]">
+      <form onSubmit={handleSubmit} className="p-3 sm:p-4 bg-white border-t border-[rgba(30,58,47,0.05)]">
         <div className="max-w-4xl mx-auto">
           <div
             className={`relative bg-white rounded-2xl border transition-all duration-300 ${
               isFocused
-                ? 'border-[#6841ea] ring-2 sm:ring-4 ring-[#6841ea10] shadow-lg shadow-[#6841ea08]'
-                : 'border-[rgba(79,89,102,0.15)]'
+                ? 'border-[#4A7C59] ring-2 sm:ring-4 ring-[#4A7C5910] shadow-lg shadow-[#4A7C5908]'
+                : 'border-[rgba(30,58,47,0.15)]'
             } ${isLoading ? 'opacity-75' : ''}`}
           >
             {/* Selected Bot Badge */}
             {selectedBot && (
-              <div className="absolute -top-3 left-3 sm:left-4 flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 bg-white rounded-full border border-[rgba(79,89,102,0.08)] shadow-sm text-[10px] sm:text-xs font-medium text-[#6841ea]">
+              <div className="absolute -top-3 left-3 sm:left-4 flex items-center gap-1.5 px-2 sm:px-2.5 py-0.5 bg-white rounded-full border border-[rgba(30,58,47,0.08)] shadow-sm text-[10px] sm:text-xs font-medium text-[#4A7C59]">
                 <span>{selectedBot.icon}</span>
                 <span className="truncate max-w-[100px] sm:max-w-none">{selectedBot.name}</span>
               </div>
@@ -122,7 +122,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder={placeholder}
-              className={`w-full resize-none bg-transparent px-3 sm:px-4 py-3 sm:py-4 pr-20 sm:pr-36 focus:outline-none max-h-[150px] sm:max-h-[200px] text-[15px] sm:text-[15px] text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] ${
+              className={`w-full resize-none bg-transparent px-3 sm:px-4 py-3 sm:py-4 pr-20 sm:pr-36 focus:outline-none max-h-[150px] sm:max-h-[200px] text-[15px] sm:text-[15px] text-[#1E3A2F] placeholder-[#8B8B8B] ${
                 selectedBot ? 'pt-4 sm:pt-5' : ''
               }`}
               rows={1}
@@ -137,8 +137,8 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
                 onClick={() => setShowQuickPrompts(!showQuickPrompts)}
                 className={`hidden sm:block p-2 rounded-xl transition-all duration-200 ${
                   showQuickPrompts
-                    ? 'bg-[rgba(104,65,234,0.1)] text-[#6841ea]'
-                    : 'text-[rgb(170,170,180)] hover:text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)]'
+                    ? 'bg-[#4A7C59,0.1)] text-[#4A7C59]'
+                    : 'text-[#8B8B8B] hover:text-[#6B6B6B] hover:bg-[#EEEEE8]'
                 }`}
                 title="Sugestões (Ctrl+/)"
               >
@@ -146,14 +146,14 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
               </button>
               <button
                 type="button"
-                className="hidden sm:block p-2 text-[rgb(170,170,180)] hover:text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] rounded-xl transition-all duration-200"
+                className="hidden sm:block p-2 text-[#8B8B8B] hover:text-[#6B6B6B] hover:bg-[#EEEEE8] rounded-xl transition-all duration-200"
                 title="Imagem"
               >
                 <FiImage className="w-4.5 h-4.5" />
               </button>
               <button
                 type="button"
-                className="hidden sm:block p-2 text-[rgb(170,170,180)] hover:text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)] rounded-xl transition-all duration-200"
+                className="hidden sm:block p-2 text-[#8B8B8B] hover:text-[#6B6B6B] hover:bg-[#EEEEE8] rounded-xl transition-all duration-200"
                 title="Emoji"
               >
                 <FiSmile className="w-4.5 h-4.5" />
@@ -164,8 +164,8 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
                 disabled={!message.trim() || isLoading || isOverLimit}
                 className={`p-2.5 sm:p-2.5 rounded-xl transition-all duration-300 ${
                   message.trim() && !isLoading && !isOverLimit
-                    ? 'bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white shadow-lg shadow-[#6841ea30] hover:shadow-xl hover:shadow-[#6841ea40] active:scale-95 sm:hover:scale-105'
-                    : 'bg-[rgb(230,230,235)] text-[rgb(170,170,180)] cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-[#4A7C59] to-[#1E3A2F] text-white shadow-lg shadow-[#4A7C5930] hover:shadow-xl hover:shadow-[#4A7C5940] active:scale-95 sm:hover:scale-105'
+                    : 'bg-[rgb(230,230,235)] text-[#8B8B8B] cursor-not-allowed'
                 }`}
               >
                 {isLoading ? (
@@ -180,11 +180,11 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
           {/* Footer - Hidden on mobile */}
           <div className="hidden sm:flex items-center justify-between mt-2.5 px-1">
             <div className="flex items-center gap-3">
-              <p className="text-[11px] text-[rgb(170,170,180)]">
-                <kbd className="px-1.5 py-0.5 bg-white border border-[rgba(79,89,102,0.1)] rounded text-[10px] font-mono">Enter</kbd>
+              <p className="text-[11px] text-[#8B8B8B]">
+                <kbd className="px-1.5 py-0.5 bg-white border border-[rgba(30,58,47,0.1)] rounded text-[10px] font-mono">Enter</kbd>
                 {' '}enviar
                 {' '}<span className="mx-1 text-[rgb(200,200,210)]">•</span>{' '}
-                <kbd className="px-1.5 py-0.5 bg-white border border-[rgba(79,89,102,0.1)] rounded text-[10px] font-mono">Shift+Enter</kbd>
+                <kbd className="px-1.5 py-0.5 bg-white border border-[rgba(30,58,47,0.1)] rounded text-[10px] font-mono">Shift+Enter</kbd>
                 {' '}nova linha
               </p>
             </div>
@@ -200,7 +200,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
                           ? 'bg-red-500'
                           : isNearLimit
                           ? 'bg-orange-400'
-                          : 'bg-[#6841ea]'
+                          : 'bg-[#4A7C59]'
                       }`}
                       style={{ width: `${Math.min(charPercentage, 100)}%` }}
                     />
@@ -211,7 +211,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
                         ? 'text-red-500'
                         : isNearLimit
                         ? 'text-orange-500'
-                        : 'text-[rgb(170,170,180)]'
+                        : 'text-[#8B8B8B]'
                     }`}
                   >
                     {charCount.toLocaleString()}/{MAX_CHARS.toLocaleString()}
@@ -230,7 +230,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
                     ? 'text-red-500'
                     : isNearLimit
                     ? 'text-orange-500'
-                    : 'text-[rgb(170,170,180)]'
+                    : 'text-[#8B8B8B]'
                 }`}
               >
                 {charCount.toLocaleString()}/{MAX_CHARS.toLocaleString()}
