@@ -10,7 +10,7 @@ import BotsGrid from './BotsGrid';
 import { getBotById, BOTS } from '@/lib/bots';
 
 interface ChatAreaProps {
-  onSendMessage: (message: string) => void;
+  onSendMessage: (message: string, imageUrl?: string) => void;
 }
 
 export default function ChatArea({ onSendMessage }: ChatAreaProps) {
