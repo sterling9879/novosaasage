@@ -20,14 +20,15 @@ export async function POST(request: NextRequest) {
 
     // Process image if provided
     let imageDescription: string | null = null;
+    let imageError: string | null = null;
     if (imageUrl) {
       try {
         console.log('Processing image:', imageUrl);
         imageDescription = await getImageDescription(imageUrl);
-        console.log('Image description obtained');
-      } catch (imageError) {
-        console.error('Error processing image:', imageError);
-        // Continue without image description if it fails
+        console.log('Image description obtained:', imageDescription?.substring(0, 100));
+      } catch (error) {
+        console.error('Error processing image:', error);
+        imageError = error instanceof Error ? error.message : 'Erro ao processar imagem';
       }
     }
 
@@ -112,6 +113,12 @@ export async function POST(request: NextRequest) {
       data: { messagesUsed: { increment: 1 } },
     });
 
+    // Build response with optional image error warning
+    let finalResponse = aiResponse;
+    if (imageUrl && imageError) {
+      finalResponse = `⚠️ *Erro ao processar imagem: ${imageError}*\n\n${aiResponse}`;
+    }
+
     return NextResponse.json({
       conversationId: conversation.id,
       userMessage: {
@@ -124,7 +131,7 @@ export async function POST(request: NextRequest) {
       assistantMessage: {
         id: assistantMessage.id,
         role: 'ASSISTANT',
-        content: aiResponse,
+        content: finalResponse,
         model: model || conversation.model,
         createdAt: assistantMessage.createdAt,
       },
