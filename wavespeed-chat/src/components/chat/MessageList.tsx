@@ -25,7 +25,7 @@ function MessageActions({ content, onRegenerate }: { content: string; onRegenera
     <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
       <button
         onClick={handleCopy}
-        className="p-1.5 rounded-lg hover:bg-[rgba(104,65,234,0.1)] active:bg-[rgba(104,65,234,0.15)] text-[rgb(134,134,146)] hover:text-[#6841ea] transition-all"
+        className="p-1.5 rounded-lg hover:bg-[#4A7C59,0.1)] active:bg-[#4A7C59,0.15)] text-[#6B6B6B] hover:text-[#4A7C59] transition-all"
         title="Copiar"
       >
         {copied ? <FiCheck className="w-3.5 h-3.5" /> : <FiCopy className="w-3.5 h-3.5" />}
@@ -33,7 +33,7 @@ function MessageActions({ content, onRegenerate }: { content: string; onRegenera
       {onRegenerate && (
         <button
           onClick={onRegenerate}
-          className="p-1.5 rounded-lg hover:bg-[rgba(104,65,234,0.1)] active:bg-[rgba(104,65,234,0.15)] text-[rgb(134,134,146)] hover:text-[#6841ea] transition-all"
+          className="p-1.5 rounded-lg hover:bg-[#4A7C59,0.1)] active:bg-[#4A7C59,0.15)] text-[#6B6B6B] hover:text-[#4A7C59] transition-all"
           title="Regenerar"
         >
           <FiRefreshCw className="w-3.5 h-3.5" />
@@ -52,11 +52,11 @@ function TypingIndicator({ botIcon, botColor }: { botIcon: string; botColor: str
       >
         {botIcon}
       </div>
-      <div className="bg-white border border-[rgba(79,89,102,0.08)] rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
+      <div className="bg-white border border-[rgba(30,58,47,0.08)] rounded-2xl rounded-bl-md px-5 py-4 shadow-sm">
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 bg-[#6841ea] rounded-full typing-dot" />
-          <span className="w-2 h-2 bg-[#6841ea] rounded-full typing-dot" />
-          <span className="w-2 h-2 bg-[#6841ea] rounded-full typing-dot" />
+          <span className="w-2 h-2 bg-[#4A7C59] rounded-full typing-dot" />
+          <span className="w-2 h-2 bg-[#4A7C59] rounded-full typing-dot" />
+          <span className="w-2 h-2 bg-[#4A7C59] rounded-full typing-dot" />
         </div>
       </div>
     </div>
@@ -68,17 +68,17 @@ function EmptyState({ botIcon, botName, botDescription }: { botIcon: string; bot
     <div className="flex-1 flex items-center justify-center p-8">
       <div className="text-center max-w-md animate-fadeIn">
         <div className="relative inline-block">
-          <div className="w-20 h-20 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-[#6841ea15] to-[#8b5cf615] flex items-center justify-center text-4xl shadow-lg animate-float">
+          <div className="w-20 h-20 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-[#4A7C5915] to-[#1E3A2F15] flex items-center justify-center text-4xl shadow-lg animate-float">
             {botIcon}
           </div>
-          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-[rgb(249,250,251)] flex items-center justify-center">
+          <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-4 border-[#F5F5F0] flex items-center justify-center">
             <FiCheck className="w-3 h-3 text-white" />
           </div>
         </div>
-        <h3 className="text-xl font-semibold text-[rgb(38,38,38)] mb-2">
+        <h3 className="text-xl font-semibold text-[#1E3A2F] mb-2">
           {botName ? `Usando ${botName}` : 'Comece uma conversa'}
         </h3>
-        <p className="text-[rgb(134,134,146)] text-sm leading-relaxed">
+        <p className="text-[#6B6B6B] text-sm leading-relaxed">
           {botDescription || 'Selecione um modelo e envie uma mensagem para começar a conversar.'}
         </p>
       </div>
@@ -107,7 +107,7 @@ export default function MessageList() {
   }
 
   const botIcon = selectedBot?.icon || '🤖';
-  const botColor = selectedBot?.color || '#6841ea';
+  const botColor = selectedBot?.color || '#4A7C59';
 
   return (
     <div ref={containerRef} className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
@@ -137,8 +137,8 @@ export default function MessageList() {
               <div
                 className={`relative rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 transition-all duration-200 ${
                   isUser
-                    ? 'bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] text-white rounded-br-md shadow-lg shadow-[#6841ea25]'
-                    : 'bg-white border border-[rgba(79,89,102,0.08)] text-[rgb(38,38,38)] rounded-bl-md shadow-sm sm:hover:shadow-md'
+                    ? 'bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] text-white rounded-br-md shadow-lg shadow-[#4A7C5925]'
+                    : 'bg-white border border-[rgba(30,58,47,0.08)] text-[#1E3A2F] rounded-bl-md shadow-sm sm:hover:shadow-md'
                 }`}
               >
                 <p className="whitespace-pre-wrap text-[14px] sm:text-[15px] leading-relaxed">{message.content}</p>
@@ -147,7 +147,7 @@ export default function MessageList() {
               {/* Message Footer */}
               <div className={`flex items-center gap-2 mt-1 sm:mt-1.5 px-1 ${isUser ? 'flex-row-reverse' : 'flex-row'}`}>
                 {showTime && (
-                  <span className="text-[10px] sm:text-[11px] text-[rgb(170,170,180)]">
+                  <span className="text-[10px] sm:text-[11px] text-[#8B8B8B]">
                     {formatTime(new Date(message.createdAt))}
                   </span>
                 )}

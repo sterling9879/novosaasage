@@ -16,7 +16,7 @@ export const BOTS: Bot[] = [
     name: 'Assistente de Escrita',
     description: 'Ajuda a escrever textos, artigos, e-mails e muito mais',
     icon: '✍️',
-    color: '#6841EA',
+    color: '#4A7C59',
     category: 'writing',
     systemPrompt: `Você é um assistente de escrita profissional. Seu papel é ajudar o usuário a:
 - Escrever textos claros e bem estruturados
@@ -32,7 +32,7 @@ Sempre pergunte sobre o contexto, público-alvo e objetivo do texto antes de com
     name: 'Verificador de Gramática',
     description: 'Corrige erros gramaticais e melhora seu texto',
     icon: '📝',
-    color: '#10B981',
+    color: '#4A7C59',
     category: 'writing',
     systemPrompt: `Você é um especialista em gramática e revisão de textos em português. Seu papel é:
 - Identificar e corrigir erros gramaticais
@@ -48,7 +48,7 @@ Sempre apresente o texto corrigido e explique as correções feitas. Seja didát
     name: 'Tradutor',
     description: 'Traduz textos entre diversos idiomas',
     icon: '🌐',
-    color: '#3B82F6',
+    color: '#3B7A8C',
     category: 'writing',
     systemPrompt: `Você é um tradutor profissional multilíngue. Seu papel é:
 - Traduzir textos mantendo o significado original
@@ -64,7 +64,7 @@ Sempre pergunte os idiomas de origem e destino se não estiverem claros. Forneç
     name: 'Humanizador de IA',
     description: 'Torna textos gerados por IA mais humanos e naturais',
     icon: '🤖',
-    color: '#F59E0B',
+    color: '#C9A227',
     category: 'writing',
     isNew: true,
     systemPrompt: `Você é um especialista em humanizar textos gerados por IA. Seu papel é:
@@ -84,7 +84,7 @@ Reescreva o texto mantendo a mensagem original, mas tornando-o indistinguível d
     name: 'Resumidor',
     description: 'Resume textos longos em pontos principais',
     icon: '📋',
-    color: '#8B5CF6',
+    color: '#4A7C59',
     category: 'productivity',
     systemPrompt: `Você é um especialista em resumir conteúdo. Seu papel é:
 - Identificar os pontos principais de qualquer texto
@@ -100,7 +100,7 @@ Sempre mantenha a essência do texto original. Pergunte se o usuário quer um re
     name: 'Mapa Mental',
     description: 'Cria mapas mentais e organiza ideias',
     icon: '🗺️',
-    color: '#EC4899',
+    color: '#C9A227',
     category: 'productivity',
     systemPrompt: `Você é um especialista em organização visual de informações. Seu papel é:
 - Criar mapas mentais estruturados
@@ -116,7 +116,7 @@ Apresente os mapas mentais em formato de texto estruturado com indentação clar
     name: 'Planejador',
     description: 'Ajuda a planejar tarefas e organizar agenda',
     icon: '📅',
-    color: '#06B6D4',
+    color: '#3B7A8C',
     category: 'productivity',
     systemPrompt: `Você é um assistente de planejamento e produtividade. Seu papel é:
 - Ajudar a organizar tarefas e compromissos
@@ -134,7 +134,7 @@ Sempre considere o equilíbrio entre urgência e importância. Pergunte sobre pr
     name: 'Contador de Histórias',
     description: 'Cria histórias criativas e narrativas envolventes',
     icon: '📖',
-    color: '#F97316',
+    color: '#C9A227',
     category: 'creative',
     systemPrompt: `Você é um contador de histórias criativo. Seu papel é:
 - Criar narrativas envolventes e originais
@@ -150,7 +150,7 @@ Pergunte sobre o gênero, tom e elementos desejados. Crie histórias que prendam
     name: 'Poeta',
     description: 'Cria poemas e textos poéticos',
     icon: '🎭',
-    color: '#A855F7',
+    color: '#4A7C59',
     category: 'creative',
     systemPrompt: `Você é um poeta criativo. Seu papel é:
 - Criar poemas em diversos estilos (soneto, haiku, verso livre, etc.)
@@ -166,7 +166,7 @@ Pergunte sobre o tema, estilo e emoção desejada. Crie poesia que toque o cora�
     name: 'Gerador de Nomes',
     description: 'Cria nomes criativos para projetos, empresas e produtos',
     icon: '💡',
-    color: '#EAB308',
+    color: '#C9A227',
     category: 'creative',
     isNew: true,
     systemPrompt: `Você é um especialista em naming e branding. Seu papel é:
@@ -185,7 +185,7 @@ Sempre pergunte sobre o contexto, valores da marca e público-alvo. Ofereça mú
     name: 'Assistente de E-mail',
     description: 'Escreve e-mails profissionais',
     icon: '📧',
-    color: '#0EA5E9',
+    color: '#3B7A8C',
     category: 'business',
     systemPrompt: `Você é um especialista em comunicação corporativa. Seu papel é:
 - Escrever e-mails profissionais e eficazes
@@ -201,7 +201,7 @@ Pergunte sobre o destinatário, objetivo e contexto do e-mail. Ofereça versões
     name: 'Consultor de Negócios',
     description: 'Ajuda com estratégias e decisões de negócios',
     icon: '💼',
-    color: '#64748B',
+    color: '#1E3A2F',
     category: 'business',
     systemPrompt: `Você é um consultor de negócios experiente. Seu papel é:
 - Analisar situações de negócios
@@ -217,7 +217,7 @@ Faça perguntas para entender o contexto completo. Ofereça análises equilibrad
     name: 'Especialista em Marketing',
     description: 'Cria copy e estratégias de marketing',
     icon: '📢',
-    color: '#E11D48',
+    color: '#C44536',
     category: 'business',
     systemPrompt: `Você é um especialista em marketing digital. Seu papel é:
 - Criar copy persuasiva para anúncios e posts
@@ -235,7 +235,7 @@ Pergunte sobre o produto/serviço, público-alvo e objetivo da campanha. Use té
     name: 'Tutor',
     description: 'Explica conceitos e ajuda a aprender',
     icon: '🎓',
-    color: '#059669',
+    color: '#4A7C59',
     category: 'education',
     systemPrompt: `Você é um tutor paciente e didático. Seu papel é:
 - Explicar conceitos de forma clara e acessível
@@ -251,7 +251,7 @@ Sempre comece avaliando o conhecimento prévio do usuário. Use o método socrá
     name: 'Criador de Quiz',
     description: 'Cria perguntas e testes para estudar',
     icon: '❓',
-    color: '#7C3AED',
+    color: '#4A7C59',
     category: 'education',
     systemPrompt: `Você é um especialista em avaliação educacional. Seu papel é:
 - Criar perguntas de múltipla escolha, verdadeiro/falso e dissertativas
@@ -267,7 +267,7 @@ Pergunte sobre o tema e nível de dificuldade desejado. Ofereça gabarito e expl
     name: 'Explicador Simples',
     description: 'Explica assuntos complexos de forma simples',
     icon: '🔬',
-    color: '#14B8A6',
+    color: '#3B7A8C',
     category: 'education',
     isNew: true,
     systemPrompt: `Você é um especialista em simplificar conceitos complexos. Seu papel é:

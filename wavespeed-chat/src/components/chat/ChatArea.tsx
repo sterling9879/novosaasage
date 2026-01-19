@@ -24,14 +24,14 @@ export default function ChatArea({ onSendMessage }: ChatAreaProps) {
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-gradient-to-b from-[rgb(249,250,251)] to-white">
+    <div className="flex-1 flex flex-col h-full bg-gradient-to-b from-[#F5F5F0] to-white">
       {/* Header */}
-      <header className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-white/80 backdrop-blur-lg sticky top-0 z-10 border-b border-[rgba(79,89,102,0.05)]">
+      <header className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-white/80 backdrop-blur-lg sticky top-0 z-10 border-b border-[rgba(30,58,47,0.05)]">
         <div className="flex items-center gap-3 sm:gap-4">
           {/* Mobile menu button */}
           <button
             onClick={toggleSidebar}
-            className="lg:hidden p-2 -ml-1 text-[rgb(134,134,146)] hover:text-[rgb(38,38,38)] hover:bg-[rgb(245,245,245)] rounded-xl transition-all"
+            className="lg:hidden p-2 -ml-1 text-[#6B6B6B] hover:text-[#1E3A2F] hover:bg-[#EEEEE8] rounded-xl transition-all"
           >
             <FiMenu className="w-5 h-5" />
           </button>
@@ -49,24 +49,24 @@ export default function ChatArea({ onSendMessage }: ChatAreaProps) {
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
-                  <h1 className="text-base sm:text-lg font-bold text-[rgb(38,38,38)] truncate">{selectedBot.name}</h1>
-                  <span className="hidden sm:inline px-2 py-0.5 text-[10px] font-semibold bg-green-100 text-green-600 rounded-full">
+                  <h1 className="text-base sm:text-lg font-bold text-[#1E3A2F] truncate">{selectedBot.name}</h1>
+                  <span className="hidden sm:inline px-2 py-0.5 text-[10px] font-semibold bg-[#4A7C5915] text-[#4A7C59] rounded-full">
                     Online
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm text-[rgb(134,134,146)] line-clamp-1 hidden sm:block">{selectedBot.description}</p>
+                <p className="text-xs sm:text-sm text-[#6B6B6B] line-clamp-1 hidden sm:block">{selectedBot.description}</p>
               </div>
             </>
           ) : (
             <>
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] flex items-center justify-center shadow-lg flex-shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] flex items-center justify-center shadow-lg flex-shrink-0">
                 <FiCpu className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-base sm:text-lg font-bold text-[rgb(38,38,38)] truncate">
-                  {currentConversationId ? 'Conversa' : 'Sage IA'}
+                <h1 className="text-base sm:text-lg font-bold text-[#1E3A2F] truncate">
+                  {currentConversationId ? 'Conversa' : 'Sage'}
                 </h1>
-                <p className="text-[11px] sm:text-xs text-[rgb(134,134,146)] hidden sm:block">Pronto para ajudar</p>
+                <p className="text-[11px] sm:text-xs text-[#6B6B6B] hidden sm:block">IA sem hipocrisia</p>
               </div>
             </>
           )}
@@ -76,7 +76,7 @@ export default function ChatArea({ onSendMessage }: ChatAreaProps) {
           {selectedBot && (
             <button
               onClick={() => setSelectedBotId(null)}
-              className="hidden sm:block px-3 py-1.5 text-xs font-medium text-[rgb(134,134,146)] hover:text-[rgb(38,38,38)] hover:bg-[rgb(245,245,245)] rounded-lg transition-all"
+              className="hidden sm:block px-3 py-1.5 text-xs font-medium text-[#6B6B6B] hover:text-[#1E3A2F] hover:bg-[#EEEEE8] rounded-lg transition-all"
             >
               Trocar Bot
             </button>
@@ -109,12 +109,12 @@ function WelcomeScreen() {
   }, []);
 
   const quickTools = [
-    { id: 'translator', icon: '🌐', name: 'Traduzir', color: '#3b82f6', desc: 'Traduza textos' },
-    { id: 'summarizer', icon: '📋', name: 'Resumir', color: '#10b981', desc: 'Resuma conteúdos' },
-    { id: 'writer', icon: '✍️', name: 'Escrever', color: '#8b5cf6', desc: 'Crie textos' },
-    { id: 'grammar', icon: '📝', name: 'Gramática', color: '#f59e0b', desc: 'Corrija erros' },
-    { id: 'email', icon: '📧', name: 'E-mail', color: '#ec4899', desc: 'Escreva e-mails' },
-    { id: 'code-helper', icon: '💻', name: 'Código', color: '#06b6d4', desc: 'Ajuda com código' },
+    { id: 'translator', icon: '🌐', name: 'Traduzir', color: '#4A7C59', desc: 'Traduza textos' },
+    { id: 'summarizer', icon: '📋', name: 'Resumir', color: '#3B7A8C', desc: 'Resuma conteúdos' },
+    { id: 'writer', icon: '✍️', name: 'Escrever', color: '#4A7C59', desc: 'Crie textos' },
+    { id: 'grammar', icon: '📝', name: 'Gramática', color: '#C9A227', desc: 'Corrija erros' },
+    { id: 'email', icon: '📧', name: 'E-mail', color: '#1E3A2F', desc: 'Escreva e-mails' },
+    { id: 'code-helper', icon: '💻', name: 'Código', color: '#3B7A8C', desc: 'Ajuda com código' },
   ];
 
   const featuredBots = BOTS.filter((bot) => bot.isNew).slice(0, 3);
@@ -135,25 +135,25 @@ function WelcomeScreen() {
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
         {/* Hero */}
         <div className="text-center mb-8 sm:mb-12 animate-fadeIn">
-          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#6841ea10] text-[#6841ea] rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
+          <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-[#4A7C5915] text-[#4A7C59] rounded-full text-xs sm:text-sm font-medium mb-4 sm:mb-6">
             <FiZap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-            <span>Sage IA - Inteligência Artificial</span>
+            <span>Sage — IA sem hipocrisia</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-bold text-[rgb(38,38,38)] mb-2 sm:mb-3">
+          <h1 className="text-2xl sm:text-4xl font-bold text-[#1E3A2F] mb-2 sm:mb-3">
             {greeting}! <span className="animate-float inline-block">👋</span>
           </h1>
-          <p className="text-sm sm:text-lg text-[rgb(134,134,146)] max-w-md mx-auto px-4">
-            Sou seu assistente inteligente. Como posso te ajudar hoje?
+          <p className="text-sm sm:text-lg text-[#6B6B6B] max-w-md mx-auto px-4">
+            A IA que fala a verdade. Como posso te ajudar?
           </p>
         </div>
 
         {/* Quick Tools */}
         <div className="mb-8 sm:mb-10 animate-fadeIn" style={{ animationDelay: '100ms' }}>
           <div className="flex items-center justify-between mb-3 sm:mb-4">
-            <h2 className="text-xs sm:text-sm font-semibold text-[rgb(38,38,38)]">Acesso Rápido</h2>
+            <h2 className="text-xs sm:text-sm font-semibold text-[#1E3A2F]">Acesso Rápido</h2>
             <button
               onClick={() => setActiveTab('bots')}
-              className="text-[11px] sm:text-xs font-medium text-[#6841ea] hover:underline flex items-center gap-1"
+              className="text-[11px] sm:text-xs font-medium text-[#4A7C59] hover:underline flex items-center gap-1"
             >
               Ver todas
               <FiArrowRight className="w-3 h-3" />
@@ -164,7 +164,7 @@ function WelcomeScreen() {
               <button
                 key={tool.id}
                 onClick={() => handleSelectTool(tool.id)}
-                className="group relative flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white border border-[rgba(79,89,102,0.08)] rounded-xl sm:rounded-2xl hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                className="group relative flex items-center gap-2 sm:gap-3 p-3 sm:p-4 bg-white border border-[rgba(30,58,47,0.08)] rounded-xl sm:rounded-2xl hover:shadow-lg active:scale-[0.98] sm:hover:-translate-y-1 transition-all duration-300 overflow-hidden"
                 style={{ animationDelay: `${i * 50}ms` }}
               >
                 <div
@@ -180,10 +180,10 @@ function WelcomeScreen() {
                   {tool.icon}
                 </div>
                 <div className="text-left relative z-10 min-w-0">
-                  <p className="text-xs sm:text-sm font-semibold text-[rgb(38,38,38)] group-hover:text-[#6841ea] transition-colors truncate">
+                  <p className="text-xs sm:text-sm font-semibold text-[#1E3A2F] group-hover:text-[#4A7C59] transition-colors truncate">
                     {tool.name}
                   </p>
-                  <p className="text-[10px] sm:text-[11px] text-[rgb(170,170,180)] truncate">{tool.desc}</p>
+                  <p className="text-[10px] sm:text-[11px] text-[#8B8B8B] truncate">{tool.desc}</p>
                 </div>
               </button>
             ))}
@@ -194,15 +194,15 @@ function WelcomeScreen() {
         {featuredBots.length > 0 && (
           <div className="mb-8 sm:mb-10 animate-fadeIn" style={{ animationDelay: '200ms' }}>
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
-              <FiStar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#f59e0b]" />
-              <h2 className="text-xs sm:text-sm font-semibold text-[rgb(38,38,38)]">Novidades</h2>
+              <FiStar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A227]" />
+              <h2 className="text-xs sm:text-sm font-semibold text-[#1E3A2F]">Novidades</h2>
             </div>
             <div className="grid gap-2 sm:gap-3">
               {featuredBots.map((bot, i) => (
                 <button
                   key={bot.id}
                   onClick={() => handleSelectTool(bot.id)}
-                  className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-white to-[rgb(252,252,253)] border border-[rgba(79,89,102,0.08)] rounded-xl sm:rounded-2xl hover:shadow-lg active:scale-[0.99] hover:border-[#6841ea40] transition-all duration-300"
+                  className="group flex items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-gradient-to-r from-white to-[#F5F5F0] border border-[rgba(30,58,47,0.08)] rounded-xl sm:rounded-2xl hover:shadow-lg active:scale-[0.99] hover:border-[#4A7C5940] transition-all duration-300"
                   style={{ animationDelay: `${i * 50}ms` }}
                 >
                   <div
@@ -213,14 +213,14 @@ function WelcomeScreen() {
                   </div>
                   <div className="flex-1 text-left min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <p className="text-xs sm:text-sm font-semibold text-[rgb(38,38,38)] group-hover:text-[#6841ea] transition-colors truncate">
+                      <p className="text-xs sm:text-sm font-semibold text-[#1E3A2F] group-hover:text-[#4A7C59] transition-colors truncate">
                         {bot.name}
                       </p>
                       <span className="badge-new text-[9px] sm:text-[10px]">NEW</span>
                     </div>
-                    <p className="text-[11px] sm:text-xs text-[rgb(134,134,146)] line-clamp-1">{bot.description}</p>
+                    <p className="text-[11px] sm:text-xs text-[#6B6B6B] line-clamp-1">{bot.description}</p>
                   </div>
-                  <FiArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[rgb(170,170,180)] group-hover:text-[#6841ea] group-hover:translate-x-1 transition-all flex-shrink-0" />
+                  <FiArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-[#8B8B8B] group-hover:text-[#4A7C59] group-hover:translate-x-1 transition-all flex-shrink-0" />
                 </button>
               ))}
             </div>
@@ -229,15 +229,15 @@ function WelcomeScreen() {
 
         {/* Suggestions - Hidden on very small screens */}
         <div className="animate-fadeIn hidden sm:block" style={{ animationDelay: '300ms' }}>
-          <h2 className="text-sm font-semibold text-[rgb(38,38,38)] mb-4">Sugestões para começar</h2>
+          <h2 className="text-sm font-semibold text-[#1E3A2F] mb-4">Sugestões para começar</h2>
           <div className="grid gap-2">
             {suggestions.map((suggestion, i) => (
               <button
                 key={i}
-                className="group flex items-center gap-3 px-4 py-3 bg-white/60 hover:bg-white border border-[rgba(79,89,102,0.05)] hover:border-[rgba(79,89,102,0.1)] rounded-xl text-left transition-all"
+                className="group flex items-center gap-3 px-4 py-3 bg-white/60 hover:bg-white border border-[rgba(30,58,47,0.05)] hover:border-[rgba(30,58,47,0.1)] rounded-xl text-left transition-all"
               >
-                <span className="text-[rgb(170,170,180)] group-hover:text-[#6841ea] transition-colors">💡</span>
-                <span className="text-sm text-[rgb(100,100,110)] group-hover:text-[rgb(38,38,38)] transition-colors">
+                <span className="text-[#8B8B8B] group-hover:text-[#4A7C59] transition-colors">💡</span>
+                <span className="text-sm text-[#6B6B6B] group-hover:text-[#1E3A2F] transition-colors">
                   {suggestion}
                 </span>
               </button>
@@ -247,12 +247,12 @@ function WelcomeScreen() {
 
         {/* Mobile: Simple suggestion chips */}
         <div className="sm:hidden animate-fadeIn" style={{ animationDelay: '300ms' }}>
-          <h2 className="text-xs font-semibold text-[rgb(38,38,38)] mb-3">Sugestões</h2>
+          <h2 className="text-xs font-semibold text-[#1E3A2F] mb-3">Sugestões</h2>
           <div className="flex flex-wrap gap-2">
             {['E-mail profissional', 'Explicar conceito', 'Criar plano', 'Analisar texto'].map((suggestion, i) => (
               <button
                 key={i}
-                className="px-3 py-2 text-xs bg-white border border-[rgba(79,89,102,0.08)] rounded-full text-[rgb(100,100,110)] active:bg-[rgb(245,245,245)] transition-all"
+                className="px-3 py-2 text-xs bg-white border border-[rgba(30,58,47,0.08)] rounded-full text-[#6B6B6B] active:bg-[#EEEEE8] transition-all"
               >
                 💡 {suggestion}
               </button>

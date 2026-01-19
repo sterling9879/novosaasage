@@ -173,8 +173,8 @@ export default function Home() {
 
   if (status === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[rgb(249,250,251)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6841ea]"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#F5F5F0]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A7C59]"></div>
       </div>
     );
   }
@@ -184,7 +184,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex overflow-hidden bg-[rgb(249,250,251)]">
+    <div className="h-screen flex overflow-hidden bg-[#F5F5F0]">
       <Sidebar
         onNewConversation={handleNewConversation}
         onSelectConversation={handleSelectConversation}
