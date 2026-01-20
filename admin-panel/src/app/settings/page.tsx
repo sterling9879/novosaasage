@@ -110,8 +110,19 @@ export default function AdminSettingsPage() {
     setMessage(null);
 
     try {
-      // Chama o endpoint de teste no wavespeed-chat (porta 3000)
-      const response = await fetch('http://localhost:3000/api/teste-email', {
+      // Determina a URL do chat baseado no ambiente
+      // Em produção: usa a mesma origem mas porta 3000 ou env var
+      // Em dev: localhost:3000
+      const chatUrl = process.env.NEXT_PUBLIC_CHAT_URL ||
+        (typeof window !== 'undefined'
+          ? window.location.origin.replace(':3001', ':3000').replace('admin.', '')
+          : 'http://localhost:3000');
+
+      const endpoint = `${chatUrl}/api/teste-email`;
+      console.log('[TEST EMAIL] Chamando endpoint:', endpoint);
+      console.log('[TEST EMAIL] Email destino:', testEmail);
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -123,7 +134,9 @@ export default function AdminSettingsPage() {
         }),
       });
 
+      console.log('[TEST EMAIL] Response status:', response.status);
       const data = await response.json();
+      console.log('[TEST EMAIL] Response data:', data);
 
       if (data.success) {
         setMessage({ type: 'success', text: `Email de teste enviado para ${testEmail}!`, section: 'brevo' });
@@ -132,7 +145,9 @@ export default function AdminSettingsPage() {
         setMessage({ type: 'error', text: data.error || 'Erro ao enviar email de teste', section: 'brevo' });
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Erro ao conectar com o servidor de email', section: 'brevo' });
+      console.error('[TEST EMAIL] Erro:', error);
+      const errorMsg = error instanceof Error ? error.message : 'Erro desconhecido';
+      setMessage({ type: 'error', text: `Erro ao conectar: ${errorMsg}`, section: 'brevo' });
     } finally {
       setIsSendingTest(false);
     }
