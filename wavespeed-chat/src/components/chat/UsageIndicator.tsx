@@ -65,18 +65,35 @@ export default function UsageIndicator({ onUpgradeClick }: UsageIndicatorProps) 
     return (
       <button
         onClick={onUpgradeClick}
-        className="flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+        className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
       >
-        <FiAlertCircle className="w-4 h-4" />
-        <span className="text-xs font-medium">Plano expirado</span>
+        <FiAlertCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+        <span className="text-[10px] sm:text-xs font-medium">Expirado</span>
       </button>
     );
   }
 
+  // Formata o uso - não mostra números grandes como 9999
+  const formatUsage = () => {
+    // Se o limite é muito alto (ex: 9999), mostra apenas o uso atual
+    if (usage.limit >= 1000) {
+      return `${usage.current} usadas`;
+    }
+    // Senão, mostra atual/limite
+    return `${usage.current}/${usage.limit}`;
+  };
+
+  // Texto do badge baseado no plano
+  const getPlanBadge = () => {
+    if (usage.plan === 'pro') return 'Pro';
+    if (usage.plan === 'basic') return 'Upgrade';
+    return null;
+  };
+
   return (
     <button
       onClick={onUpgradeClick}
-      className={`flex items-center gap-2 px-3 py-1.5 rounded-lg transition-all ${
+      className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg transition-all ${
         isNearLimit
           ? 'bg-red-50 text-red-600 hover:bg-red-100'
           : isWarning
@@ -84,13 +101,13 @@ export default function UsageIndicator({ onUpgradeClick }: UsageIndicatorProps) 
           : 'bg-[#4A7C5910] text-[#4A7C59] hover:bg-[#4A7C5920]'
       }`}
     >
-      <FiZap className="w-4 h-4" />
-      <span className="text-xs font-medium">
-        {usage.current}/{usage.limit}
+      <FiZap className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+      <span className="text-[10px] sm:text-xs font-medium whitespace-nowrap">
+        {formatUsage()}
       </span>
-      {usage.plan === 'basic' && (
+      {getPlanBadge() && usage.plan === 'basic' && (
         <span className="hidden sm:inline text-[10px] px-1.5 py-0.5 bg-white/50 rounded">
-          Upgrade
+          {getPlanBadge()}
         </span>
       )}
     </button>

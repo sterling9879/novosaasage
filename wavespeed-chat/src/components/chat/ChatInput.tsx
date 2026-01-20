@@ -146,21 +146,21 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
   const isOverLimit = charCount > MAX_CHARS;
 
   return (
-    <div className="bg-transparent safe-area-bottom">
+    <div className="bg-white border-t border-[rgba(30,58,47,0.08)]">
       {/* Quick Prompts */}
       {showQuickPrompts && messages.length === 0 && (
-        <div className="px-3 sm:px-4 py-3 border-b border-[rgba(30,58,47,0.08)] animate-fadeIn">
+        <div className="px-3 sm:px-4 py-2 border-b border-[rgba(30,58,47,0.08)] animate-fadeIn">
           <div className="max-w-4xl mx-auto">
-            <p className="text-xs text-[#6B6B6B] mb-2">Sugestões rápidas</p>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-[10px] sm:text-xs text-[#6B6B6B] mb-1.5">Sugestões rápidas</p>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {quickPrompts.map((prompt, i) => (
                 <button
                   key={i}
                   onClick={() => handleQuickPrompt(prompt.text)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm bg-[#F5F5F0] hover:bg-[#4A7C59,0.1)] active:bg-[#4A7C59,0.15)] text-[#1E3A2F] hover:text-[#4A7C59] rounded-full border border-[rgba(30,58,47,0.08)] transition-all duration-200"
+                  className="flex items-center gap-1.5 px-2.5 py-1.5 text-[11px] sm:text-sm bg-[#F5F5F0] hover:bg-[#4A7C59]/10 active:bg-[#4A7C59]/15 text-[#1E3A2F] hover:text-[#4A7C59] rounded-full border border-[rgba(30,58,47,0.08)] transition-all duration-200"
                 >
                   <span>{prompt.icon}</span>
-                  <span className="text-xs sm:text-sm">{prompt.text}</span>
+                  <span>{prompt.text}</span>
                 </button>
               ))}
             </div>
@@ -168,7 +168,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-3 sm:p-4 bg-white border-t border-[rgba(30,58,47,0.05)]">
+      <form onSubmit={handleSubmit} className="p-2.5 sm:p-4 pb-[env(safe-area-inset-bottom,8px)]">
         {/* Hidden file input */}
         <input
           ref={fileInputRef}
@@ -230,8 +230,8 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               placeholder={placeholder}
-              className={`w-full resize-none bg-transparent px-3 sm:px-4 py-3 sm:py-4 pr-20 sm:pr-36 focus:outline-none max-h-[150px] sm:max-h-[200px] text-[15px] sm:text-[15px] text-[#1E3A2F] placeholder-[#8B8B8B] ${
-                selectedBot ? 'pt-4 sm:pt-5' : ''
+              className={`w-full resize-none bg-transparent px-3 sm:px-4 py-2.5 sm:py-4 pr-16 sm:pr-36 focus:outline-none max-h-[120px] sm:max-h-[200px] text-[14px] sm:text-[15px] text-[#1E3A2F] placeholder-[#8B8B8B] ${
+                selectedBot ? 'pt-3.5 sm:pt-5' : ''
               }`}
               rows={1}
               disabled={isLoading}
