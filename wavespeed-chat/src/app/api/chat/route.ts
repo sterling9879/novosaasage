@@ -5,6 +5,29 @@ import { prisma } from '@/lib/prisma';
 import { chatWithAI, buildPromptWithHistory, getImageDescription, buildPromptWithImage } from '@/lib/wavespeed';
 import { getBotById } from '@/lib/bots';
 
+// Verifica se é um novo dia e reseta o contador se necessário
+function isNewDay(lastResetAt: Date | null): boolean {
+  if (!lastResetAt) return true;
+
+  const now = new Date();
+  const lastReset = new Date(lastResetAt);
+
+  // Compara ano, mês e dia
+  return (
+    now.getFullYear() !== lastReset.getFullYear() ||
+    now.getMonth() !== lastReset.getMonth() ||
+    now.getDate() !== lastReset.getDate()
+  );
+}
+
+// Retorna a próxima meia-noite
+function getNextMidnight(): string {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0);
+  return tomorrow.toISOString();
+}
+
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -17,6 +40,63 @@ export async function POST(request: NextRequest) {
     if (!message?.trim()) {
       return NextResponse.json({ error: 'Mensagem vazia' }, { status: 400 });
     }
+
+    // Buscar usuário com dados do plano
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+    });
+
+    if (!user) {
+      return NextResponse.json(
+        { error: `Usuário não encontrado. Faça logout e login novamente.` },
+        { status: 401 }
+      );
+    }
+
+    // ============================================
+    // VERIFICAÇÃO DE PLANO E LIMITES
+    // ============================================
+
+    // 1. Verificar se o plano expirou
+    if (user.planExpiresAt && new Date(user.planExpiresAt) < new Date()) {
+      return NextResponse.json({
+        error: 'PLAN_EXPIRED',
+        message: 'Seu plano expirou. Renove para continuar usando.',
+        planExpired: true,
+        expiresAt: user.planExpiresAt,
+      }, { status: 403 });
+    }
+
+    // 2. Reset diário se necessário
+    let currentUsage = user.messagesUsedToday;
+    if (isNewDay(user.lastResetAt)) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          messagesUsedToday: 0,
+          lastResetAt: new Date(),
+        },
+      });
+      currentUsage = 0;
+      console.log('Contador diário resetado para usuário:', user.email);
+    }
+
+    // 3. Verificar se atingiu o limite diário
+    if (currentUsage >= user.messagesLimit) {
+      return NextResponse.json({
+        error: 'LIMIT_REACHED',
+        message: 'Você atingiu seu limite diário de mensagens.',
+        limitReached: true,
+        currentUsage,
+        limit: user.messagesLimit,
+        plan: user.plan,
+        resetsAt: getNextMidnight(),
+      }, { status: 403 });
+    }
+
+    // ============================================
+    // PROCESSAMENTO DA MENSAGEM
+    // ============================================
 
     // Process image if provided
     let imageDescription: string | null = null;
@@ -38,20 +118,6 @@ export async function POST(request: NextRequest) {
 
     let conversation;
     let existingMessages: Array<{ role: string; content: string }> = [];
-
-    // Debug: Check if user exists
-    const userExists = await prisma.user.findUnique({
-      where: { id: session.user.id },
-    });
-    console.log('Session user ID:', session.user.id);
-    console.log('User exists in DB:', !!userExists);
-
-    if (!userExists) {
-      return NextResponse.json(
-        { error: `Usuário não encontrado no banco. ID: ${session.user.id}. Faça logout e login novamente.` },
-        { status: 401 }
-      );
-    }
 
     if (conversationId) {
       conversation = await prisma.conversation.findUnique({
@@ -107,10 +173,13 @@ export async function POST(request: NextRequest) {
       data: { updatedAt: new Date() },
     });
 
-    // Update user message count
-    await prisma.user.update({
+    // Update user message count (contador diário)
+    const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
-      data: { messagesUsed: { increment: 1 } },
+      data: {
+        messagesUsedToday: { increment: 1 },
+        messagesUsed: { increment: 1 }, // Mantém compatibilidade
+      },
     });
 
     // Build response with optional image error warning
@@ -118,6 +187,9 @@ export async function POST(request: NextRequest) {
     if (imageUrl && imageError) {
       finalResponse = `⚠️ *Erro ao processar imagem: ${imageError}*\n\n${aiResponse}`;
     }
+
+    // Calcula uso após esta mensagem
+    const newUsage = currentUsage + 1;
 
     return NextResponse.json({
       conversationId: conversation.id,
@@ -134,6 +206,14 @@ export async function POST(request: NextRequest) {
         content: finalResponse,
         model: model || conversation.model,
         createdAt: assistantMessage.createdAt,
+      },
+      // Informações de uso para o frontend
+      usage: {
+        current: newUsage,
+        limit: user.messagesLimit,
+        plan: user.plan,
+        remaining: user.messagesLimit - newUsage,
+        resetsAt: getNextMidnight(),
       },
     });
   } catch (error: unknown) {

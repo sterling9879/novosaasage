@@ -128,7 +128,28 @@ export default function Home() {
         const data = await response.json();
 
         if (!response.ok) {
+          // Verifica se é erro de limite ou plano expirado
+          if (data.error === 'LIMIT_REACHED') {
+            // Dispara evento para mostrar modal de upgrade
+            window.dispatchEvent(new CustomEvent('showUpgradeModal', {
+              detail: { reason: 'limit', usage: data }
+            }));
+            throw new Error('Limite diario atingido. Faca upgrade para mais mensagens.');
+          }
+
+          if (data.error === 'PLAN_EXPIRED') {
+            window.dispatchEvent(new CustomEvent('showUpgradeModal', {
+              detail: { reason: 'expired', usage: data }
+            }));
+            throw new Error('Seu plano expirou. Renove para continuar usando.');
+          }
+
           throw new Error(data.error || 'Erro ao enviar mensagem');
+        }
+
+        // Atualiza o indicador de uso se veio informação
+        if (data.usage) {
+          window.dispatchEvent(new CustomEvent('usageUpdated', { detail: data.usage }));
         }
 
         // Update conversation ID if it's a new conversation
