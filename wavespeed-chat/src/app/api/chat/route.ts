@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { chatWithAI, buildPromptWithHistory, getImageDescription, buildPromptWithImage } from '@/lib/wavespeed';
 import { getBotById } from '@/lib/bots';
+import { isSageModel, getSageSystemPrompt, getSageBaseModel } from '@/lib/sage-prompt';
 
 // Verifica se é um novo dia e reseta o contador se necessário
 function isNewDay(lastResetAt: Date | null): boolean {
@@ -114,7 +115,13 @@ export async function POST(request: NextRequest) {
 
     // Get bot system prompt if a bot is selected
     const bot = botId ? getBotById(botId) : null;
-    const systemPrompt = bot?.systemPrompt || null;
+
+    // Determina o system prompt e modelo real a usar
+    // SAGE usa seu próprio system prompt e Claude 3.7 Sonnet por baixo
+    const selectedModel = model || 'google/gemini-2.5-flash';
+    const isSage = isSageModel(selectedModel);
+    const systemPrompt = isSage ? getSageSystemPrompt() : (bot?.systemPrompt || null);
+    const actualModel = isSage ? getSageBaseModel() : selectedModel;
 
     let conversation;
     let existingMessages: Array<{ role: string; content: string }> = [];
@@ -154,7 +161,9 @@ export async function POST(request: NextRequest) {
       : buildPromptWithHistory(existingMessages, message, systemPrompt);
 
     // Call WaveSpeed API
-    const aiResponse = await chatWithAI(prompt, model || conversation.model);
+    // Para SAGE, usa o modelo base (Claude 3.7 Sonnet) mas mantém o ID original para exibição
+    const modelForApi = isSage ? actualModel : (model || conversation.model);
+    const aiResponse = await chatWithAI(prompt, modelForApi);
 
     // Save assistant message
     const assistantMessage = await prisma.message.create({
