@@ -15,8 +15,17 @@ model User {
   phone         String?
   cpf           String?
   isAdmin       Boolean   @default(false)
+
+  // Plano e limites
+  plan              String    @default("basic")  // basic, pro
+  messagesUsedToday Int       @default(0)        // Contador diário
+  messagesLimit     Int       @default(30)       // Limite diário (basic=30, pro=150)
+  planExpiresAt     DateTime?                    // Data de expiração do plano
+  lastResetAt       DateTime  @default(now())    // Última vez que o contador resetou
+
+  // Campos legados (mantidos para compatibilidade)
   messagesUsed  Int       @default(0)
-  messagesLimit Int       @default(50)
+
   source        String    @default("manual") // manual, payt, api
   createdAt     DateTime  @default(now())
 

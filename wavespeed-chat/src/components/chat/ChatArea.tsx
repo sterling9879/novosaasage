@@ -7,6 +7,8 @@ import ModelSelector from './ModelSelector';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
 import BotsGrid from './BotsGrid';
+import UsageIndicator from './UsageIndicator';
+import UpgradeModal from './UpgradeModal';
 import { getBotById, BOTS } from '@/lib/bots';
 
 interface ChatAreaProps {
@@ -15,8 +17,28 @@ interface ChatAreaProps {
 
 export default function ChatArea({ onSendMessage }: ChatAreaProps) {
   const { currentConversationId, activeTab, selectedBotId, messages, setSelectedBotId, toggleSidebar } = useChatStore();
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [upgradeReason, setUpgradeReason] = useState<'manual' | 'limit' | 'expired'>('manual');
 
   const selectedBot = selectedBotId ? getBotById(selectedBotId) : null;
+
+  const handleUpgradeClick = (reason: 'manual' | 'limit' | 'expired' = 'manual') => {
+    setUpgradeReason(reason);
+    setShowUpgradeModal(true);
+  };
+
+  // Escuta eventos de mostrar modal de upgrade
+  useEffect(() => {
+    const handleShowUpgradeModal = (event: CustomEvent<{ reason: 'limit' | 'expired' }>) => {
+      setUpgradeReason(event.detail.reason);
+      setShowUpgradeModal(true);
+    };
+
+    window.addEventListener('showUpgradeModal' as any, handleShowUpgradeModal);
+    return () => {
+      window.removeEventListener('showUpgradeModal' as any, handleShowUpgradeModal);
+    };
+  }, []);
 
   // Se estiver na aba de bots e não tiver bot selecionado, mostrar grid
   if (activeTab === 'bots' && !selectedBotId) {
@@ -73,6 +95,7 @@ export default function ChatArea({ onSendMessage }: ChatAreaProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          <UsageIndicator onUpgradeClick={() => handleUpgradeClick('manual')} />
           {selectedBot && (
             <button
               onClick={() => setSelectedBotId(null)}
@@ -89,6 +112,14 @@ export default function ChatArea({ onSendMessage }: ChatAreaProps) {
       {messages.length === 0 && !selectedBot ? <WelcomeScreen /> : <MessageList />}
 
       <ChatInput onSendMessage={onSendMessage} />
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        limitReached={upgradeReason === 'limit'}
+        planExpired={upgradeReason === 'expired'}
+      />
     </div>
   );
 }

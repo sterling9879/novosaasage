@@ -56,6 +56,31 @@ interface PaytPayload {
   updated_at?: string;
 }
 
+// Configuração de planos por preço (em centavos)
+const PLAN_CONFIG: Record<number, { plan: string; messagesLimit: number }> = {
+  3700: { plan: 'basic', messagesLimit: 30 },   // R$ 37 - Plano Básico
+  9700: { plan: 'pro', messagesLimit: 150 },    // R$ 97 - Plano Pro
+};
+
+// Detecta o plano baseado no preço
+function detectPlan(priceInCents: number): { plan: string; messagesLimit: number } {
+  // Procura por preço exato
+  if (PLAN_CONFIG[priceInCents]) {
+    return PLAN_CONFIG[priceInCents];
+  }
+
+  // Fallback: se não encontrar, usa o plano básico
+  console.log(`Preço ${priceInCents} não mapeado, usando plano básico`);
+  return { plan: 'basic', messagesLimit: 30 };
+}
+
+// Calcula a data de expiração (30 dias a partir de agora)
+function calculateExpiration(): Date {
+  const expiresAt = new Date();
+  expiresAt.setDate(expiresAt.getDate() + 30);
+  return expiresAt;
+}
+
 // Gera senha aleatória
 function generatePassword(length: number = 8): string {
   const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -128,6 +153,18 @@ export async function POST(request: NextRequest) {
     // Se status == paid, criar ou encontrar usuário
     if (payload.status === 'paid') {
       try {
+        // Detectar plano baseado no preço
+        const productPrice = payload.product?.price || payload.transaction?.total_price || 0;
+        const planInfo = detectPlan(productPrice);
+        const planExpiresAt = calculateExpiration();
+
+        console.log('=== PLANO DETECTADO ===');
+        console.log('Preço:', productPrice, 'centavos');
+        console.log('Plano:', planInfo.plan);
+        console.log('Limite diário:', planInfo.messagesLimit);
+        console.log('Expira em:', planExpiresAt.toISOString());
+        console.log('=======================');
+
         // Verificar se usuário já existe pelo email
         const existingUser = await prisma.user.findUnique({
           where: { email: payload.customer.email.toLowerCase() },
@@ -137,15 +174,24 @@ export async function POST(request: NextRequest) {
           userId = existingUser.id;
           console.log('Usuário existente encontrado:', existingUser.email);
 
-          // Atualiza dados do usuário se estiverem vazios
+          // Atualiza/renova o plano do usuário
           await prisma.user.update({
             where: { id: existingUser.id },
             data: {
               name: existingUser.name || payload.customer.name,
               phone: existingUser.phone || payload.customer.phone,
               cpf: existingUser.cpf || payload.customer.doc,
+              // Atualiza plano (sempre pega o novo, pode ser upgrade ou renovação)
+              plan: planInfo.plan,
+              messagesLimit: planInfo.messagesLimit,
+              planExpiresAt: planExpiresAt,
+              // Reseta contador ao renovar
+              messagesUsedToday: 0,
+              lastResetAt: new Date(),
             },
           });
+
+          console.log('Plano do usuário atualizado/renovado:', planInfo.plan);
         } else {
           // Criar novo usuário
           generatedPassword = generatePassword(10);
@@ -159,7 +205,12 @@ export async function POST(request: NextRequest) {
               phone: payload.customer.phone || null,
               cpf: payload.customer.doc || null,
               source: 'payt',
-              messagesLimit: 100, // Limite para usuários pagos
+              // Campos de plano
+              plan: planInfo.plan,
+              messagesLimit: planInfo.messagesLimit,
+              planExpiresAt: planExpiresAt,
+              messagesUsedToday: 0,
+              lastResetAt: new Date(),
             },
           });
 
@@ -169,6 +220,8 @@ export async function POST(request: NextRequest) {
           console.log('=== NOVO USUÁRIO CRIADO ===');
           console.log('Email:', newUser.email);
           console.log('Nome:', newUser.name);
+          console.log('Plano:', planInfo.plan);
+          console.log('Limite diário:', planInfo.messagesLimit);
           console.log('Senha temporária:', generatedPassword);
           console.log('===========================');
         }
