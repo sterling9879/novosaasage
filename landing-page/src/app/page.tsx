@@ -726,7 +726,7 @@ export default function LandingPage() {
             <motion.div variants={fadeInUp}>
               <FAQItem
                 question="Já tenho ChatGPT Plus"
-                answer="Legal. Agora pergunta pro ChatGPT o que ele acha da sua ideia de negócio e conta quantos "depende" e "existem múltiplas perspectivas" você recebe antes de uma resposta útil. Ah, e você paga R$100/mês por isso."
+                answer='Legal. Agora pergunta pro ChatGPT o que ele acha da sua ideia de negócio e conta quantos "depende" e "existem múltiplas perspectivas" você recebe antes de uma resposta útil. Ah, e você paga R$100/mês por isso.'
               />
               <FAQItem
                 question="500 mensagens é pouco?"
