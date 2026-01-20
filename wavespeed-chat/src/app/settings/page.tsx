@@ -11,10 +11,27 @@ import {
   FiArrowLeft,
   FiCheck,
   FiAlertCircle,
-  FiMessageSquare,
   FiCreditCard,
   FiShield,
+  FiZap,
+  FiStar,
 } from 'react-icons/fi';
+
+// URLs dos planos no Payt (substituir pelas URLs reais)
+const PLAN_URLS = {
+  basic: 'https://pay.payt.com.br/seu-produto-basico', // R$ 37
+  pro: 'https://pay.payt.com.br/seu-produto-pro', // R$ 97
+};
+
+interface PlanData {
+  plan: string;
+  current: number;
+  limit: number;
+  remaining: number;
+  planExpired: boolean;
+  expiresAt: string | null;
+  resetsAt: string;
+}
 
 export default function UserSettingsPage() {
   const { data: session, status, update } = useSession();
@@ -32,8 +49,8 @@ export default function UserSettingsPage() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  // User stats
-  const [stats, setStats] = useState<{ messagesUsed: number; messagesLimit: number } | null>(null);
+  // Plan data
+  const [planData, setPlanData] = useState<PlanData | null>(null);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -43,18 +60,18 @@ export default function UserSettingsPage() {
     }
     setName(session.user.name || '');
     setEmail(session.user.email || '');
-    fetchStats();
+    fetchPlanData();
   }, [session, status, router]);
 
-  const fetchStats = async () => {
+  const fetchPlanData = async () => {
     try {
-      const response = await fetch('/api/user/stats');
+      const response = await fetch('/api/user/usage');
       if (response.ok) {
         const data = await response.json();
-        setStats(data);
+        setPlanData(data);
       }
     } catch (error) {
-      console.error('Error fetching stats:', error);
+      console.error('Error fetching plan data:', error);
     }
   };
 
@@ -123,15 +140,28 @@ export default function UserSettingsPage() {
     }
   };
 
+  const handleUpgrade = (planUrl: string) => {
+    window.open(planUrl, '_blank');
+  };
+
   if (status === 'loading') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[rgb(249,250,251)]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#6841ea]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#4A7C59]"></div>
       </div>
     );
   }
 
-  const usagePercentage = stats ? (stats.messagesUsed / stats.messagesLimit) * 100 : 0;
+  const usagePercentage = planData ? (planData.current / planData.limit) * 100 : 0;
+  const isPro = planData?.plan === 'pro';
+  const isExpired = planData?.planExpired;
+
+  // Formatar data de expiracao
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return 'N/A';
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('pt-BR');
+  };
 
   return (
     <div className="min-h-screen bg-[rgb(249,250,251)]">
@@ -163,7 +193,7 @@ export default function UserSettingsPage() {
             onClick={() => setActiveTab('profile')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'profile'
-                ? 'bg-[#6841ea] text-white shadow-md'
+                ? 'bg-[#4A7C59] text-white shadow-md'
                 : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)]'
             }`}
           >
@@ -174,18 +204,18 @@ export default function UserSettingsPage() {
             onClick={() => setActiveTab('security')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'security'
-                ? 'bg-[#6841ea] text-white shadow-md'
+                ? 'bg-[#4A7C59] text-white shadow-md'
                 : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)]'
             }`}
           >
             <FiShield className="w-4 h-4" />
-            Segurança
+            Seguranca
           </button>
           <button
             onClick={() => setActiveTab('plan')}
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all ${
               activeTab === 'plan'
-                ? 'bg-[#6841ea] text-white shadow-md'
+                ? 'bg-[#4A7C59] text-white shadow-md'
                 : 'text-[rgb(134,134,146)] hover:bg-[rgb(245,245,245)]'
             }`}
           >
@@ -217,7 +247,7 @@ export default function UserSettingsPage() {
         {/* Profile Tab */}
         {activeTab === 'profile' && (
           <div className="bg-white rounded-2xl border border-[rgba(79,89,102,0.08)] p-6 shadow-sm animate-fadeIn">
-            <h2 className="text-lg font-semibold text-[rgb(38,38,38)] mb-6">Informações do Perfil</h2>
+            <h2 className="text-lg font-semibold text-[rgb(38,38,38)] mb-6">Informacoes do Perfil</h2>
 
             <form onSubmit={handleUpdateProfile} className="space-y-5">
               <div>
@@ -230,7 +260,7 @@ export default function UserSettingsPage() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                   />
                 </div>
               </div>
@@ -248,15 +278,15 @@ export default function UserSettingsPage() {
                     className="w-full pl-10 pr-4 py-3 bg-[rgb(245,245,250)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(134,134,146)] cursor-not-allowed"
                   />
                 </div>
-                <p className="text-xs text-[rgb(170,170,180)] mt-1">O email não pode ser alterado</p>
+                <p className="text-xs text-[rgb(170,170,180)] mt-1">O email nao pode ser alterado</p>
               </div>
 
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-[#6841ea20]"
+                className="w-full py-3 bg-[#4A7C59] text-white font-medium rounded-xl hover:bg-[#3d6a4a] disabled:opacity-50 transition-all"
               >
-                {isLoading ? 'Salvando...' : 'Salvar Alterações'}
+                {isLoading ? 'Salvando...' : 'Salvar Alteracoes'}
               </button>
             </form>
           </div>
@@ -279,7 +309,7 @@ export default function UserSettingsPage() {
                     value={currentPassword}
                     onChange={(e) => setCurrentPassword(e.target.value)}
                     placeholder="Digite sua senha atual"
-                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                   />
                 </div>
               </div>
@@ -294,8 +324,8 @@ export default function UserSettingsPage() {
                     type="password"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="Mínimo 6 caracteres"
-                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                    placeholder="Minimo 6 caracteres"
+                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                   />
                 </div>
               </div>
@@ -311,7 +341,7 @@ export default function UserSettingsPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Repita a nova senha"
-                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                    className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(170,170,180)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                   />
                 </div>
               </div>
@@ -319,7 +349,7 @@ export default function UserSettingsPage() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full py-3 bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-[#6841ea20]"
+                className="w-full py-3 bg-[#4A7C59] text-white font-medium rounded-xl hover:bg-[#3d6a4a] disabled:opacity-50 transition-all"
               >
                 {isLoading ? 'Alterando...' : 'Alterar Senha'}
               </button>
@@ -334,67 +364,151 @@ export default function UserSettingsPage() {
             <div className="bg-white rounded-2xl border border-[rgba(79,89,102,0.08)] p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-[rgb(38,38,38)] mb-6">Seu Plano</h2>
 
-              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[#6841ea10] to-[#8b5cf610] rounded-xl mb-6">
+              <div className={`flex items-center justify-between p-4 rounded-xl mb-6 ${
+                isPro
+                  ? 'bg-gradient-to-r from-[#C9A22710] to-[#B8941F10] border border-[#C9A22730]'
+                  : 'bg-gradient-to-r from-[#4A7C5910] to-[#1E3A2F10]'
+              }`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] flex items-center justify-center">
-                    <FiCreditCard className="w-6 h-6 text-white" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    isPro
+                      ? 'bg-gradient-to-br from-[#C9A227] to-[#B8941F]'
+                      : 'bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F]'
+                  }`}>
+                    {isPro ? (
+                      <FiStar className="w-6 h-6 text-white" />
+                    ) : (
+                      <FiZap className="w-6 h-6 text-white" />
+                    )}
                   </div>
                   <div>
-                    <h3 className="font-semibold text-[rgb(38,38,38)]">Plano Gratuito</h3>
-                    <p className="text-sm text-[rgb(134,134,146)]">Acesso básico ao Sage IA</p>
+                    <h3 className="font-semibold text-[rgb(38,38,38)]">
+                      {isPro ? 'Plano Pro' : 'Plano Basico'}
+                    </h3>
+                    <p className="text-sm text-[rgb(134,134,146)]">
+                      {isPro ? '5x mais uso diario' : 'Acesso ao Sage IA'}
+                    </p>
                   </div>
                 </div>
-                <span className="px-3 py-1 bg-[#6841ea] text-white text-xs font-semibold rounded-full">
-                  Atual
-                </span>
+                <div className="text-right">
+                  {isExpired ? (
+                    <span className="px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded-full">
+                      Expirado
+                    </span>
+                  ) : (
+                    <span className={`px-3 py-1 text-white text-xs font-semibold rounded-full ${
+                      isPro ? 'bg-[#C9A227]' : 'bg-[#4A7C59]'
+                    }`}>
+                      Ativo
+                    </span>
+                  )}
+                  {planData?.expiresAt && (
+                    <p className="text-xs text-[rgb(134,134,146)] mt-1">
+                      {isExpired ? 'Expirou em' : 'Expira em'}: {formatDate(planData.expiresAt)}
+                    </p>
+                  )}
+                </div>
               </div>
 
-              {/* Usage */}
+              {/* Usage - barra simples sem numeros especificos */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-[rgb(134,134,146)]">Mensagens Utilizadas</span>
-                  <span className="font-medium text-[rgb(38,38,38)]">
-                    {stats?.messagesUsed || 0} / {stats?.messagesLimit || 100}
+                  <span className="text-[rgb(134,134,146)]">Uso Diario</span>
+                  <span className={`font-medium ${
+                    usagePercentage > 80 ? 'text-red-500' : usagePercentage > 50 ? 'text-orange-500' : 'text-[#4A7C59]'
+                  }`}>
+                    {usagePercentage > 80 ? 'Quase no limite' : usagePercentage > 50 ? 'Moderado' : 'Disponivel'}
                   </span>
                 </div>
                 <div className="w-full h-3 bg-[rgb(245,245,250)] rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all ${
-                      usagePercentage > 80 ? 'bg-red-500' : usagePercentage > 50 ? 'bg-orange-500' : 'bg-[#6841ea]'
+                      usagePercentage > 80 ? 'bg-red-500' : usagePercentage > 50 ? 'bg-orange-500' : 'bg-[#4A7C59]'
                     }`}
                     style={{ width: `${Math.min(usagePercentage, 100)}%` }}
                   />
                 </div>
                 <p className="text-xs text-[rgb(170,170,180)]">
-                  O limite é renovado mensalmente
+                  O uso e renovado diariamente a meia-noite
                 </p>
               </div>
             </div>
 
-            {/* Upgrade */}
-            <div className="bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] rounded-2xl p-6 text-white shadow-lg shadow-[#6841ea30]">
-              <h3 className="text-xl font-bold mb-2">Upgrade para Pro</h3>
-              <p className="text-white/80 mb-4">
-                Mensagens ilimitadas, modelos avançados e muito mais.
-              </p>
-              <ul className="space-y-2 mb-6">
-                <li className="flex items-center gap-2 text-sm">
-                  <FiCheck className="w-4 h-4" />
-                  Mensagens ilimitadas
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <FiCheck className="w-4 h-4" />
-                  Acesso a todos os modelos
-                </li>
-                <li className="flex items-center gap-2 text-sm">
-                  <FiCheck className="w-4 h-4" />
-                  Prioridade no suporte
-                </li>
-              </ul>
-              <button className="w-full py-3 bg-white text-[#6841ea] font-semibold rounded-xl hover:bg-white/90 transition-all">
-                Em breve
-              </button>
-            </div>
+            {/* Upgrade Card - mostra apenas se nao for Pro ou se expirou */}
+            {(!isPro || isExpired) && (
+              <div className="bg-gradient-to-br from-[#C9A227] to-[#B8941F] rounded-2xl p-6 text-white shadow-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <FiStar className="w-5 h-5" />
+                  <h3 className="text-xl font-bold">
+                    {isPro && isExpired ? 'Renovar Plano Pro' : 'Upgrade para Pro'}
+                  </h3>
+                </div>
+                <p className="text-white/80 mb-4">
+                  Tenha 5x mais uso diario e aproveite ao maximo o Sage IA.
+                </p>
+                <ul className="space-y-2 mb-6">
+                  <li className="flex items-center gap-2 text-sm">
+                    <FiCheck className="w-4 h-4" />
+                    5x mais uso diario
+                  </li>
+                  <li className="flex items-center gap-2 text-sm">
+                    <FiCheck className="w-4 h-4" />
+                    Acesso a todos os modelos
+                  </li>
+                  <li className="flex items-center gap-2 text-sm">
+                    <FiCheck className="w-4 h-4" />
+                    GPT-5, Claude 3.7, Gemini Pro
+                  </li>
+                  <li className="flex items-center gap-2 text-sm">
+                    <FiCheck className="w-4 h-4" />
+                    Suporte prioritario
+                  </li>
+                </ul>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold">R$ 97</span>
+                  <span className="text-white/60">/mes</span>
+                </div>
+                <button
+                  onClick={() => handleUpgrade(PLAN_URLS.pro)}
+                  className="w-full py-3 bg-white text-[#C9A227] font-semibold rounded-xl hover:bg-white/90 transition-all"
+                >
+                  {isPro && isExpired ? 'Renovar Agora' : 'Fazer Upgrade'}
+                </button>
+              </div>
+            )}
+
+            {/* Renew Basic - mostra se for basico e expirou */}
+            {!isPro && isExpired && (
+              <div className="bg-white rounded-2xl border-2 border-[#4A7C59] p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-[#1E3A2F] mb-2">Renovar Plano Basico</h3>
+                <p className="text-[rgb(134,134,146)] mb-4">
+                  Continue usando o Sage IA com o plano basico.
+                </p>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-2xl font-bold text-[#1E3A2F]">R$ 37</span>
+                  <span className="text-[rgb(134,134,146)]">/mes</span>
+                </div>
+                <button
+                  onClick={() => handleUpgrade(PLAN_URLS.basic)}
+                  className="w-full py-3 bg-[#4A7C59] text-white font-semibold rounded-xl hover:bg-[#3d6a4a] transition-all"
+                >
+                  Renovar Basico
+                </button>
+              </div>
+            )}
+
+            {/* Se for Pro e ativo */}
+            {isPro && !isExpired && (
+              <div className="bg-white rounded-2xl border border-[rgba(79,89,102,0.08)] p-6 shadow-sm text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#C9A22720] flex items-center justify-center">
+                  <FiStar className="w-8 h-8 text-[#C9A227]" />
+                </div>
+                <h3 className="text-lg font-semibold text-[rgb(38,38,38)] mb-2">Voce e Pro!</h3>
+                <p className="text-[rgb(134,134,146)]">
+                  Aproveite 5x mais uso diario e todos os recursos premium.
+                </p>
+              </div>
+            )}
           </div>
         )}
       </div>
