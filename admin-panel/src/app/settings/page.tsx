@@ -110,33 +110,17 @@ export default function AdminSettingsPage() {
     setMessage(null);
 
     try {
-      // Determina a URL do chat baseado no ambiente
-      // Em produção: usa a mesma origem mas porta 3000 ou env var
-      // Em dev: localhost:3000
-      const chatUrl = process.env.NEXT_PUBLIC_CHAT_URL ||
-        (typeof window !== 'undefined'
-          ? window.location.origin.replace(':3001', ':3000').replace('admin.', '')
-          : 'http://localhost:3000');
-
-      const endpoint = `${chatUrl}/api/teste-email`;
-      console.log('[TEST EMAIL] Chamando endpoint:', endpoint);
-      console.log('[TEST EMAIL] Email destino:', testEmail);
-
-      const response = await fetch(endpoint, {
+      // Usa endpoint interno do admin (mesmo servidor)
+      const response = await fetch('/api/admin/test-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'welcome',
           email: testEmail,
           nome: 'Teste Admin',
-          plano: 'pro',
-          senha: 'SenhaTest123',
         }),
       });
 
-      console.log('[TEST EMAIL] Response status:', response.status);
       const data = await response.json();
-      console.log('[TEST EMAIL] Response data:', data);
 
       if (data.success) {
         setMessage({ type: 'success', text: `Email de teste enviado para ${testEmail}!`, section: 'brevo' });
