@@ -3,6 +3,8 @@
  * Documentacao: https://developers.brevo.com/reference/sendtransacemail
  */
 
+import { prisma } from '@/lib/prisma';
+
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
 interface BrevoEmailParams {
@@ -20,24 +22,59 @@ interface BrevoResponse {
   error?: string;
 }
 
+interface BrevoConfig {
+  apiKey: string | null;
+  senderName: string;
+  senderEmail: string;
+}
+
+/**
+ * Busca configurações do Brevo no banco de dados
+ * Fallback para variáveis de ambiente se não encontrar no banco
+ */
+async function getBrevoConfig(): Promise<BrevoConfig> {
+  try {
+    const settings = await prisma.settings.findMany({
+      where: {
+        key: {
+          in: ['brevo_api_key', 'email_sender_name', 'email_sender_address'],
+        },
+      },
+    });
+
+    const settingsMap = new Map(settings.map(s => [s.key, s.value]));
+
+    return {
+      apiKey: settingsMap.get('brevo_api_key') || process.env.BREVO_API_KEY || null,
+      senderName: settingsMap.get('email_sender_name') || process.env.EMAIL_SENDER_NAME || 'Sage IA',
+      senderEmail: settingsMap.get('email_sender_address') || process.env.EMAIL_SENDER_ADDRESS || 'contato@sage.com',
+    };
+  } catch (error) {
+    console.error('Erro ao buscar configurações do Brevo:', error);
+    // Fallback para variáveis de ambiente
+    return {
+      apiKey: process.env.BREVO_API_KEY || null,
+      senderName: process.env.EMAIL_SENDER_NAME || 'Sage IA',
+      senderEmail: process.env.EMAIL_SENDER_ADDRESS || 'contato@sage.com',
+    };
+  }
+}
+
 /**
  * Envia um email via Brevo API
  */
 async function sendEmail(params: BrevoEmailParams): Promise<BrevoResponse> {
-  const apiKey = process.env.BREVO_API_KEY;
+  const config = await getBrevoConfig();
 
-  if (!apiKey) {
+  if (!config.apiKey) {
     console.error('BREVO_API_KEY nao configurada');
-    return { success: false, error: 'BREVO_API_KEY nao configurada' };
+    return { success: false, error: 'BREVO_API_KEY nao configurada. Configure no painel admin.' };
   }
-
-  const senderName = process.env.EMAIL_SENDER_NAME || 'Sage IA';
-  const senderEmail = process.env.EMAIL_SENDER_ADDRESS || 'contato@sage.com';
 
   const payload = {
     sender: {
-      name: senderName,
-      email: senderEmail,
+      name: config.senderName,
+      email: config.senderEmail,
     },
     to: [params.to],
     subject: params.subject,
@@ -48,7 +85,7 @@ async function sendEmail(params: BrevoEmailParams): Promise<BrevoResponse> {
     const response = await fetch(BREVO_API_URL, {
       method: 'POST',
       headers: {
-        'api-key': apiKey,
+        'api-key': config.apiKey,
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
