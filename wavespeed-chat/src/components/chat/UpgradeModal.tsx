@@ -1,13 +1,11 @@
 'use client';
 
-import { FiX, FiZap, FiCheck, FiClock, FiMessageSquare } from 'react-icons/fi';
+import { FiX, FiZap, FiCheck, FiClock, FiMessageSquare, FiStar } from 'react-icons/fi';
 
 interface UpgradeModalProps {
   isOpen: boolean;
   onClose: () => void;
   currentPlan?: string;
-  currentUsage?: number;
-  limit?: number;
   planExpired?: boolean;
   limitReached?: boolean;
 }
@@ -16,8 +14,6 @@ export default function UpgradeModal({
   isOpen,
   onClose,
   currentPlan = 'basic',
-  currentUsage = 0,
-  limit = 30,
   planExpired = false,
   limitReached = false,
 }: UpgradeModalProps) {
@@ -66,9 +62,9 @@ export default function UpgradeModal({
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-orange-500/20 flex items-center justify-center">
                   <FiMessageSquare className="w-8 h-8 text-orange-300" />
                 </div>
-                <h2 className="text-2xl font-bold mb-2">Limite atingido</h2>
+                <h2 className="text-2xl font-bold mb-2">Limite diario atingido</h2>
                 <p className="text-white/80">
-                  Voce usou {currentUsage} de {limit} mensagens hoje
+                  Seu uso diario foi esgotado. Volte amanha ou faca upgrade!
                 </p>
               </>
             ) : (
@@ -77,7 +73,7 @@ export default function UpgradeModal({
                   <FiZap className="w-8 h-8" />
                 </div>
                 <h2 className="text-2xl font-bold mb-2">Upgrade seu plano</h2>
-                <p className="text-white/80">Desbloqueie mais mensagens e recursos</p>
+                <p className="text-white/80">Desbloqueie mais recursos e uso diario</p>
               </>
             )}
           </div>
@@ -101,7 +97,7 @@ export default function UpgradeModal({
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-bold text-[#1E3A2F]">Plano Basico</h3>
-                <p className="text-sm text-gray-500 mt-1">30 mensagens por dia</p>
+                <p className="text-sm text-gray-500 mt-1">Acesso ao Sage IA</p>
                 <ul className="mt-3 space-y-1.5">
                   <li className="flex items-center gap-2 text-sm text-gray-600">
                     <FiCheck className="w-4 h-4 text-[#4A7C59]" />
@@ -148,16 +144,19 @@ export default function UpgradeModal({
             )}
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="font-bold text-[#1E3A2F]">Plano Pro</h3>
-                <p className="text-sm text-gray-500 mt-1">150 mensagens por dia</p>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-[#1E3A2F]">Plano Pro</h3>
+                  <FiStar className="w-4 h-4 text-[#C9A227]" />
+                </div>
+                <p className="text-sm text-gray-500 mt-1">5x mais uso diario</p>
                 <ul className="mt-3 space-y-1.5">
                   <li className="flex items-center gap-2 text-sm text-gray-600">
                     <FiCheck className="w-4 h-4 text-[#C9A227]" />
-                    <strong>5x mais mensagens</strong>
+                    <strong>5x mais uso diario</strong>
                   </li>
                   <li className="flex items-center gap-2 text-sm text-gray-600">
                     <FiCheck className="w-4 h-4 text-[#C9A227]" />
-                    Acesso a todos os modelos Pro
+                    Acesso a todos os modelos
                   </li>
                   <li className="flex items-center gap-2 text-sm text-gray-600">
                     <FiCheck className="w-4 h-4 text-[#C9A227]" />
@@ -191,7 +190,7 @@ export default function UpgradeModal({
           {/* Info */}
           {limitReached && !planExpired && (
             <p className="text-center text-sm text-gray-500 pt-2">
-              Seu limite reseta a meia-noite. Ou faca upgrade para mais mensagens!
+              Seu limite reseta a meia-noite. Ou faca upgrade para 5x mais uso!
             </p>
           )}
         </div>
