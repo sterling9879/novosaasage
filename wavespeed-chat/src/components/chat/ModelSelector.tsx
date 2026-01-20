@@ -28,21 +28,21 @@ export default function ModelSelector() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-white border border-[rgba(30,58,47,0.1)] rounded-lg hover:bg-[#F5F5F0] transition-colors"
       >
         <Image
           src={getProviderLogo(currentModel.provider)}
           alt={currentModel.provider}
           width={20}
           height={20}
-          className="rounded"
+          className="rounded w-5 h-5 sm:w-5 sm:h-5"
         />
-        <span className="text-sm font-medium text-gray-700">{currentModel.name}</span>
-        <FiChevronDown className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <span className="hidden sm:inline text-sm font-medium text-[#1E3A2F]">{currentModel.name}</span>
+        <FiChevronDown className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#6B6B6B] transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-1 max-h-80 overflow-y-auto">
+        <div className="absolute top-full right-0 mt-1 w-56 sm:w-64 bg-white border border-[rgba(30,58,47,0.1)] rounded-xl shadow-lg z-50 py-1 max-h-80 overflow-y-auto">
           {MODELS.map((model) => (
             <button
               key={model.id}
@@ -50,8 +50,8 @@ export default function ModelSelector() {
                 setSelectedModel(model.id);
                 setIsOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2 hover:bg-gray-50 transition-colors ${
-                model.id === selectedModel ? 'bg-primary-50' : ''
+              className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-[#F5F5F0] transition-colors ${
+                model.id === selectedModel ? 'bg-[#4A7C5910]' : ''
               }`}
             >
               <Image
@@ -61,7 +61,7 @@ export default function ModelSelector() {
                 height={20}
                 className="rounded"
               />
-              <span className="text-sm text-gray-700">{model.name}</span>
+              <span className="text-sm text-[#1E3A2F]">{model.name}</span>
             </button>
           ))}
         </div>
