@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { sendWelcomeEmail, sendPlanRenewalEmail } from '@/lib/brevo';
 
 // Tipos do payload Payt
 interface PaytPayload {
@@ -192,6 +193,23 @@ export async function POST(request: NextRequest) {
           });
 
           console.log('Plano do usuário atualizado/renovado:', planInfo.plan);
+
+          // Envia email de renovação
+          try {
+            const emailResult = await sendPlanRenewalEmail(
+              existingUser.email,
+              existingUser.name || payload.customer.name || 'Usuário',
+              planInfo.plan
+            );
+            if (emailResult.success) {
+              console.log('Email de renovação enviado:', emailResult.messageId);
+            } else {
+              console.error('Erro ao enviar email de renovação:', emailResult.error);
+            }
+          } catch (emailError) {
+            console.error('Exceção ao enviar email de renovação:', emailError);
+            // Não interrompe o fluxo
+          }
         } else {
           // Criar novo usuário
           generatedPassword = generatePassword(10);
@@ -224,6 +242,24 @@ export async function POST(request: NextRequest) {
           console.log('Limite diário:', planInfo.messagesLimit);
           console.log('Senha temporária:', generatedPassword);
           console.log('===========================');
+
+          // Envia email de boas-vindas com as credenciais
+          try {
+            const emailResult = await sendWelcomeEmail(
+              newUser.email,
+              newUser.name || 'Usuário',
+              generatedPassword,
+              planInfo.plan
+            );
+            if (emailResult.success) {
+              console.log('Email de boas-vindas enviado:', emailResult.messageId);
+            } else {
+              console.error('Erro ao enviar email de boas-vindas:', emailResult.error);
+            }
+          } catch (emailError) {
+            console.error('Exceção ao enviar email de boas-vindas:', emailError);
+            // Não interrompe o fluxo, usuário já foi criado
+          }
         }
       } catch (userError) {
         console.error('Erro ao criar/buscar usuário:', userError);
