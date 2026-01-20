@@ -168,7 +168,7 @@ export default function ChatInput({ onSendMessage }: ChatInputProps) {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-2.5 sm:p-4" style={{ paddingBottom: 'max(0.625rem, env(safe-area-inset-bottom, 0px))' }}>
+      <form onSubmit={handleSubmit} className="px-2.5 sm:px-4 pt-2.5 sm:pt-4 pb-2 sm:pb-4">
         {/* Hidden file input */}
         <input
           ref={fileInputRef}

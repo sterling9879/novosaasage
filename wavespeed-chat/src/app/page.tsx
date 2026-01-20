@@ -207,7 +207,7 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen flex overflow-hidden bg-[#F5F5F0]">
+    <div className="h-screen-mobile flex overflow-hidden bg-[#F5F5F0]">
       <Sidebar
         onNewConversation={handleNewConversation}
         onSelectConversation={handleSelectConversation}
