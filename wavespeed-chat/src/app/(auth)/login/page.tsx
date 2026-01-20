@@ -42,8 +42,8 @@ export default function LoginPage() {
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[#6841ea] flex items-center justify-center">
-            <span className="text-3xl">💬</span>
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] flex items-center justify-center shadow-lg">
+            <span className="text-3xl font-bold text-white">S</span>
           </div>
           <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">Sage IA</h1>
           <p className="mt-2 text-[rgb(134,134,146)]">Entre na sua conta para continuar</p>
@@ -69,7 +69,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[15px] placeholder-[rgb(134,134,146)] focus:outline-none focus:ring-2 focus:ring-[#6841ea] focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[15px] text-[#1E3A2F] placeholder-[rgb(134,134,146)] focus:outline-none focus:ring-2 focus:ring-[#4A7C59] focus:border-transparent transition-all"
               />
             </div>
 
@@ -84,14 +84,14 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[15px] placeholder-[rgb(134,134,146)] focus:outline-none focus:ring-2 focus:ring-[#6841ea] focus:border-transparent transition-all"
+                className="w-full px-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[15px] text-[#1E3A2F] placeholder-[rgb(134,134,146)] focus:outline-none focus:ring-2 focus:ring-[#4A7C59] focus:border-transparent transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-3 px-4 bg-[#6841ea] text-white font-medium rounded-xl hover:bg-[#5b35d4] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="w-full py-3 px-4 bg-gradient-to-r from-[#4A7C59] to-[#1E3A2F] text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
             >
               {isLoading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -110,7 +110,7 @@ export default function LoginPage() {
           <div className="mt-6 text-center">
             <p className="text-sm text-[rgb(134,134,146)]">
               Não tem uma conta?{' '}
-              <Link href="/register" className="text-[#6841ea] hover:underline font-medium">
+              <Link href="/register" className="text-[#4A7C59] hover:underline font-medium">
                 Cadastre-se
               </Link>
             </p>

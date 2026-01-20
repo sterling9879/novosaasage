@@ -55,12 +55,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#f5f3ff] via-white to-[#ede9fe] py-12 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#F5F5F0] via-white to-[#E8F0E9] py-12 px-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#6841ea] to-[#8b5cf6] shadow-lg mb-4">
-            <span className="text-3xl">🚀</span>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#4A7C59] to-[#1E3A2F] shadow-lg mb-4">
+            <span className="text-3xl font-bold text-white">S</span>
           </div>
           <h1 className="text-2xl font-bold text-[rgb(38,38,38)]">Sage IA</h1>
           <p className="text-[rgb(134,134,146)] mt-1">Crie sua conta gratuita</p>
@@ -88,7 +88,7 @@ export default function RegisterPage() {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Seu nome"
-                  className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                 />
               </div>
             </div>
@@ -107,7 +107,7 @@ export default function RegisterPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="seu@email.com"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                 />
               </div>
             </div>
@@ -126,7 +126,7 @@ export default function RegisterPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Mínimo 6 caracteres"
                   required
-                  className="w-full pl-10 pr-12 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                 />
                 <button
                   type="button"
@@ -152,7 +152,7 @@ export default function RegisterPage() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Repita a senha"
                   required
-                  className="w-full pl-10 pr-12 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#6841ea] focus:ring-2 focus:ring-[#6841ea20] transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-[rgb(249,250,251)] border border-[rgba(79,89,102,0.08)] rounded-xl text-[rgb(38,38,38)] placeholder-[rgb(134,134,146)] focus:outline-none focus:border-[#4A7C59] focus:ring-2 focus:ring-[#4A7C5920] transition-all"
                 />
                 <button
                   type="button"
@@ -168,7 +168,7 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-[#6841ea] to-[#8b5cf6] text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#6841ea30]"
+              className="w-full flex items-center justify-center gap-2 py-3 bg-gradient-to-r from-[#4A7C59] to-[#1E3A2F] text-white font-medium rounded-xl hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#4A7C5930]"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -191,7 +191,7 @@ export default function RegisterPage() {
           {/* Login Link */}
           <p className="text-center text-sm text-[rgb(134,134,146)]">
             Já tem uma conta?{' '}
-            <Link href="/login" className="text-[#6841ea] hover:text-[#5b35d4] font-medium transition-colors">
+            <Link href="/login" className="text-[#4A7C59] hover:text-[#1E3A2F] font-medium transition-colors">
               Entrar
             </Link>
           </p>
