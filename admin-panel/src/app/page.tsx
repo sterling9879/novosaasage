@@ -3,7 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { FiUsers, FiMessageSquare, FiMessageCircle, FiSettings, FiKey, FiLogOut } from 'react-icons/fi';
+import { FiUsers, FiMessageSquare, FiMessageCircle, FiSettings, FiKey, FiLogOut, FiShoppingCart } from 'react-icons/fi';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 
@@ -127,7 +127,7 @@ export default function AdminDashboard() {
 
         {/* Quick Actions */}
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Ações Rápidas</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link
             href="/users"
             className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-primary-200 transition-all group"
@@ -138,6 +138,19 @@ export default function AdminDashboard() {
             <div>
               <h3 className="font-semibold text-gray-900">Gerenciar Usuários</h3>
               <p className="text-sm text-gray-500">Ver e editar usuários</p>
+            </div>
+          </Link>
+
+          <Link
+            href="/purchases"
+            className="flex items-center gap-4 p-6 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-primary-200 transition-all group"
+          >
+            <div className="p-3 bg-orange-50 rounded-xl group-hover:bg-orange-100 transition-colors">
+              <FiShoppingCart className="w-6 h-6 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">Compras Payt</h3>
+              <p className="text-sm text-gray-500">Webhooks e vendas</p>
             </div>
           </Link>
 
