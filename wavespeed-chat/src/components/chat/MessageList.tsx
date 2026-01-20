@@ -111,7 +111,7 @@ export default function MessageList() {
   const botColor = selectedBot?.color || '#4A7C59';
 
   return (
-    <div ref={containerRef} className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-4 sm:space-y-6">
+    <div ref={containerRef} className="h-full overflow-y-auto overscroll-contain p-3 sm:p-6 space-y-4 sm:space-y-6">
       {messages.map((message, index) => {
         const isUser = message.role === 'USER';
         const isLast = index === messages.length - 1;
