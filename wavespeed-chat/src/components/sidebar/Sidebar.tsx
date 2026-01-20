@@ -130,6 +130,13 @@ export default function Sidebar({
               {isDark ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
             </button>
             <Link
+              href="/tutorials"
+              className="w-11 h-11 rounded-xl text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] flex items-center justify-center transition-all"
+              title="Ajuda e Tutoriais"
+            >
+              <FiHelpCircle className="w-5 h-5" />
+            </Link>
+            <Link
               href="/settings"
               className="w-11 h-11 rounded-xl text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] flex items-center justify-center transition-all"
               title="Configurações"
@@ -343,12 +350,13 @@ export default function Sidebar({
             >
               {isDark ? <FiSun className="w-4 h-4" /> : <FiMoon className="w-4 h-4" />}
             </button>
-            <button
+            <Link
+              href="/tutorials"
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
-              title="Ajuda"
+              title="Ajuda e Tutoriais"
             >
               <FiHelpCircle className="w-4 h-4" />
-            </button>
+            </Link>
             <Link
               href="/settings"
               className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-sm text-[#6B6B6B] hover:bg-[#EEEEE8] hover:text-[#1E3A2F] rounded-xl transition-all"
