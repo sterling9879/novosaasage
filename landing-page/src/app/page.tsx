@@ -549,7 +549,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <a href="#" className="btn-secondary w-full text-center block">
+              <a href="https://payt.site/98C5azQ" className="btn-secondary w-full text-center block">
                 Começar com o Essencial
               </a>
             </motion.div>
@@ -618,7 +618,7 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <a href="#" className="btn-primary w-full text-center block">
+              <a href="https://payt.site/BvCG5DW" className="btn-primary w-full text-center block">
                 Quero o Profissional <FiArrowRight className="inline ml-2" />
               </a>
             </motion.div>
@@ -782,10 +782,10 @@ export default function LandingPage() {
             </motion.p>
 
             <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#" className="btn-secondary text-lg py-4 px-8">
+              <a href="https://payt.site/98C5azQ" className="btn-secondary text-lg py-4 px-8">
                 Quero o Essencial — R$37/mês
               </a>
-              <a href="#" className="btn-primary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
+              <a href="https://payt.site/BvCG5DW" className="btn-primary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
                 Quero o Profissional — R$97/mês <FiArrowRight />
               </a>
             </motion.div>
