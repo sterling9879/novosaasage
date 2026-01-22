@@ -60,36 +60,30 @@ function Particles() {
   );
 }
 
-// Video Modal Component
-function VideoModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
-  if (!isOpen) return null;
+// Vturb Video Player Component
+function VturbPlayer() {
+  useEffect(() => {
+    // Load Vturb player script
+    const script = document.createElement('script');
+    script.src = 'https://scripts.converteai.net/21b35875-8136-4b51-b275-3c04b6f8c5d5/players/69729e409380180051415508/v4/player.js';
+    script.async = true;
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup if needed
+      const existingScript = document.querySelector(`script[src="${script.src}"]`);
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors"
-        >
-          <FiX className="w-6 h-6" />
-        </button>
-        <div className="w-full h-full flex items-center justify-center text-white/50">
-          {/* Replace with actual video embed */}
-          <p>Video será inserido aqui</p>
-        </div>
-      </motion.div>
-    </motion.div>
+    <div
+      dangerouslySetInnerHTML={{
+        __html: '<vturb-smartplayer id="vid-69729e409380180051415508" style="display: block; margin: 0 auto; width: 100%; max-width: 800px;"></vturb-smartplayer>'
+      }}
+    />
   );
 }
 
@@ -118,7 +112,6 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function LandingPage() {
-  const [videoOpen, setVideoOpen] = useState(false);
   const { scrollYProgress } = useScroll();
   const headerOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0.95]);
 
@@ -198,12 +191,9 @@ export default function LandingPage() {
               <a href="#planos" className="btn-primary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
                 Começar Agora <FiArrowRight className="w-5 h-5" />
               </a>
-              <button
-                onClick={() => setVideoOpen(true)}
-                className="btn-secondary text-lg py-4 px-8 inline-flex items-center justify-center gap-2"
-              >
+              <a href="#video" className="btn-secondary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
                 <FiPlay className="w-5 h-5" /> Ver Demonstração
-              </button>
+              </a>
             </motion.div>
           </AnimatedSection>
 
@@ -213,7 +203,7 @@ export default function LandingPage() {
       </section>
 
       {/* Video Section */}
-      <section className="section py-16 sm:py-24">
+      <section id="video" className="section py-16 sm:py-24">
         <div className="max-w-4xl mx-auto px-4">
           <AnimatedSection className="text-center mb-10">
             <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl font-bold mb-4">
@@ -229,17 +219,9 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="video-container cursor-pointer"
-            onClick={() => setVideoOpen(true)}
+            className="rounded-2xl overflow-hidden"
           >
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-sage-700/30 to-black/50">
-              <button className="video-play-btn">
-                <FiPlay className="w-8 h-8 text-white ml-1" />
-              </button>
-            </div>
-            <p className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm text-white/70">
-              <FiPlay className="inline w-4 h-4 mr-1" /> 2 minutos que vão mudar como você vê IA
-            </p>
+            <VturbPlayer />
           </motion.div>
         </div>
       </section>
@@ -809,8 +791,6 @@ export default function LandingPage() {
         </div>
       </footer>
 
-      {/* Video Modal */}
-      <VideoModal isOpen={videoOpen} onClose={() => setVideoOpen(false)} />
     </main>
   );
 }
