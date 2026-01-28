@@ -1,4 +1,3 @@
-const Anthropic = require('@anthropic-ai/sdk');
 const {
   TUTOR_SYSTEM_PROMPT,
   QUESTION_GENERATOR_PROMPT,
@@ -6,11 +5,61 @@ const {
   MASTERY_EVALUATOR_PROMPT
 } = require('../prompts/tutor');
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
+const WAVESPEED_API_URL = 'https://api.wavespeed.ai/api/v3/wavespeed-ai/any-llm';
+const MODEL = 'anthropic/claude-3.7-sonnet';
 
-const MODEL = 'claude-sonnet-4-20250514';
+/**
+ * Call WaveSpeed API
+ */
+async function callWaveSpeed(prompt, maxLength = 9500) {
+  const apiKey = process.env.WAVESPEED_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('WAVESPEED_API_KEY não configurada');
+  }
+
+  // Truncate prompt if needed
+  const truncatedPrompt = prompt.length > maxLength
+    ? prompt.substring(prompt.length - maxLength)
+    : prompt;
+
+  const response = await fetch(WAVESPEED_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      prompt: truncatedPrompt,
+      model: MODEL,
+      enable_sync_mode: true,
+      priority: 'latency',
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ message: 'Erro na API WaveSpeed' }));
+    throw new Error(error.message || 'Erro na API WaveSpeed');
+  }
+
+  const data = await response.json();
+
+  // Handle response format
+  if (data.outputs && Array.isArray(data.outputs) && data.outputs.length > 0) {
+    return data.outputs[0];
+  }
+
+  if (data.output) {
+    return data.output;
+  }
+
+  if (data.data?.outputs?.[0]) {
+    return data.data.outputs[0];
+  }
+
+  console.error('WaveSpeed: Unexpected response format:', data);
+  throw new Error('Resposta vazia da API');
+}
 
 /**
  * Chat with the tutor AI
@@ -22,17 +71,18 @@ async function chat(messages, topicContext = null) {
     systemPrompt += `\n\nCONTEXTO ATUAL:\n- Matéria: ${topicContext.subject}\n- Tópico: ${topicContext.topic}\n- Nível do aluno: ${topicContext.masteryLevel || 'desconhecido'}`;
   }
 
-  const response = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 2048,
-    system: systemPrompt,
-    messages: messages.map(m => ({
-      role: m.role === 'USER' ? 'user' : 'assistant',
-      content: m.content
-    }))
-  });
+  // Build conversation prompt
+  let prompt = `Sistema: ${systemPrompt}\n\n---\n\n`;
 
-  return response.content[0].text;
+  // Add message history
+  for (const msg of messages) {
+    const role = msg.role === 'USER' ? 'Usuário' : 'Assistente';
+    prompt += `${role}: ${msg.content}\n\n`;
+  }
+
+  prompt += 'Assistente:';
+
+  return callWaveSpeed(prompt);
 }
 
 /**
@@ -43,23 +93,18 @@ async function generateQuestion(topic, difficulty = 'medium', history = []) {
     ? `\n\nHISTÓRICO RECENTE DO ALUNO:\n${history.map(h => `- ${h.isCorrect ? '✓' : '✗'} ${h.question.substring(0, 50)}...`).join('\n')}`
     : '';
 
-  const prompt = `Gere uma questão de nível ${difficulty} sobre: ${topic.name}
+  const userPrompt = `Gere uma questão de nível ${difficulty} sobre: ${topic.name}
 ${topic.description ? `Descrição: ${topic.description}` : ''}
 ${historyContext}
 
 Responda APENAS com o JSON válido, sem texto adicional.`;
 
-  const response = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 1024,
-    system: QUESTION_GENERATOR_PROMPT,
-    messages: [{ role: 'user', content: prompt }]
-  });
+  const prompt = `Sistema: ${QUESTION_GENERATOR_PROMPT}\n\n---\n\nUsuário: ${userPrompt}\n\nAssistente:`;
 
-  const text = response.content[0].text;
+  const response = await callWaveSpeed(prompt);
 
   // Extract JSON from response
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  const jsonMatch = response.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     throw new Error('Invalid response format from AI');
   }
@@ -71,7 +116,7 @@ Responda APENAS com o JSON válido, sem texto adicional.`;
  * Explain a concept or answer
  */
 async function explain(question, userAnswer, correctAnswer, topic) {
-  const prompt = `O aluno respondeu uma questão sobre ${topic.name}.
+  const userPrompt = `O aluno respondeu uma questão sobre ${topic.name}.
 
 QUESTÃO: ${question}
 RESPOSTA DO ALUNO: ${userAnswer}
@@ -79,14 +124,9 @@ RESPOSTA CORRETA: ${correctAnswer}
 
 Explique por que a resposta correta é essa e ajude o aluno a entender o conceito.`;
 
-  const response = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 1024,
-    system: EXPLANATION_PROMPT,
-    messages: [{ role: 'user', content: prompt }]
-  });
+  const prompt = `Sistema: ${EXPLANATION_PROMPT}\n\n---\n\nUsuário: ${userPrompt}\n\nAssistente:`;
 
-  return response.content[0].text;
+  return callWaveSpeed(prompt);
 }
 
 /**
@@ -108,22 +148,18 @@ async function evaluateMastery(topic, history) {
     `- Questão: ${h.question.substring(0, 100)}...\n  Resposta: ${h.userAnswer}\n  Correto: ${h.isCorrect ? 'Sim' : 'Não'}\n  Dificuldade: ${h.difficulty}`
   ).join('\n\n');
 
-  const prompt = `Avalie o domínio do aluno em: ${topic.name}
+  const userPrompt = `Avalie o domínio do aluno em: ${topic.name}
 
 HISTÓRICO DE RESPOSTAS:
 ${historyText}
 
 Responda APENAS com o JSON válido, sem texto adicional.`;
 
-  const response = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 512,
-    system: MASTERY_EVALUATOR_PROMPT,
-    messages: [{ role: 'user', content: prompt }]
-  });
+  const prompt = `Sistema: ${MASTERY_EVALUATOR_PROMPT}\n\n---\n\nUsuário: ${userPrompt}\n\nAssistente:`;
 
-  const text = response.content[0].text;
-  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  const response = await callWaveSpeed(prompt);
+
+  const jsonMatch = response.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
     throw new Error('Invalid response format from AI');
   }
@@ -135,16 +171,11 @@ Responda APENAS com o JSON válido, sem texto adicional.`;
  * Get a study tip based on performance
  */
 async function getStudyTip(topic, masteryLevel) {
-  const prompt = `Dê uma dica de estudo curta e prática para um aluno com nível ${masteryLevel * 100}% de domínio em ${topic.name}. Máximo 2 frases.`;
+  const userPrompt = `Dê uma dica de estudo curta e prática para um aluno com nível ${masteryLevel * 100}% de domínio em ${topic.name}. Máximo 2 frases.`;
 
-  const response = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 256,
-    system: TUTOR_SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: prompt }]
-  });
+  const prompt = `Sistema: ${TUTOR_SYSTEM_PROMPT}\n\n---\n\nUsuário: ${userPrompt}\n\nAssistente:`;
 
-  return response.content[0].text;
+  return callWaveSpeed(prompt);
 }
 
 module.exports = {
