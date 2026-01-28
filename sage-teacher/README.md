@@ -50,6 +50,74 @@ cp .env.example .env
 docker-compose up -d
 ```
 
+## Deploy no VPS (Atualização)
+
+### Primeira vez:
+
+```bash
+cd /var/www
+git clone <repo-url> novosaasage
+cd novosaasage/sage-teacher
+
+# Configurar ambiente
+cp .env.example .env
+nano .env  # Configure ANTHROPIC_API_KEY e JWT_SECRET
+
+# Backend
+cd backend
+npm install
+pm2 start npm --name "sage-teacher-backend" -- start
+
+# Frontend
+cd ../frontend
+npm install
+npm run build
+pm2 start npm --name "sage-teacher-frontend" -- run preview
+```
+
+### Atualizar código:
+
+```bash
+cd /var/www/novosaasage
+
+# Baixar atualizações
+git pull origin claude/simple-ai-chat-wavespeed-2hrrd
+
+# Atualizar Backend
+cd sage-teacher/backend
+npm install
+pm2 restart sage-teacher-backend
+
+# Atualizar Frontend
+cd ../frontend
+npm install
+npm run build
+pm2 restart sage-teacher-frontend
+```
+
+### Script de atualização rápida:
+
+Crie o arquivo `update.sh`:
+
+```bash
+#!/bin/bash
+cd /var/www/novosaasage
+git pull origin claude/simple-ai-chat-wavespeed-2hrrd
+
+cd sage-teacher/backend
+npm install
+pm2 restart sage-teacher-backend
+
+cd ../frontend
+npm install
+npm run build
+pm2 restart sage-teacher-frontend
+
+echo "Sage Teacher atualizado!"
+```
+
+Depois execute: `chmod +x update.sh && ./update.sh`
+
 ## Funcionalidades
 
 - Matérias e tópicos organizados para vestibular
