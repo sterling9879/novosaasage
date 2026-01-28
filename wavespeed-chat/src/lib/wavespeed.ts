@@ -32,6 +32,12 @@ export async function chatWithAI(prompt: string, model: string): Promise<string>
     throw new Error('API Key não configurada. Configure no painel admin.');
   }
 
+  // Limita o prompt a 9500 caracteres para garantir margem de segurança
+  const MAX_PROMPT_LENGTH = 9500;
+  const truncatedPrompt = prompt.length > MAX_PROMPT_LENGTH
+    ? prompt.substring(prompt.length - MAX_PROMPT_LENGTH)
+    : prompt;
+
   const response = await fetch('https://api.wavespeed.ai/api/v3/wavespeed-ai/any-llm', {
     method: 'POST',
     headers: {
@@ -39,7 +45,7 @@ export async function chatWithAI(prompt: string, model: string): Promise<string>
       Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      prompt,
+      prompt: truncatedPrompt,
       model,
       enable_sync_mode: true,
       priority: 'latency',
@@ -78,6 +84,7 @@ export function buildPromptWithHistory(
   newMessage: string,
   systemPrompt?: string | null
 ): string {
+  const MAX_TOTAL_LENGTH = 9000;
   let prompt = '';
 
   // Add system prompt if provided
@@ -85,14 +92,28 @@ export function buildPromptWithHistory(
     prompt += `Sistema: ${systemPrompt}\n\n---\n\n`;
   }
 
-  const recentMessages = messages.slice(-10);
+  // Calcula espaço disponível para mensagens
+  const newMsgPart = `Usuário: ${newMessage}\n\nAssistente:`;
+  const availableSpace = MAX_TOTAL_LENGTH - prompt.length - newMsgPart.length;
 
-  for (const msg of recentMessages) {
+  // Adiciona mensagens do histórico de trás pra frente até caber
+  const recentMessages = messages.slice(-10);
+  let historyPrompt = '';
+
+  for (let i = recentMessages.length - 1; i >= 0; i--) {
+    const msg = recentMessages[i];
     const role = msg.role === 'USER' ? 'Usuário' : 'Assistente';
-    prompt += `${role}: ${msg.content}\n\n`;
+    const msgText = `${role}: ${msg.content}\n\n`;
+
+    if (historyPrompt.length + msgText.length <= availableSpace) {
+      historyPrompt = msgText + historyPrompt;
+    } else {
+      break;
+    }
   }
 
-  prompt += `Usuário: ${newMessage}\n\nAssistente:`;
+  prompt += historyPrompt;
+  prompt += newMsgPart;
   return prompt;
 }
 
@@ -156,6 +177,7 @@ export function buildPromptWithImage(
   imageDescription: string | null,
   systemPrompt?: string | null
 ): string {
+  const MAX_TOTAL_LENGTH = 9000;
   let prompt = '';
 
   // Add system prompt if provided
@@ -163,19 +185,39 @@ export function buildPromptWithImage(
     prompt += `Sistema: ${systemPrompt}\n\n---\n\n`;
   }
 
-  const recentMessages = messages.slice(-10);
-
-  for (const msg of recentMessages) {
-    const role = msg.role === 'USER' ? 'Usuário' : 'Assistente';
-    prompt += `${role}: ${msg.content}\n\n`;
-  }
-
-  // Include image description in the message if provided
+  // Build final message part with image
+  let newMsgPart: string;
   if (imageDescription) {
-    prompt += `Usuário: [Imagem anexada: ${imageDescription}]\n${newMessage}\n\nAssistente:`;
+    // Trunca descrição da imagem se necessário
+    const maxImgDescLength = 500;
+    const truncatedImgDesc = imageDescription.length > maxImgDescLength
+      ? imageDescription.substring(0, maxImgDescLength) + '...'
+      : imageDescription;
+    newMsgPart = `Usuário: [Imagem anexada: ${truncatedImgDesc}]\n${newMessage}\n\nAssistente:`;
   } else {
-    prompt += `Usuário: ${newMessage}\n\nAssistente:`;
+    newMsgPart = `Usuário: ${newMessage}\n\nAssistente:`;
   }
 
+  // Calcula espaço disponível para mensagens
+  const availableSpace = MAX_TOTAL_LENGTH - prompt.length - newMsgPart.length;
+
+  // Adiciona mensagens do histórico de trás pra frente até caber
+  const recentMessages = messages.slice(-10);
+  let historyPrompt = '';
+
+  for (let i = recentMessages.length - 1; i >= 0; i--) {
+    const msg = recentMessages[i];
+    const role = msg.role === 'USER' ? 'Usuário' : 'Assistente';
+    const msgText = `${role}: ${msg.content}\n\n`;
+
+    if (historyPrompt.length + msgText.length <= availableSpace) {
+      historyPrompt = msgText + historyPrompt;
+    } else {
+      break;
+    }
+  }
+
+  prompt += historyPrompt;
+  prompt += newMsgPart;
   return prompt;
 }
