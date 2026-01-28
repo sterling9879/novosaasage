@@ -6,7 +6,7 @@ Sistema de tutoria adaptativo com IA para preparação de vestibulares e concurs
 
 - **Backend**: Express.js + better-sqlite3 + JWT auth
 - **Frontend**: React + Vite + TailwindCSS
-- **IA**: Claude API (Anthropic)
+- **IA**: WaveSpeed API (mesma do chat principal)
 
 ## Portas
 
@@ -61,7 +61,7 @@ cd novosaasage/sage-teacher
 
 # Configurar ambiente
 cp .env.example .env
-nano .env  # Configure ANTHROPIC_API_KEY e JWT_SECRET
+nano .env  # Configure WAVESPEED_API_KEY (mesma do chat) e JWT_SECRET
 
 # Backend
 cd backend
