@@ -67,9 +67,6 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
 
-    // Update last login
-    db.prepare("UPDATE User SET lastLoginAt = datetime('now') WHERE id = ?").run(user.id);
-
     const token = generateToken(user);
 
     res.json({
