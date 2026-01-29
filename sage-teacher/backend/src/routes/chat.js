@@ -46,7 +46,7 @@ router.post('/', authMiddleware, async (req, res) => {
     // Get recent chat history for context (last 10 messages)
     const recentMessages = db.prepare(`
       SELECT role, content
-      FROM chat_messages
+      FROM teacher_chat_messages
       WHERE userId = ? AND (sessionId = ? OR sessionId IS NULL)
       ORDER BY createdAt DESC
       LIMIT 10
@@ -55,7 +55,7 @@ router.post('/', authMiddleware, async (req, res) => {
     // Add user message
     const userMsgId = uuidv4();
     db.prepare(`
-      INSERT INTO chat_messages (id, userId, sessionId, role, content, topicId, createdAt)
+      INSERT INTO teacher_chat_messages (id, userId, sessionId, role, content, topicId, createdAt)
       VALUES (?, ?, ?, 'USER', ?, ?, datetime('now'))
     `).run(userMsgId, req.user.id, sessionId || null, message, topicId || null);
 
@@ -71,7 +71,7 @@ router.post('/', authMiddleware, async (req, res) => {
     // Save AI response
     const aiMsgId = uuidv4();
     db.prepare(`
-      INSERT INTO chat_messages (id, userId, sessionId, role, content, topicId, createdAt)
+      INSERT INTO teacher_chat_messages (id, userId, sessionId, role, content, topicId, createdAt)
       VALUES (?, ?, ?, 'ASSISTANT', ?, ?, datetime('now'))
     `).run(aiMsgId, req.user.id, sessionId || null, aiResponse, topicId || null);
 
@@ -100,7 +100,7 @@ router.get('/history', authMiddleware, (req, res) => {
 
     const messages = db.prepare(`
       SELECT id, role, content, topicId, createdAt
-      FROM chat_messages
+      FROM teacher_chat_messages
       WHERE userId = ? ${sessionId ? 'AND sessionId = ?' : ''}
       ORDER BY createdAt ASC
       LIMIT ?
@@ -119,10 +119,10 @@ router.delete('/history', authMiddleware, (req, res) => {
     const { sessionId } = req.query;
 
     if (sessionId) {
-      db.prepare('DELETE FROM chat_messages WHERE userId = ? AND sessionId = ?')
+      db.prepare('DELETE FROM teacher_chat_messages WHERE userId = ? AND sessionId = ?')
         .run(req.user.id, sessionId);
     } else {
-      db.prepare('DELETE FROM chat_messages WHERE userId = ?').run(req.user.id);
+      db.prepare('DELETE FROM teacher_chat_messages WHERE userId = ?').run(req.user.id);
     }
 
     res.json({ cleared: true });

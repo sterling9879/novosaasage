@@ -1,26 +1,16 @@
 const Database = require('better-sqlite3');
 const path = require('path');
-const bcrypt = require('bcryptjs');
 
-const dbPath = process.env.DB_PATH || path.join(__dirname, '../data/sage-teacher.db');
+// Conecta ao banco de dados principal do Sage IA Chat
+const dbPath = process.env.DB_PATH || path.join(__dirname, '../../../wavespeed-chat/prisma/dev.db');
 const db = new Database(dbPath);
 
 // Enable WAL mode for better concurrent performance
 db.pragma('journal_mode = WAL');
 
-// Initialize database schema
+// Initialize Sage Teacher specific tables (usa tabela User existente do Prisma)
 function initializeDatabase() {
   db.exec(`
-    -- Users table
-    CREATE TABLE IF NOT EXISTS users (
-      id TEXT PRIMARY KEY,
-      name TEXT NOT NULL,
-      email TEXT UNIQUE NOT NULL,
-      password TEXT NOT NULL,
-      createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      lastLoginAt TEXT
-    );
-
     -- Subjects table (e.g., Português, Matemática, etc.)
     CREATE TABLE IF NOT EXISTS subjects (
       id TEXT PRIMARY KEY,
@@ -55,7 +45,7 @@ function initializeDatabase() {
       nextReviewAt TEXT,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
       updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (userId) REFERENCES User(id),
       FOREIGN KEY (topicId) REFERENCES topics(id),
       UNIQUE(userId, topicId)
     );
@@ -73,7 +63,7 @@ function initializeDatabase() {
       difficulty TEXT DEFAULT 'medium',
       responseTimeMs INTEGER,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (userId) REFERENCES User(id),
       FOREIGN KEY (topicId) REFERENCES topics(id)
     );
 
@@ -88,13 +78,13 @@ function initializeDatabase() {
       questionsAnswered INTEGER DEFAULT 0,
       correctAnswers INTEGER DEFAULT 0,
       mode TEXT DEFAULT 'practice',
-      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (userId) REFERENCES User(id),
       FOREIGN KEY (topicId) REFERENCES topics(id),
       FOREIGN KEY (subjectId) REFERENCES subjects(id)
     );
 
-    -- Chat messages for tutoring conversations
-    CREATE TABLE IF NOT EXISTS chat_messages (
+    -- Chat messages for tutoring conversations (renamed to avoid conflict)
+    CREATE TABLE IF NOT EXISTS teacher_chat_messages (
       id TEXT PRIMARY KEY,
       userId TEXT NOT NULL,
       sessionId TEXT,
@@ -102,7 +92,7 @@ function initializeDatabase() {
       content TEXT NOT NULL,
       topicId TEXT,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (userId) REFERENCES users(id),
+      FOREIGN KEY (userId) REFERENCES User(id),
       FOREIGN KEY (sessionId) REFERENCES study_sessions(id),
       FOREIGN KEY (topicId) REFERENCES topics(id)
     );
@@ -113,7 +103,7 @@ function initializeDatabase() {
     CREATE INDEX IF NOT EXISTS idx_question_history_user ON question_history(userId);
     CREATE INDEX IF NOT EXISTS idx_question_history_topic ON question_history(topicId);
     CREATE INDEX IF NOT EXISTS idx_study_sessions_user ON study_sessions(userId);
-    CREATE INDEX IF NOT EXISTS idx_chat_messages_session ON chat_messages(sessionId);
+    CREATE INDEX IF NOT EXISTS idx_teacher_chat_messages_session ON teacher_chat_messages(sessionId);
   `);
 
   // Seed initial subjects if empty
