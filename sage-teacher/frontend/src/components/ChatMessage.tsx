@@ -136,7 +136,7 @@ export default function ChatMessage({ content, role, onQuizAnswer }: ChatMessage
 
             {/* Instruction to check answers */}
             <div className="bg-sage-50 border border-sage-200 rounded-lg px-4 py-3 text-sm text-sage-700">
-              💡 <strong>Clique nas opções</strong> para selecionar suas respostas. Depois, me diga "Minhas respostas são: 1-A, 2-B..." para eu corrigir!
+              💡 <strong>Clique nas opções</strong> para selecionar suas respostas. O botão "Enviar Respostas" aparecerá para você enviar para correção!
             </div>
           </div>
         ) : (
