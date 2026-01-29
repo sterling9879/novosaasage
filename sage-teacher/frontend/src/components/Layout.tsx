@@ -1,6 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { Home, BookOpen, MessageCircle, LogOut, GraduationCap } from 'lucide-react';
+import { Home, MessageCircle, LogOut, GraduationCap } from 'lucide-react';
 
 export default function Layout() {
   const { user, logout } = useAuth();
