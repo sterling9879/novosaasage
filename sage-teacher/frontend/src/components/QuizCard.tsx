@@ -21,38 +21,63 @@ interface QuizCardProps {
 
 export default function QuizCard({ question, onAnswer }: QuizCardProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const [showResult, setShowResult] = useState(false);
+  const hasCorrectAnswer = question.correctAnswer !== undefined;
 
   const handleSelect = (letter: string) => {
-    if (showResult) return;
+    if (selectedAnswer && hasCorrectAnswer) return; // Lock after selection if we know the answer
 
     setSelectedAnswer(letter);
-    setShowResult(true);
 
-    const isCorrect = question.correctAnswer
-      ? letter.toLowerCase() === question.correctAnswer.toLowerCase()
+    const isCorrect = hasCorrectAnswer
+      ? letter.toLowerCase() === question.correctAnswer!.toLowerCase()
       : false;
 
     onAnswer?.(question.questionNumber, letter, isCorrect);
   };
 
   const getOptionStyle = (letter: string) => {
-    if (!showResult) {
-      return selectedAnswer === letter
+    const isSelected = selectedAnswer === letter;
+
+    // If no correct answer is known, just show selection
+    if (!hasCorrectAnswer) {
+      return isSelected
         ? 'border-sage-500 bg-sage-50'
         : 'border-gray-200 hover:border-sage-300 hover:bg-gray-50';
     }
 
-    const isCorrectOption = question.correctAnswer?.toLowerCase() === letter.toLowerCase();
+    // If correct answer is known and user has selected
+    if (selectedAnswer) {
+      const isCorrectOption = question.correctAnswer!.toLowerCase() === letter.toLowerCase();
+
+      if (isCorrectOption) {
+        return 'border-green-500 bg-green-50';
+      }
+      if (isSelected && !isCorrectOption) {
+        return 'border-red-500 bg-red-50';
+      }
+      return 'border-gray-200 opacity-60';
+    }
+
+    // Default state
+    return isSelected
+      ? 'border-sage-500 bg-sage-50'
+      : 'border-gray-200 hover:border-sage-300 hover:bg-gray-50';
+  };
+
+  const getLetterStyle = (letter: string) => {
     const isSelected = selectedAnswer === letter;
 
-    if (isCorrectOption) {
-      return 'border-green-500 bg-green-50';
+    if (!hasCorrectAnswer) {
+      return isSelected ? 'bg-sage-500 text-white' : 'bg-gray-100 text-gray-600';
     }
-    if (isSelected && !isCorrectOption) {
-      return 'border-red-500 bg-red-50';
+
+    if (selectedAnswer) {
+      const isCorrectOption = question.correctAnswer!.toLowerCase() === letter.toLowerCase();
+      if (isCorrectOption) return 'bg-green-500 text-white';
+      if (isSelected) return 'bg-red-500 text-white';
     }
-    return 'border-gray-200 opacity-60';
+
+    return 'bg-gray-100 text-gray-600';
   };
 
   return (
@@ -76,46 +101,50 @@ export default function QuizCard({ question, onAnswer }: QuizCardProps) {
           <button
             key={option.letter}
             onClick={() => handleSelect(option.letter)}
-            disabled={showResult}
+            disabled={selectedAnswer !== null && hasCorrectAnswer}
             className={`w-full p-3 rounded-lg border-2 text-left transition-all flex items-center gap-3 ${getOptionStyle(option.letter)} ${
-              showResult ? 'cursor-default' : 'cursor-pointer'
+              selectedAnswer && hasCorrectAnswer ? 'cursor-default' : 'cursor-pointer'
             }`}
           >
-            <span className={`font-semibold w-6 h-6 rounded-full flex items-center justify-center text-sm ${
-              showResult && question.correctAnswer?.toLowerCase() === option.letter.toLowerCase()
-                ? 'bg-green-500 text-white'
-                : showResult && selectedAnswer === option.letter
-                ? 'bg-red-500 text-white'
-                : 'bg-gray-100 text-gray-600'
-            }`}>
+            <span className={`font-semibold w-6 h-6 rounded-full flex items-center justify-center text-sm ${getLetterStyle(option.letter)}`}>
               {option.letter.toUpperCase()}
             </span>
             <span className="flex-1 text-sage-800">{option.text}</span>
-            {showResult && question.correctAnswer?.toLowerCase() === option.letter.toLowerCase() && (
+            {selectedAnswer && hasCorrectAnswer && question.correctAnswer!.toLowerCase() === option.letter.toLowerCase() && (
               <CheckCircle className="w-5 h-5 text-green-500" />
             )}
-            {showResult && selectedAnswer === option.letter && question.correctAnswer?.toLowerCase() !== option.letter.toLowerCase() && (
+            {selectedAnswer && hasCorrectAnswer && selectedAnswer === option.letter && question.correctAnswer!.toLowerCase() !== option.letter.toLowerCase() && (
               <XCircle className="w-5 h-5 text-red-500" />
             )}
           </button>
         ))}
       </div>
 
-      {showResult && (
+      {/* Show result when correct answer is known */}
+      {selectedAnswer && hasCorrectAnswer && (
         <div className={`mt-3 p-3 rounded-lg ${
-          question.correctAnswer?.toLowerCase() === selectedAnswer?.toLowerCase()
+          question.correctAnswer!.toLowerCase() === selectedAnswer.toLowerCase()
             ? 'bg-green-50 border border-green-200'
-            : 'bg-amber-50 border border-amber-200'
+            : 'bg-red-50 border border-red-200'
         }`}>
           <p className={`text-sm font-medium ${
-            question.correctAnswer?.toLowerCase() === selectedAnswer?.toLowerCase()
+            question.correctAnswer!.toLowerCase() === selectedAnswer.toLowerCase()
               ? 'text-green-700'
-              : 'text-amber-700'
+              : 'text-red-700'
           }`}>
-            {question.correctAnswer?.toLowerCase() === selectedAnswer?.toLowerCase()
-              ? '✓ Correto!'
-              : `✗ A resposta correta é: ${question.correctAnswer?.toUpperCase()}`
+            {question.correctAnswer!.toLowerCase() === selectedAnswer.toLowerCase()
+              ? '✓ Correto! Muito bem!'
+              : `✗ A resposta correta é: ${question.correctAnswer!.toUpperCase()}`
             }
+          </p>
+        </div>
+      )}
+
+      {/* Show selection confirmation when answer is NOT known */}
+      {selectedAnswer && !hasCorrectAnswer && (
+        <div className="mt-3 p-3 rounded-lg bg-sage-50 border border-sage-200">
+          <p className="text-sm text-sage-700">
+            ✓ Você escolheu: <strong>{selectedAnswer.toUpperCase()}</strong>
           </p>
         </div>
       )}
