@@ -157,32 +157,47 @@ export function parseQuizFromMarkdown(content: string): { questions: QuizQuestio
   const questions: QuizQuestion[] = [];
   let remainingText = content;
 
-  // Pattern to match quiz questions
-  // Matches: ### Pergunta N: or **Pergunta N:** followed by question and options
-  const questionPattern = /(?:#{1,3}\s*)?(?:\*\*)?Pergunta\s*(\d+)(?:\*\*)?:?\s*\n([\s\S]*?)(?=(?:#{1,3}\s*)?(?:\*\*)?Pergunta\s*\d+|$)/gi;
+  // Normalize line endings
+  const normalizedContent = content.replace(/\r\n/g, '\n');
 
-  let match;
-  while ((match = questionPattern.exec(content)) !== null) {
-    const questionNumber = parseInt(match[1]);
-    const questionBlock = match[2].trim();
+  // Split content by question headers
+  // Matches: ### Pergunta N: or **Pergunta N:** or just "Pergunta N:"
+  const questionSplitPattern = /(?:#{1,3}\s+)?(?:\*\*)?[Pp]ergunta\s*(\d+)(?:\*\*)?:?\s*\n/g;
+
+  // Find all question positions
+  const questionStarts: { index: number; number: number; fullMatch: string }[] = [];
+  let splitMatch;
+  while ((splitMatch = questionSplitPattern.exec(normalizedContent)) !== null) {
+    questionStarts.push({
+      index: splitMatch.index,
+      number: parseInt(splitMatch[1]),
+      fullMatch: splitMatch[0]
+    });
+  }
+
+  // Extract each question
+  for (let i = 0; i < questionStarts.length; i++) {
+    const start = questionStarts[i];
+    const contentStart = start.index + start.fullMatch.length;
+    const contentEnd = i < questionStarts.length - 1
+      ? questionStarts[i + 1].index
+      : normalizedContent.length;
+
+    const questionBlock = normalizedContent.slice(contentStart, contentEnd).trim();
 
     // Extract code block if present
-    const codeMatch = questionBlock.match(/```[\w]*\n([\s\S]*?)```/);
+    const codeMatch = questionBlock.match(/```[\w]*\n?([\s\S]*?)```/);
     const codeBlock = codeMatch ? codeMatch[1].trim() : undefined;
 
-    // Remove code block from question text
+    // Remove code block from question text for processing
     let textWithoutCode = questionBlock;
     if (codeMatch) {
-      textWithoutCode = questionBlock.replace(/```[\w]*\n[\s\S]*?```/, '').trim();
+      textWithoutCode = questionBlock.replace(/```[\w]*\n?[\s\S]*?```/, '').trim();
     }
-
-    // Extract question text (before options)
-    const questionTextMatch = textWithoutCode.match(/^([\s\S]*?)(?=\n\s*[a-d]\))/i);
-    const questionText = questionTextMatch ? questionTextMatch[1].trim() : textWithoutCode.split('\n')[0];
 
     // Extract options (a), b), c), d))
     const options: QuizOption[] = [];
-    const optionPattern = /([a-d])\)\s*([^\n]+)/gi;
+    const optionPattern = /^([a-dA-D])\)\s*(.+)$/gm;
     let optionMatch;
     while ((optionMatch = optionPattern.exec(textWithoutCode)) !== null) {
       options.push({
@@ -191,21 +206,35 @@ export function parseQuizFromMarkdown(content: string): { questions: QuizQuestio
       });
     }
 
+    // Extract question text (everything before the first option)
+    let questionText = textWithoutCode;
+    const firstOptionMatch = textWithoutCode.match(/^[a-dA-D]\)\s*/m);
+    if (firstOptionMatch && firstOptionMatch.index !== undefined) {
+      questionText = textWithoutCode.slice(0, firstOptionMatch.index).trim();
+    }
+
+    // Only add if we have valid options
     if (options.length >= 2) {
       questions.push({
-        questionNumber,
+        questionNumber: start.number,
         questionText,
         codeBlock,
         options,
-        // We don't know the correct answer from the markdown alone
-        // The user will need to ask for feedback
         correctAnswer: undefined
       });
 
       // Remove this question from remaining text
-      remainingText = remainingText.replace(match[0], '');
+      remainingText = remainingText.replace(start.fullMatch + questionBlock, '');
     }
   }
 
-  return { questions, remainingText: remainingText.trim() };
+  // Clean up remaining text
+  remainingText = remainingText.trim();
+
+  // Remove "Aguardo suas respostas" type messages from remaining text if questions were found
+  if (questions.length > 0) {
+    remainingText = remainingText.replace(/\n*Aguardo suas respostas[!.]*/gi, '').trim();
+  }
+
+  return { questions, remainingText };
 }
