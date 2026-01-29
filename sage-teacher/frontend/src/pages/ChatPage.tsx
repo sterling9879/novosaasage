@@ -1,13 +1,18 @@
 import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { chatApi } from '../services/api';
-import { ArrowLeft, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, Send, Trash2, CheckSquare } from 'lucide-react';
 import ChatMessage from '../components/ChatMessage';
 
 interface Message {
   id: string;
   role: 'USER' | 'ASSISTANT';
   content: string;
+}
+
+interface QuizAnswer {
+  questionNumber: number;
+  selectedLetter: string;
 }
 
 export default function ChatPage() {
@@ -18,6 +23,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState<QuizAnswer[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -94,6 +100,62 @@ export default function ChatPage() {
     }
   };
 
+  const handleQuizAnswer = (questionNumber: number, selectedLetter: string) => {
+    setQuizAnswers((prev) => {
+      // Remove existing answer for this question and add new one
+      const filtered = prev.filter((a) => a.questionNumber !== questionNumber);
+      return [...filtered, { questionNumber, selectedLetter }].sort(
+        (a, b) => a.questionNumber - b.questionNumber
+      );
+    });
+  };
+
+  const sendQuizAnswers = async () => {
+    if (quizAnswers.length === 0 || isLoading) return;
+
+    // Format answers as "1-A, 2-B, 3-C"
+    const answersText = quizAnswers
+      .map((a) => `${a.questionNumber}-${a.selectedLetter.toUpperCase()}`)
+      .join(', ');
+
+    const userMessage = `Minhas respostas são: ${answersText}. Por favor, corrija e explique cada uma.`;
+
+    setInput('');
+    setIsLoading(true);
+
+    // Add user message immediately
+    const tempUserMsg: Message = {
+      id: `temp-${Date.now()}`,
+      role: 'USER',
+      content: userMessage
+    };
+    setMessages((prev) => [...prev, tempUserMsg]);
+
+    try {
+      const response = await chatApi.send({
+        message: userMessage,
+        topicId: topicId || undefined,
+        subjectId: subjectId || undefined
+      });
+
+      // Replace temp message and add AI response
+      setMessages((prev) => [
+        ...prev.filter((m) => m.id !== tempUserMsg.id),
+        response.data.userMessage,
+        response.data.assistantMessage
+      ]);
+
+      // Clear quiz answers after sending
+      setQuizAnswers([]);
+    } catch (error) {
+      console.error('Error sending answers:', error);
+      setMessages((prev) => prev.filter((m) => m.id !== tempUserMsg.id));
+    } finally {
+      setIsLoading(false);
+      inputRef.current?.focus();
+    }
+  };
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
@@ -157,8 +219,22 @@ export default function ChatPage() {
             key={message.id}
             content={message.content}
             role={message.role}
+            onQuizAnswer={handleQuizAnswer}
           />
         ))}
+
+        {/* Send Quiz Answers Button */}
+        {quizAnswers.length > 0 && !isLoading && (
+          <div className="flex justify-center">
+            <button
+              onClick={sendQuizAnswers}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sage-500 to-sage-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl hover:from-sage-600 hover:to-sage-700 transition-all transform hover:scale-105"
+            >
+              <CheckSquare className="w-5 h-5" />
+              Enviar {quizAnswers.length} resposta{quizAnswers.length > 1 ? 's' : ''} para correção
+            </button>
+          </div>
+        )}
 
         {isLoading && (
           <div className="flex justify-start">
