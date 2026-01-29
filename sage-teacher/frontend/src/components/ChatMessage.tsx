@@ -13,7 +13,6 @@ function renderMarkdown(text: string): JSX.Element[] {
   const lines = text.split('\n');
   let inCodeBlock = false;
   let codeContent = '';
-  let _codeLanguage = ''; // Prefixed to indicate intentionally unused (for future syntax highlighting)
   let key = 0;
 
   for (let i = 0; i < lines.length; i++) {
@@ -23,7 +22,6 @@ function renderMarkdown(text: string): JSX.Element[] {
     if (line.startsWith('```')) {
       if (!inCodeBlock) {
         inCodeBlock = true;
-        _codeLanguage = line.slice(3).trim();
         codeContent = '';
       } else {
         // Code block end
