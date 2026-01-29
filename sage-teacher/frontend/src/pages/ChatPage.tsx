@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams, useSearchParams, Link } from 'react-router-dom';
 import { chatApi } from '../services/api';
 import { ArrowLeft, Send, Trash2 } from 'lucide-react';
+import ChatMessage from '../components/ChatMessage';
 
 interface Message {
   id: string;
@@ -152,22 +153,11 @@ export default function ChatPage() {
         )}
 
         {messages.map((message) => (
-          <div
+          <ChatMessage
             key={message.id}
-            className={`flex ${message.role === 'USER' ? 'justify-end' : 'justify-start'}`}
-          >
-            <div
-              className={`max-w-[85%] sm:max-w-[75%] rounded-2xl px-4 py-3 ${
-                message.role === 'USER'
-                  ? 'bg-gradient-to-br from-sage-500 to-sage-700 text-white rounded-br-md'
-                  : 'bg-white border border-gray-100 text-sage-900 rounded-bl-md shadow-sm'
-              }`}
-            >
-              <p className="whitespace-pre-wrap text-[15px] leading-relaxed">
-                {message.content}
-              </p>
-            </div>
-          </div>
+            content={message.content}
+            role={message.role}
+          />
         ))}
 
         {isLoading && (
