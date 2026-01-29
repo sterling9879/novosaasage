@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if email exists
-    const existingUser = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+    const existingUser = db.prepare('SELECT id FROM User WHERE email = ?').get(email);
     if (existingUser) {
       return res.status(400).json({ error: 'Email já cadastrado' });
     }
@@ -31,11 +31,11 @@ router.post('/register', async (req, res) => {
     // Create user
     const userId = uuidv4();
     db.prepare(`
-      INSERT INTO users (id, name, email, password, createdAt)
+      INSERT INTO User (id, name, email, password, createdAt)
       VALUES (?, ?, ?, ?, datetime('now'))
     `).run(userId, name, email.toLowerCase(), hashedPassword);
 
-    const user = db.prepare('SELECT id, name, email, createdAt FROM users WHERE id = ?').get(userId);
+    const user = db.prepare('SELECT id, name, email, createdAt FROM User WHERE id = ?').get(userId);
     const token = generateToken(user);
 
     res.status(201).json({
@@ -57,7 +57,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email e senha são obrigatórios' });
     }
 
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
+    const user = db.prepare('SELECT * FROM User WHERE email = ?').get(email.toLowerCase());
     if (!user) {
       return res.status(401).json({ error: 'Email ou senha incorretos' });
     }
@@ -68,7 +68,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Update last login
-    db.prepare("UPDATE users SET lastLoginAt = datetime('now') WHERE id = ?").run(user.id);
+    db.prepare("UPDATE User SET lastLoginAt = datetime('now') WHERE id = ?").run(user.id);
 
     const token = generateToken(user);
 
@@ -84,7 +84,7 @@ router.post('/login', async (req, res) => {
 
 // Get current user
 router.get('/me', authMiddleware, (req, res) => {
-  const user = db.prepare('SELECT id, name, email, createdAt FROM users WHERE id = ?').get(req.user.id);
+  const user = db.prepare('SELECT id, name, email, createdAt FROM User WHERE id = ?').get(req.user.id);
   if (!user) {
     return res.status(404).json({ error: 'Usuário não encontrado' });
   }
