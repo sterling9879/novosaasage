@@ -8,6 +8,8 @@ export default defineConfig({
     host: true
   },
   preview: {
-    port: 3002
+    port: 3002,
+    host: true,
+    allowedHosts: ['teacher.sageapp.com.br', 'localhost']
   }
 })
