@@ -2,17 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
-import { FiCheck, FiPlay, FiArrowRight, FiX, FiChevronDown, FiStar, FiZap, FiShield, FiMessageCircle } from 'react-icons/fi';
+import { FiCheck, FiArrowRight, FiChevronDown, FiStar, FiZap, FiShield, FiMessageCircle } from 'react-icons/fi';
 
 // Animation variants
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] } }
-};
-
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.6 } }
 };
 
 const staggerContainer = {
@@ -60,17 +55,51 @@ function Particles() {
   );
 }
 
-// Vturb Video Player Component
+// Vturb Video Player Component - VSL Principal
 function VturbPlayer() {
   useEffect(() => {
+    // Performance tracking
+    const perfScript = document.createElement('script');
+    perfScript.textContent = `!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);`;
+    document.head.appendChild(perfScript);
+
+    // Preload links
+    const preloads = [
+      { href: 'https://scripts.converteai.net/21b35875-8136-4b51-b275-3c04b6f8c5d5/players/697e4e451385ff513704115c/v4/player.js', as: 'script' },
+      { href: 'https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js', as: 'script' },
+      { href: 'https://cdn.converteai.net/21b35875-8136-4b51-b275-3c04b6f8c5d5/697e4dfedc3587919270623d/main.m3u8', as: 'fetch' },
+    ];
+
+    preloads.forEach(({ href, as }) => {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = href;
+      link.as = as;
+      document.head.appendChild(link);
+    });
+
+    // DNS prefetch
+    const dnsPrefetch = [
+      'https://cdn.converteai.net',
+      'https://scripts.converteai.net',
+      'https://images.converteai.net',
+      'https://api.vturb.com.br',
+    ];
+
+    dnsPrefetch.forEach((href) => {
+      const link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    });
+
     // Load Vturb player script
     const script = document.createElement('script');
-    script.src = 'https://scripts.converteai.net/21b35875-8136-4b51-b275-3c04b6f8c5d5/players/69729e409380180051415508/v4/player.js';
+    script.src = 'https://scripts.converteai.net/21b35875-8136-4b51-b275-3c04b6f8c5d5/players/697e4e451385ff513704115c/v4/player.js';
     script.async = true;
     document.head.appendChild(script);
 
     return () => {
-      // Cleanup if needed
       const existingScript = document.querySelector(`script[src="${script.src}"]`);
       if (existingScript) {
         existingScript.remove();
@@ -81,7 +110,7 @@ function VturbPlayer() {
   return (
     <div
       dangerouslySetInnerHTML={{
-        __html: '<vturb-smartplayer id="vid-69729e409380180051415508" style="display: block; margin: 0 auto; width: 100%; max-width: 800px;"></vturb-smartplayer>'
+        __html: '<vturb-smartplayer id="vid-697e4e451385ff513704115c" style="display: block; margin: 0 auto; width: 100%; max-width: 400px;"></vturb-smartplayer>'
       }}
     />
   );
@@ -114,6 +143,16 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 export default function LandingPage() {
   const { scrollYProgress } = useScroll();
   const headerOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0.95]);
+  const [showContent, setShowContent] = useState(false);
+
+  // Delay de 13:30 (810 segundos) para mostrar o conteúdo
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowContent(true);
+    }, 810000); // 13 minutos e 30 segundos em milissegundos
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Reveal animations on scroll
@@ -148,77 +187,21 @@ export default function LandingPage() {
             </div>
             <span className="font-bold text-xl">Sage IA</span>
           </div>
-          <a href="#planos" className="btn-primary text-sm py-2.5 px-5 hidden sm:inline-flex items-center gap-2">
-            Começar Agora <FiArrowRight className="w-4 h-4" />
-          </a>
+          {showContent && (
+            <a href="#planos" className="btn-primary text-sm py-2.5 px-5 hidden sm:inline-flex items-center gap-2">
+              Começar Agora <FiArrowRight className="w-4 h-4" />
+            </a>
+          )}
         </div>
       </motion.header>
 
-      {/* Hero Section */}
+      {/* VSL Video Section - Replaces Hero */}
       <section className="min-h-screen flex items-center pt-20 pb-12 px-4 sm:px-6 relative overflow-hidden">
-        <div className="max-w-5xl mx-auto text-center">
-          <AnimatedSection>
-            <motion.div variants={fadeInUp} className="mb-6">
-              <span className="badge">
-                <FiZap className="w-4 h-4 mr-2" />
-                A IA Brasileira
-              </span>
-            </motion.div>
-
-            <motion.h1
-              variants={fadeInUp}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6"
-            >
-              A IA Que Fala O Que As Outras{' '}
-              <span className="gradient-text">Têm Medo De Falar</span>
-            </motion.h1>
-
-            <motion.p
-              variants={fadeInUp}
-              className="text-xl sm:text-2xl md:text-3xl font-medium text-white/80 mb-4"
-            >
-              Sem censura. Sem frescura. Sem te tratar como idiota.
-            </motion.p>
-
-            <motion.p
-              variants={fadeInUp}
-              className="text-lg text-white/60 mb-10"
-            >
-              Respostas reais pra pessoas adultas. Finalmente.
-            </motion.p>
-
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#planos" className="btn-primary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
-                Começar Agora <FiArrowRight className="w-5 h-5" />
-              </a>
-              <a href="#video" className="btn-secondary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
-                <FiPlay className="w-5 h-5" /> Ver Demonstração
-              </a>
-            </motion.div>
-          </AnimatedSection>
-
-          {/* Hero Decoration */}
-          <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-sage-500/20 via-transparent to-transparent blur-3xl pointer-events-none" />
-        </div>
-      </section>
-
-      {/* Video Section */}
-      <section id="video" className="section py-16 sm:py-24">
-        <div className="max-w-4xl mx-auto px-4">
-          <AnimatedSection className="text-center mb-10">
-            <motion.h2 variants={fadeInUp} className="text-2xl sm:text-3xl font-bold mb-4">
-              Veja a Sage em Ação
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-white/60">
-              Sem enrolação, sem disclaimer, sem pedir desculpas por ter opinião.
-            </motion.p>
-          </AnimatedSection>
-
+        <div className="max-w-lg mx-auto w-full">
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             className="rounded-2xl overflow-hidden"
           >
             <VturbPlayer />
@@ -226,6 +209,9 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Conteúdo que aparece após delay de 13:30 */}
+      {showContent && (
+        <>
       {/* Problem Section */}
       <section className="section">
         <div className="max-w-4xl mx-auto px-4">
@@ -466,210 +452,85 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing Section - Apenas Plano Profissional */}
       <section id="planos" className="section py-20 sm:py-32">
-        <div className="max-w-5xl mx-auto px-4">
+        <div className="max-w-2xl mx-auto px-4">
           <AnimatedSection className="text-center mb-16">
             <motion.span variants={fadeInUp} className="badge mb-4 inline-block">
-              Escolha seu plano
+              Oferta Exclusiva
             </motion.span>
             <motion.h2 variants={fadeInUp} className="text-3xl sm:text-4xl md:text-5xl font-bold">
               Comece a usar agora
             </motion.h2>
           </AnimatedSection>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Essential Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="price-card"
-            >
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Plano Essencial</h3>
-                <p className="text-white/60">Pra quem quer sair da censura e começar a usar IA de verdade.</p>
+          {/* Professional Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="price-card featured relative"
+          >
+            <div className="absolute -top-4 right-6">
+              <span className="bg-gold text-black text-sm font-bold px-4 py-1.5 rounded-full">
+                ACESSO COMPLETO
+              </span>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="text-2xl font-bold mb-2">Plano Profissional</h3>
+              <p className="text-white/60">Pra quem usa IA como ferramenta de trabalho e não pode ficar sem.</p>
+            </div>
+
+            <div className="mb-8">
+              <span className="text-4xl sm:text-5xl font-bold gradient-text-gold">R$97</span>
+              <span className="text-white/50">/mês</span>
+            </div>
+
+            <ul className="check-list text-white/80 mb-8">
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span><strong>3.000 mensagens/mês</strong> em modelos premium</span>
+              </li>
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span><strong>Mensagens ilimitadas</strong> no modelo Sage</span>
+              </li>
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span>Modos especiais (Copywriter, Consultor, Dev)</span>
+              </li>
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span>PT-BR nativo</span>
+              </li>
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span>Zero armazenamento de conversas</span>
+              </li>
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span><strong>Suporte prioritário por WhatsApp</strong></span>
+              </li>
+              <li>
+                <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
+                <span>Acesso antecipado a novos recursos</span>
+              </li>
+            </ul>
+
+            <div className="mb-8 p-4 rounded-xl bg-gold/10 border border-gold/20">
+              <p className="text-sm font-semibold text-gold mb-3">BÔNUS EXCLUSIVOS:</p>
+              <div className="space-y-2 text-sm text-white/70">
+                <p>🎁 Biblioteca de Agentes de IA Prontos (Valor: R$297)</p>
+                <p>🎁 Newsletter Premium com Bastidores</p>
+                <p>🎁 Acesso ao Grupo Fechado</p>
               </div>
+            </div>
 
-              <div className="mb-8">
-                <span className="text-4xl sm:text-5xl font-bold">R$37</span>
-                <span className="text-white/50">/mês</span>
-              </div>
-
-              <ul className="check-list text-white/80 mb-8">
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-sage-400" /></span>
-                  <span><strong>500 mensagens/mês</strong> em modelos premium (GPT-4, Claude, Gemini)</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-sage-400" /></span>
-                  <span><strong>Mensagens ilimitadas</strong> no modelo Sage</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-sage-400" /></span>
-                  <span>Modos especiais (Copywriter, Consultor, Dev)</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-sage-400" /></span>
-                  <span>PT-BR nativo</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-sage-400" /></span>
-                  <span>Zero armazenamento de conversas</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-sage-400" /></span>
-                  <span>Suporte por email</span>
-                </li>
-              </ul>
-
-              <div className="mb-8 p-4 rounded-xl bg-white/5 border border-white/10">
-                <p className="text-sm font-semibold text-gold mb-3">BÔNUS INCLUSOS:</p>
-                <div className="space-y-2 text-sm text-white/70">
-                  <p>🎁 Newsletter &ldquo;Sage Insights&rdquo; (Valor: R$29/mês)</p>
-                  <p>🎁 Biblioteca de Artigos e Tutoriais (Valor: R$97)</p>
-                </div>
-              </div>
-
-              <a href="https://payt.site/98C5azQ" className="btn-secondary w-full text-center block">
-                Começar com o Essencial
-              </a>
-            </motion.div>
-
-            {/* Professional Plan */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="price-card featured relative"
-            >
-              <div className="absolute -top-4 right-6">
-                <span className="bg-gold text-black text-sm font-bold px-4 py-1.5 rounded-full">
-                  MAIS POPULAR
-                </span>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="text-2xl font-bold mb-2">Plano Profissional</h3>
-                <p className="text-white/60">Pra quem usa IA como ferramenta de trabalho e não pode ficar sem.</p>
-              </div>
-
-              <div className="mb-8">
-                <span className="text-4xl sm:text-5xl font-bold gradient-text-gold">R$97</span>
-                <span className="text-white/50">/mês</span>
-              </div>
-
-              <ul className="check-list text-white/80 mb-8">
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span><strong>3.000 mensagens/mês</strong> em modelos premium</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span><strong>Mensagens ilimitadas</strong> no modelo Sage</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span>Modos especiais (Copywriter, Consultor, Dev)</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span>PT-BR nativo</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span>Zero armazenamento de conversas</span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span><strong>Suporte prioritário por WhatsApp</strong></span>
-                </li>
-                <li>
-                  <span className="check-icon"><FiCheck className="w-4 h-4 text-gold" /></span>
-                  <span>Acesso antecipado a novos recursos</span>
-                </li>
-              </ul>
-
-              <div className="mb-8 p-4 rounded-xl bg-gold/10 border border-gold/20">
-                <p className="text-sm font-semibold text-gold mb-3">TODOS OS BÔNUS + EXCLUSIVOS:</p>
-                <div className="space-y-2 text-sm text-white/70">
-                  <p>🎁 Biblioteca de Agentes de IA Prontos (Valor: R$297)</p>
-                  <p>🎁 Newsletter Premium com Bastidores</p>
-                  <p>🎁 Acesso ao Grupo Fechado</p>
-                </div>
-              </div>
-
-              <a href="https://payt.site/BvCG5DW" className="btn-primary w-full text-center block">
-                Quero o Profissional <FiArrowRight className="inline ml-2" />
-              </a>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Table */}
-      <section className="section pt-0">
-        <div className="max-w-4xl mx-auto px-4">
-          <AnimatedSection>
-            <motion.h3 variants={fadeInUp} className="text-2xl font-bold text-center mb-8">
-              Comparativo Rápido
-            </motion.h3>
-
-            <motion.div variants={fadeInUp} className="overflow-x-auto">
-              <table className="comparison-table w-full min-w-[500px]">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>Essencial</th>
-                    <th>Profissional</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td className="font-medium">Preço</td>
-                    <td>R$37/mês</td>
-                    <td className="text-gold font-medium">R$97/mês</td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Mensagens Premium</td>
-                    <td>500/mês</td>
-                    <td>3.000/mês</td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Modelo Sage</td>
-                    <td>Ilimitado</td>
-                    <td>Ilimitado</td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Modos Especiais</td>
-                    <td><FiCheck className="text-sage-400" /></td>
-                    <td><FiCheck className="text-gold" /></td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Newsletter</td>
-                    <td>Básica</td>
-                    <td>+ Bastidores</td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Agentes Prontos</td>
-                    <td><FiX className="text-white/30" /></td>
-                    <td><FiCheck className="text-gold" /></td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Grupo Fechado</td>
-                    <td><FiX className="text-white/30" /></td>
-                    <td><FiCheck className="text-gold" /></td>
-                  </tr>
-                  <tr>
-                    <td className="font-medium">Suporte</td>
-                    <td>Email</td>
-                    <td>WhatsApp Prioritário</td>
-                  </tr>
-                </tbody>
-              </table>
-            </motion.div>
-          </AnimatedSection>
+            <a href="https://payt.site/BvCG5DW" className="btn-primary w-full text-center block text-lg py-4">
+              Quero Acesso Agora <FiArrowRight className="inline ml-2" />
+            </a>
+          </motion.div>
         </div>
       </section>
 
@@ -711,8 +572,8 @@ export default function LandingPage() {
                 answer='Legal. Agora pergunta pro ChatGPT o que ele acha da sua ideia de negócio e conta quantos "depende" e "existem múltiplas perspectivas" você recebe antes de uma resposta útil. Ah, e você paga R$100/mês por isso.'
               />
               <FAQItem
-                question="500 mensagens é pouco?"
-                answer="Mensagens premium são pra tarefas pesadas. Pro dia a dia, o modelo Sage é ilimitado e resolve 80% do que você precisa. Se você realmente usa pesado, o Profissional tem 3.000."
+                question="3.000 mensagens é suficiente?"
+                answer="Mensagens premium são pra tarefas pesadas. Pro dia a dia, o modelo Sage é ilimitado e resolve 80% do que você precisa. 3.000 mensagens premium dá e sobra pra uso profissional."
               />
               <FAQItem
                 question="IA sem censura é perigoso?"
@@ -727,8 +588,8 @@ export default function LandingPage() {
                 answer="A qualquer momento. Sem multa. Sem fidelidade. Sem fazer você ligar pra um 0800."
               />
               <FAQItem
-                question="Qual plano escolher?"
-                answer="Se você usa IA ocasionalmente ou tá começando: Essencial. Se IA é parte do seu trabalho diário: Profissional. Simples."
+                question="Pra quem é o plano Profissional?"
+                answer="Pra quem usa IA como ferramenta de trabalho diária. Copywriters, empreendedores, devs, consultores. Gente que precisa de respostas rápidas e honestas sem limite."
               />
             </motion.div>
           </AnimatedSection>
@@ -754,7 +615,7 @@ export default function LandingPage() {
               <div className="glass rounded-2xl p-6 sm:p-8 text-left border-2 border-sage-500/50 bg-sage-500/5">
                 <p className="text-lg font-semibold text-sage-400 mb-4">Opção 2:</p>
                 <p className="text-white/90">
-                  Assinar Sage IA por menos da metade do preço e finalmente ter uma ferramenta que trabalha PRA você, não CONTRA você. Com bônus que sozinhos valem mais que a assinatura.
+                  Assinar Sage IA por R$97/mês e finalmente ter uma ferramenta que trabalha PRA você, não CONTRA você. Com bônus que sozinhos valem mais que a assinatura.
                 </p>
               </div>
             </motion.div>
@@ -763,17 +624,16 @@ export default function LandingPage() {
               A escolha é sua. Mas se você chegou até aqui, você já sabe qual faz sentido.
             </motion.p>
 
-            <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="https://payt.site/98C5azQ" className="btn-secondary text-lg py-4 px-8">
-                Quero o Essencial — R$37/mês
-              </a>
-              <a href="https://payt.site/BvCG5DW" className="btn-primary text-lg py-4 px-8 inline-flex items-center justify-center gap-2">
-                Quero o Profissional — R$97/mês <FiArrowRight />
+            <motion.div variants={fadeInUp}>
+              <a href="https://payt.site/BvCG5DW" className="btn-primary text-lg py-4 px-10 inline-flex items-center justify-center gap-2">
+                Quero Acesso Agora — R$97/mês <FiArrowRight />
               </a>
             </motion.div>
           </AnimatedSection>
         </div>
       </section>
+        </>
+      )}
 
       {/* Footer */}
       <footer className="py-12 border-t border-white/10">
