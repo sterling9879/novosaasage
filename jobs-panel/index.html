@@ -1,0 +1,2415 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Central de Trabalhos | Sage IA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bg-primary': '#0a0a0a',
+                        'bg-secondary': '#141414',
+                        'bg-card': '#1a1a1a',
+                        'text-primary': '#ffffff',
+                        'text-secondary': '#a0a0a0',
+                        'accent-green': '#22c55e',
+                        'accent-green-dark': '#16a34a',
+                        'accent-gold': '#eab308',
+                        'border-color': '#2a2a2a',
+                    },
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #0a0a0a;
+            color: #ffffff;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #141414;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a2a;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a3a3a;
+        }
+
+        /* Animations */
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes count-up {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse-badge {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes skeleton {
+            0% { background-position: -200px 0; }
+            100% { background-position: calc(200px + 100%) 0; }
+        }
+
+        .animate-pulse-green {
+            animation: pulse-green 2s ease-in-out infinite;
+        }
+
+        .animate-gradient {
+            background: linear-gradient(90deg, #22c55e, #16a34a, #22c55e);
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+        }
+
+        .animate-slide-in {
+            animation: slide-in 0.5s ease-out;
+        }
+
+        .animate-count {
+            animation: count-up 0.3s ease-out;
+        }
+
+        .animate-pulse-badge {
+            animation: pulse-badge 2s ease-in-out infinite;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #1a1a1a 0px, #2a2a2a 40px, #1a1a1a 80px);
+            background-size: 200px 100%;
+            animation: skeleton 1.5s ease-in-out infinite;
+        }
+
+        /* Card hover effect */
+        .job-card {
+            transition: all 0.3s ease;
+        }
+
+        .job-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+        }
+
+        /* Button gradient effect */
+        .btn-ai {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            transition: all 0.3s ease;
+        }
+
+        .btn-ai:hover {
+            background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+        }
+
+        /* Difficulty borders */
+        .difficulty-easy {
+            border-left: 3px solid #22c55e;
+        }
+
+        .difficulty-medium {
+            border-left: 3px solid #eab308;
+        }
+
+        .difficulty-advanced {
+            border-left: 3px solid #ef4444;
+        }
+
+        /* Modal backdrop */
+        .modal-backdrop {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+        }
+
+        /* Earnings feed animation */
+        .earnings-item {
+            animation: slide-in 0.5s ease-out;
+        }
+
+        /* Hide scrollbar for earnings feed */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Filter checkbox styling */
+        .filter-checkbox:checked + label {
+            color: #22c55e;
+        }
+
+        .filter-checkbox:checked + label::before {
+            background-color: #22c55e;
+            border-color: #22c55e;
+        }
+
+        /* Toast notification */
+        .toast {
+            animation: slide-in 0.3s ease-out;
+        }
+
+        /* Platform logos */
+        .platform-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .platform-workana { background: rgba(255, 89, 0, 0.2); color: #ff5900; }
+        .platform-99freelas { background: rgba(0, 200, 83, 0.2); color: #00c853; }
+        .platform-getninjas { background: rgba(255, 193, 7, 0.2); color: #ffc107; }
+        .platform-fiverr { background: rgba(0, 180, 110, 0.2); color: #00b46e; }
+        .platform-freelancer { background: rgba(41, 128, 185, 0.2); color: #2980b9; }
+        .platform-direto { background: rgba(156, 39, 176, 0.2); color: #9c27b0; }
+    </style>
+</head>
+<body class="bg-bg-primary text-text-primary min-h-screen">
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-bg-primary/95 backdrop-blur-md border-b border-border-color">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-accent-green flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <div class="hidden sm:block">
+                        <h1 class="text-lg font-bold">Sage IA</h1>
+                        <p class="text-xs text-text-secondary">Central de Trabalhos</p>
+                    </div>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-xl hidden md:block">
+                    <div class="relative">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            placeholder="Buscar trabalhos..."
+                            class="w-full bg-bg-secondary border border-border-color rounded-xl px-4 py-2.5 pl-10 text-sm focus:outline-none focus:border-accent-green transition-colors"
+                        >
+                        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-2">
+                    <!-- Mobile Search Toggle -->
+                    <button id="mobileSearchBtn" class="md:hidden p-2 rounded-lg hover:bg-bg-secondary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+
+                    <!-- Filter Toggle (Mobile) -->
+                    <button id="filterToggle" class="lg:hidden p-2 rounded-lg hover:bg-bg-secondary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/>
+                        </svg>
+                    </button>
+
+                    <!-- User Account -->
+                    <button class="flex items-center gap-2 p-2 rounded-lg hover:bg-bg-secondary transition-colors">
+                        <div class="w-8 h-8 rounded-full bg-accent-green/20 flex items-center justify-center">
+                            <svg class="w-4 h-4 text-accent-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                        </div>
+                        <span class="hidden sm:inline text-sm">Minha Conta</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search (Hidden by default) -->
+            <div id="mobileSearch" class="hidden mt-3 md:hidden">
+                <input
+                    type="text"
+                    id="mobileSearchInput"
+                    placeholder="Buscar trabalhos..."
+                    class="w-full bg-bg-secondary border border-border-color rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent-green transition-colors"
+                >
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats Bar -->
+    <div class="fixed top-[73px] left-0 right-0 z-40 bg-bg-secondary border-b border-border-color">
+        <div class="max-w-7xl mx-auto px-4 py-2">
+            <div class="flex items-center justify-center gap-4 sm:gap-8 text-xs sm:text-sm overflow-x-auto hide-scrollbar">
+                <div class="flex items-center gap-2 whitespace-nowrap">
+                    <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse-green"></span>
+                    <span><strong id="jobsCount" class="text-accent-green">847</strong> trabalhos disponíveis</span>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 whitespace-nowrap">
+                    <span>💰</span>
+                    <span>R$<strong id="totalValue" class="text-accent-green">127.450</strong> em oportunidades</span>
+                </div>
+                <div class="flex items-center gap-2 whitespace-nowrap">
+                    <span>⚡</span>
+                    <span><strong id="newJobs" class="text-accent-gold">23</strong> novos na última hora</span>
+                </div>
+                <div class="hidden md:flex items-center gap-2 whitespace-nowrap">
+                    <span>👥</span>
+                    <span><strong id="onlineUsers" class="text-accent-green">342</strong> pessoas online</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="pt-[130px] pb-24 lg:pb-8">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex gap-6">
+
+                <!-- Filters Sidebar (Desktop) -->
+                <aside id="filtersSidebar" class="hidden lg:block w-72 flex-shrink-0">
+                    <div class="sticky top-[140px] bg-bg-card rounded-2xl border border-border-color p-5 max-h-[calc(100vh-160px)] overflow-y-auto">
+                        <div class="flex items-center justify-between mb-5">
+                            <h3 class="font-semibold text-lg">Filtros</h3>
+                            <button id="clearFilters" class="text-xs text-accent-green hover:underline">Limpar tudo</button>
+                        </div>
+
+                        <!-- Filter Sections -->
+                        <div class="space-y-6" id="filtersContainer">
+                            <!-- Tipo de Trabalho -->
+                            <div>
+                                <h4 class="font-medium text-sm mb-3 text-text-secondary">Tipo de Trabalho</h4>
+                                <div class="space-y-2" id="typeFilters">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Faixa de Valor -->
+                            <div>
+                                <h4 class="font-medium text-sm mb-3 text-text-secondary">Faixa de Valor</h4>
+                                <div class="space-y-2" id="priceFilters">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Plataforma -->
+                            <div>
+                                <h4 class="font-medium text-sm mb-3 text-text-secondary">Plataforma</h4>
+                                <div class="space-y-2" id="platformFilters">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Prazo -->
+                            <div>
+                                <h4 class="font-medium text-sm mb-3 text-text-secondary">Prazo de Entrega</h4>
+                                <div class="space-y-2" id="deadlineFilters">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+
+                            <!-- Nível -->
+                            <div>
+                                <h4 class="font-medium text-sm mb-3 text-text-secondary">Nível de Dificuldade</h4>
+                                <div class="space-y-2" id="levelFilters">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sort -->
+                        <div class="mt-6 pt-6 border-t border-border-color">
+                            <h4 class="font-medium text-sm mb-3 text-text-secondary">Ordenar por</h4>
+                            <select id="sortSelect" class="w-full bg-bg-secondary border border-border-color rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent-green">
+                                <option value="recent">Mais recentes</option>
+                                <option value="highest">Maior valor</option>
+                                <option value="lowest">Menor valor</option>
+                                <option value="deadline">Menor prazo</option>
+                                <option value="easiest">Mais fáceis</option>
+                            </select>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Jobs Grid -->
+                <section class="flex-1 min-w-0">
+                    <!-- Results Count & View Toggle -->
+                    <div class="flex items-center justify-between mb-4">
+                        <p class="text-sm text-text-secondary">
+                            <span id="resultsCount">50</span> trabalhos encontrados
+                        </p>
+                        <div class="flex items-center gap-2">
+                            <button id="viewGrid" class="p-2 rounded-lg bg-bg-card border border-accent-green text-accent-green">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                                </svg>
+                            </button>
+                            <button id="viewList" class="p-2 rounded-lg bg-bg-card border border-border-color text-text-secondary hover:border-accent-green hover:text-accent-green transition-colors">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Jobs Container -->
+                    <div id="jobsContainer" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Loading Skeletons -->
+                        <div class="skeleton h-64 rounded-2xl"></div>
+                        <div class="skeleton h-64 rounded-2xl"></div>
+                        <div class="skeleton h-64 rounded-2xl"></div>
+                        <div class="skeleton h-64 rounded-2xl"></div>
+                        <div class="skeleton h-64 rounded-2xl"></div>
+                        <div class="skeleton h-64 rounded-2xl"></div>
+                    </div>
+
+                    <!-- Load More -->
+                    <div class="mt-8 text-center">
+                        <button id="loadMore" class="px-8 py-3 bg-bg-card border border-border-color rounded-xl hover:border-accent-green transition-colors">
+                            Carregar mais trabalhos
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Earnings Sidebar (Desktop) -->
+                <aside class="hidden xl:block w-72 flex-shrink-0">
+                    <div class="sticky top-[140px]">
+                        <!-- Community Earnings -->
+                        <div class="bg-bg-card rounded-2xl border border-border-color p-5 mb-4">
+                            <h3 class="font-semibold text-sm mb-4 flex items-center gap-2">
+                                💰 Ganhos Recentes da Comunidade
+                            </h3>
+                            <div id="earningsFeed" class="space-y-3 max-h-80 overflow-hidden">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Monthly Stats -->
+                        <div class="bg-gradient-to-br from-accent-green/10 to-transparent rounded-2xl border border-accent-green/30 p-5">
+                            <h3 class="font-semibold text-sm mb-4">📊 Estatísticas do Mês</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Total pago</span>
+                                    <span class="font-semibold text-accent-green">R$4.2M</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Trabalhos feitos</span>
+                                    <span class="font-semibold">94.847</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Membros ativos</span>
+                                    <span class="font-semibold">3.847</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-text-secondary">Ganho médio</span>
+                                    <span class="font-semibold text-accent-green">R$1.890/mês</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Filter Modal -->
+    <div id="filterModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop absolute inset-0" id="filterModalBackdrop"></div>
+        <div class="absolute bottom-0 left-0 right-0 bg-bg-card rounded-t-3xl p-6 max-h-[80vh] overflow-y-auto transform transition-transform">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-semibold text-lg">Filtros</h3>
+                <button id="closeFilterModal" class="p-2 rounded-full hover:bg-bg-secondary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="mobileFiltersContainer" class="space-y-6">
+                <!-- Populated by JS -->
+            </div>
+            <div class="mt-6 flex gap-3">
+                <button id="clearFiltersMobile" class="flex-1 py-3 border border-border-color rounded-xl hover:border-accent-green transition-colors">
+                    Limpar
+                </button>
+                <button id="applyFiltersMobile" class="flex-1 py-3 bg-accent-green text-white rounded-xl font-medium">
+                    Aplicar Filtros
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Detail Modal -->
+    <div id="jobModal" class="fixed inset-0 z-50 hidden">
+        <div class="modal-backdrop absolute inset-0" id="jobModalBackdrop"></div>
+        <div class="absolute inset-4 md:inset-8 lg:inset-16 bg-bg-card rounded-2xl overflow-hidden flex flex-col">
+            <!-- Modal Header -->
+            <div class="p-4 md:p-6 border-b border-border-color flex items-start justify-between">
+                <div>
+                    <div class="flex items-center gap-2 mb-2">
+                        <span id="modalCategory" class="text-xs font-medium px-2 py-1 bg-accent-green/20 text-accent-green rounded-md"></span>
+                        <span id="modalPlatform" class="platform-badge"></span>
+                    </div>
+                    <h2 id="modalTitle" class="text-xl font-bold"></h2>
+                </div>
+                <button id="closeJobModal" class="p-2 rounded-full hover:bg-bg-secondary">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="flex-1 overflow-y-auto p-4 md:p-6">
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-bg-secondary rounded-xl p-4 text-center">
+                        <p class="text-2xl font-bold text-accent-green" id="modalValue"></p>
+                        <p class="text-xs text-text-secondary">Valor</p>
+                    </div>
+                    <div class="bg-bg-secondary rounded-xl p-4 text-center">
+                        <p class="text-2xl font-bold" id="modalDeadline"></p>
+                        <p class="text-xs text-text-secondary">Prazo</p>
+                    </div>
+                    <div class="bg-bg-secondary rounded-xl p-4 text-center">
+                        <p class="text-2xl font-bold" id="modalQuantity"></p>
+                        <p class="text-xs text-text-secondary">Quantidade</p>
+                    </div>
+                    <div class="bg-bg-secondary rounded-xl p-4 text-center">
+                        <p class="text-2xl font-bold" id="modalLevel"></p>
+                        <p class="text-xs text-text-secondary">Nível</p>
+                    </div>
+                </div>
+
+                <!-- Client Rating -->
+                <div class="flex items-center gap-2 mb-6">
+                    <span class="text-yellow-400">⭐</span>
+                    <span class="font-medium" id="modalRating"></span>
+                    <span class="text-text-secondary text-sm" id="modalReviews"></span>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-6">
+                    <h3 class="font-semibold mb-3">📋 Descrição Completa</h3>
+                    <div id="modalDescription" class="text-text-secondary leading-relaxed"></div>
+                </div>
+
+                <!-- AI Tip -->
+                <div class="bg-accent-green/10 border border-accent-green/30 rounded-xl p-4 mb-6">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">💡</span>
+                        <div>
+                            <p class="font-medium text-accent-green mb-1">Dica da Sage</p>
+                            <p class="text-sm text-text-secondary" id="modalTip"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tags -->
+                <div class="mb-6">
+                    <h3 class="font-semibold mb-3">🏷️ Tags</h3>
+                    <div id="modalTags" class="flex flex-wrap gap-2"></div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="p-4 md:p-6 border-t border-border-color bg-bg-card">
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button id="saveFavorite" class="flex-1 py-3 px-6 border border-border-color rounded-xl hover:border-accent-green transition-colors flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        </svg>
+                        <span>Salvar</span>
+                    </button>
+                    <button id="goToPlatform" class="flex-1 py-3 px-6 border border-border-color rounded-xl hover:border-accent-green transition-colors">
+                        Ir para plataforma
+                    </button>
+                    <button id="doWithAI" class="flex-[2] py-3 px-6 btn-ai text-white rounded-xl font-semibold flex items-center justify-center gap-2">
+                        <span>🤖</span>
+                        <span>FAZER ESTE TRABALHO COM IA</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-36 right-4 z-50 space-y-2"></div>
+
+    <!-- Mobile Fixed CTA -->
+    <div class="fixed bottom-0 left-0 right-0 lg:hidden bg-bg-card border-t border-border-color p-4 z-40">
+        <div class="flex items-center justify-between gap-4">
+            <div class="text-sm">
+                <p class="font-medium" id="mobileJobsCount">847 trabalhos</p>
+                <p class="text-text-secondary text-xs">disponíveis agora</p>
+            </div>
+            <button id="mobileEarningsFeed" class="flex items-center gap-2 text-accent-green text-sm">
+                <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+                <span id="latestEarning">Maria S. ganhou R$89</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="hidden lg:block bg-bg-secondary border-t border-border-color py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-accent-green flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="font-semibold">Sage IA</span>
+                    <span class="text-text-secondary">— Central de Trabalhos</span>
+                </div>
+                <div class="flex items-center gap-6 text-sm text-text-secondary">
+                    <a href="#" class="hover:text-white transition-colors">Termos de Uso</a>
+                    <a href="#" class="hover:text-white transition-colors">Política de Privacidade</a>
+                    <a href="#" class="hover:text-white transition-colors">Suporte</a>
+                </div>
+            </div>
+            <div class="mt-6 pt-6 border-t border-border-color grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div>
+                    <p class="text-2xl font-bold text-accent-green">R$4.2M</p>
+                    <p class="text-xs text-text-secondary">pagos este mês</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold">94.847</p>
+                    <p class="text-xs text-text-secondary">trabalhos concluídos</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold">3.847</p>
+                    <p class="text-xs text-text-secondary">membros ativos</p>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-accent-green">R$1.890</p>
+                    <p class="text-xs text-text-secondary">ganho médio mensal</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // =====================================================
+        // JOBS DATA - 50+ varied jobs
+        // =====================================================
+        const jobs = [
+            // DESCRIÇÕES DE PRODUTO (15)
+            {
+                id: 1,
+                category: "Descrição de Produto",
+                title: "E-commerce de Moda Feminina",
+                description: "Preciso de 5 descrições criativas para vestidos de festa. Textos persuasivos com foco em benefícios e chamada para ação. Cada descrição entre 100-150 palavras.",
+                fullDescription: `Preciso de 5 descrições criativas para vestidos de festa da minha loja online. Os textos devem ser persuasivos, destacar os benefícios do produto e ter uma chamada para ação clara.
+
+Requisitos:
+• Entre 100-150 palavras cada descrição
+• Tom elegante e sofisticado
+• Incluir características técnicas (tecido, modelagem)
+• Focar nos benefícios emocionais
+• CTA para compra
+
+Produtos:
+1. Vestido longo floral - R$289
+2. Vestido midi preto - R$199
+3. Vestido de festa vermelho - R$359
+4. Vestido casual listrado - R$159
+5. Vestido de renda branco - R$279`,
+                quantity: "5 textos",
+                value: 75,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "Workana",
+                rating: 4.8,
+                reviews: 127,
+                tags: ["moda", "feminino", "e-commerce", "vestido"],
+                timeAgo: 12,
+                timeUnit: "min",
+                badges: ["NOVO"],
+                viewers: 8,
+                proposals: 2
+            },
+            {
+                id: 2,
+                category: "Descrição de Produto",
+                title: "Loja de Suplementos",
+                description: "Descrições para whey protein e creatina. Textos técnicos mas acessíveis para público fitness.",
+                fullDescription: `Preciso de 8 descrições para produtos de suplementação esportiva. Os textos devem ser técnicos mas acessíveis.
+
+Produtos: Whey Protein (3 sabores), Creatina, BCAA, Pré-treino, Glutamina, Multivitamínico.
+
+Requisitos:
+• 150-200 palavras cada
+• Incluir benefícios científicos
+• Modo de uso
+• Para quem é indicado`,
+                quantity: "8 textos",
+                value: 120,
+                deadline: "72h",
+                level: "Fácil",
+                platform: "99Freelas",
+                rating: 4.5,
+                reviews: 89,
+                tags: ["fitness", "suplementos", "saúde"],
+                timeAgo: 25,
+                timeUnit: "min",
+                badges: [],
+                viewers: 12,
+                proposals: 4
+            },
+            {
+                id: 3,
+                category: "Descrição de Produto",
+                title: "Pet Shop Online",
+                description: "Descrições de rações e acessórios para cães e gatos. Tom carinhoso e informativo.",
+                fullDescription: `10 descrições para produtos de pet shop. Rações premium, brinquedos e acessórios.
+
+Tom carinhoso, focado no bem-estar dos pets. Incluir benefícios para a saúde do animal.`,
+                quantity: "10 textos",
+                value: 95,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "GetNinjas",
+                rating: 4.9,
+                reviews: 234,
+                tags: ["pets", "cachorro", "gato", "e-commerce"],
+                timeAgo: 38,
+                timeUnit: "min",
+                badges: ["HOT"],
+                viewers: 15,
+                proposals: 6
+            },
+            {
+                id: 4,
+                category: "Descrição de Produto",
+                title: "Loja de Eletrônicos",
+                description: "Descrições técnicas de smartphones. Especificações detalhadas com linguagem vendedora.",
+                fullDescription: `6 descrições para smartphones de diversas marcas. Foco em especificações técnicas apresentadas de forma atrativa.
+
+Incluir: processador, câmera, bateria, tela, armazenamento. Destacar diferenciais de cada modelo.`,
+                quantity: "6 textos",
+                value: 150,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.7,
+                reviews: 156,
+                tags: ["tecnologia", "smartphone", "eletrônicos"],
+                timeAgo: 1,
+                timeUnit: "hora",
+                badges: ["PREMIUM"],
+                viewers: 20,
+                proposals: 8
+            },
+            {
+                id: 5,
+                category: "Descrição de Produto",
+                title: "Joalheria Online",
+                description: "Descrições luxuosas para anéis e colares. Tom sofisticado e elegante.",
+                fullDescription: `12 descrições para peças de joalheria fina. Anéis de noivado, colares, brincos e pulseiras.
+
+Tom extremamente sofisticado. Destacar materiais (ouro, prata, pedras preciosas), acabamento e exclusividade.`,
+                quantity: "12 textos",
+                value: 180,
+                deadline: "96h",
+                level: "Médio",
+                platform: "Fiverr",
+                rating: 4.6,
+                reviews: 78,
+                tags: ["joias", "luxo", "ouro", "prata"],
+                timeAgo: 2,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 6,
+                proposals: 1
+            },
+            {
+                id: 6,
+                category: "Descrição de Produto",
+                title: "Loja de Calçados",
+                description: "Descrições de tênis esportivos para e-commerce. Foco em performance e estilo.",
+                fullDescription: `15 descrições para tênis esportivos de corrida, treino e casual. Destacar tecnologias de amortecimento, conforto e design.`,
+                quantity: "15 textos",
+                value: 135,
+                deadline: "72h",
+                level: "Fácil",
+                platform: "99Freelas",
+                rating: 4.4,
+                reviews: 201,
+                tags: ["calçados", "tênis", "esporte", "moda"],
+                timeAgo: 3,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 18,
+                proposals: 7
+            },
+            {
+                id: 7,
+                category: "Descrição de Produto",
+                title: "E-commerce de Bebê",
+                description: "Descrições de carrinhos e berços. Tom tranquilizador para pais.",
+                fullDescription: `8 descrições para produtos de bebê. Carrinhos, berços, cadeiras de alimentação e banheiras.
+
+Foco em segurança, praticidade e conforto do bebê. Tom que transmita confiança aos pais.`,
+                quantity: "8 textos",
+                value: 88,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "Workana",
+                rating: 4.8,
+                reviews: 167,
+                tags: ["bebê", "maternidade", "infantil"],
+                timeAgo: 45,
+                timeUnit: "min",
+                badges: ["URGENTE"],
+                viewers: 9,
+                proposals: 3
+            },
+            {
+                id: 8,
+                category: "Descrição de Produto",
+                title: "Loja de Cosméticos",
+                description: "Descrições de skincare coreano. Produtos de beleza com benefícios detalhados.",
+                fullDescription: `20 descrições para produtos de skincare coreano. Sérum, tônicos, máscaras, hidratantes.
+
+Destacar ingredientes ativos, modo de uso na rotina, benefícios para cada tipo de pele.`,
+                quantity: "20 textos",
+                value: 240,
+                deadline: "120h",
+                level: "Médio",
+                platform: "GetNinjas",
+                rating: 4.9,
+                reviews: 312,
+                tags: ["beleza", "skincare", "cosméticos", "k-beauty"],
+                timeAgo: 4,
+                timeUnit: "horas",
+                badges: ["HOT", "BEM PAGO"],
+                viewers: 25,
+                proposals: 10
+            },
+            {
+                id: 9,
+                category: "Descrição de Produto",
+                title: "Sex Shop Discreto",
+                description: "Descrições elegantes e discretas para produtos adultos. Tom sofisticado.",
+                fullDescription: `10 descrições para produtos de sex shop. Linguagem elegante, discreta e sofisticada. Sem vulgaridade.
+
+Foco em prazer, bem-estar do casal e qualidade dos produtos.`,
+                quantity: "10 textos",
+                value: 200,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Direto",
+                rating: 5.0,
+                reviews: 45,
+                tags: ["adulto", "intimidade", "bem-estar"],
+                timeAgo: 5,
+                timeUnit: "horas",
+                badges: ["PREMIUM", "BEM PAGO"],
+                viewers: 4,
+                proposals: 0
+            },
+            {
+                id: 10,
+                category: "Descrição de Produto",
+                title: "Loja de Games",
+                description: "Descrições de consoles e acessórios gamer. Linguagem para público jovem.",
+                fullDescription: `7 descrições para produtos gamer. Consoles, headsets, controles, cadeiras gamer.
+
+Linguagem jovem e empolgante. Destacar specs técnicos e experiência de jogo.`,
+                quantity: "7 textos",
+                value: 105,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "Fiverr",
+                rating: 4.7,
+                reviews: 189,
+                tags: ["games", "gamer", "tecnologia", "entretenimento"],
+                timeAgo: 1,
+                timeUnit: "hora",
+                badges: ["NOVO"],
+                viewers: 22,
+                proposals: 5
+            },
+            {
+                id: 11,
+                category: "Descrição de Produto",
+                title: "Móveis Planejados",
+                description: "Descrições técnicas + emocionais para móveis sob medida.",
+                fullDescription: `5 descrições para linha de móveis planejados. Cozinhas, quartos, home office.
+
+Equilibrar aspectos técnicos (materiais, acabamentos) com benefícios emocionais (lar dos sonhos, organização).`,
+                quantity: "5 textos",
+                value: 125,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.6,
+                reviews: 134,
+                tags: ["móveis", "decoração", "casa", "design"],
+                timeAgo: 6,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 11,
+                proposals: 4
+            },
+            {
+                id: 12,
+                category: "Descrição de Produto",
+                title: "Loja de Vinhos",
+                description: "Descrições sensoriais de vinhos importados. Notas de degustação.",
+                fullDescription: `15 descrições para vinhos importados de diversas regiões. Incluir notas de degustação, harmonização, história da vinícola.
+
+Tom sofisticado para público conhecedor.`,
+                quantity: "15 textos",
+                value: 225,
+                deadline: "96h",
+                level: "Avançado",
+                platform: "99Freelas",
+                rating: 4.8,
+                reviews: 67,
+                tags: ["vinho", "gastronomia", "importados", "luxo"],
+                timeAgo: 8,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 7,
+                proposals: 2
+            },
+            {
+                id: 13,
+                category: "Descrição de Produto",
+                title: "Farmácia Online",
+                description: "Descrições de medicamentos OTC. Informações precisas e confiáveis.",
+                fullDescription: `25 descrições para medicamentos de venda livre. Precisão nas informações, indicações, posologia.
+
+Seguir normas da ANVISA. Tom profissional e confiável.`,
+                quantity: "25 textos",
+                value: 275,
+                deadline: "120h",
+                level: "Médio",
+                platform: "Direto",
+                rating: 4.9,
+                reviews: 289,
+                tags: ["farmácia", "saúde", "medicamentos"],
+                timeAgo: 10,
+                timeUnit: "horas",
+                badges: ["PREMIUM", "BEM PAGO"],
+                viewers: 5,
+                proposals: 1
+            },
+            {
+                id: 14,
+                category: "Descrição de Produto",
+                title: "Papelaria Criativa",
+                description: "Descrições de planners e cadernos personalizados. Tom alegre.",
+                fullDescription: `12 descrições para produtos de papelaria criativa. Planners, cadernos, adesivos, canetas.
+
+Tom alegre e inspirador. Destacar organização, produtividade e criatividade.`,
+                quantity: "12 textos",
+                value: 96,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "GetNinjas",
+                rating: 4.7,
+                reviews: 178,
+                tags: ["papelaria", "organização", "criativo"],
+                timeAgo: 30,
+                timeUnit: "min",
+                badges: ["NOVO", "HOT"],
+                viewers: 16,
+                proposals: 6
+            },
+            {
+                id: 15,
+                category: "Descrição de Produto",
+                title: "Loja de Instrumentos",
+                description: "Descrições de guitarras e violões para músicos.",
+                fullDescription: `6 descrições para instrumentos musicais. Guitarras, violões, baixos.
+
+Destacar sonoridade, madeiras, captadores. Público: músicos iniciantes a avançados.`,
+                quantity: "6 textos",
+                value: 90,
+                deadline: "48h",
+                level: "Médio",
+                platform: "Fiverr",
+                rating: 4.5,
+                reviews: 92,
+                tags: ["música", "instrumentos", "guitarra", "violão"],
+                timeAgo: 2,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 13,
+                proposals: 5
+            },
+
+            // ARTIGOS DE BLOG (12)
+            {
+                id: 16,
+                category: "Artigo de Blog",
+                title: "Blog de Finanças",
+                description: "Artigo sobre investimentos para iniciantes. Linguagem acessível.",
+                fullDescription: `Artigo completo sobre como começar a investir. Público: pessoas que nunca investiram.
+
+Cobrir: poupança x investimentos, renda fixa, Tesouro Direto, CDBs, fundos. Linguagem simples e didática.`,
+                quantity: "1 artigo (1500 palavras)",
+                value: 180,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.6,
+                reviews: 145,
+                tags: ["finanças", "investimentos", "educação financeira"],
+                timeAgo: 3,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 14,
+                proposals: 4
+            },
+            {
+                id: 17,
+                category: "Artigo de Blog",
+                title: "Blog de Saúde",
+                description: "Artigo sobre alimentação low carb. Baseado em evidências.",
+                fullDescription: `Artigo sobre dieta low carb. Benefícios, contraindicações, cardápio exemplo.
+
+Baseado em evidências científicas. Incluir referências. Tom informativo.`,
+                quantity: "1 artigo (2000 palavras)",
+                value: 220,
+                deadline: "96h",
+                level: "Médio",
+                platform: "99Freelas",
+                rating: 4.8,
+                reviews: 198,
+                tags: ["saúde", "nutrição", "dieta", "emagrecimento"],
+                timeAgo: 5,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 19,
+                proposals: 7
+            },
+            {
+                id: 18,
+                category: "Artigo de Blog",
+                title: "Blog de Tecnologia",
+                description: "Review de notebook gamer. Análise técnica detalhada.",
+                fullDescription: `Review completo de notebook gamer. Specs, benchmarks, experiência de uso, prós e contras.
+
+Tom técnico mas acessível. Público: gamers considerando compra.`,
+                quantity: "1 artigo (1200 palavras)",
+                value: 150,
+                deadline: "48h",
+                level: "Médio",
+                platform: "GetNinjas",
+                rating: 4.5,
+                reviews: 112,
+                tags: ["tecnologia", "notebook", "gamer", "review"],
+                timeAgo: 1,
+                timeUnit: "hora",
+                badges: ["URGENTE"],
+                viewers: 21,
+                proposals: 8
+            },
+            {
+                id: 19,
+                category: "Artigo de Blog",
+                title: "Blog de Viagem",
+                description: "Guia completo de Gramado RS. Roteiros e dicas.",
+                fullDescription: `Guia turístico completo de Gramado. O que fazer, onde comer, onde ficar, roteiros de 3, 5 e 7 dias.
+
+Tom entusiasta e prático. Dicas de economia e experiências imperdíveis.`,
+                quantity: "1 artigo (2500 palavras)",
+                value: 280,
+                deadline: "120h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.9,
+                reviews: 267,
+                tags: ["viagem", "turismo", "Gramado", "roteiro"],
+                timeAgo: 7,
+                timeUnit: "horas",
+                badges: ["HOT", "BEM PAGO"],
+                viewers: 23,
+                proposals: 9
+            },
+            {
+                id: 20,
+                category: "Artigo de Blog",
+                title: "Blog de RH",
+                description: "Artigo sobre employer branding. Conteúdo B2B.",
+                fullDescription: `Artigo sobre construção de marca empregadora. Estratégias, cases, métricas.
+
+Público: profissionais de RH e gestores. Tom profissional e estratégico.`,
+                quantity: "1 artigo (1800 palavras)",
+                value: 200,
+                deadline: "72h",
+                level: "Avançado",
+                platform: "Direto",
+                rating: 4.7,
+                reviews: 89,
+                tags: ["RH", "employer branding", "gestão", "B2B"],
+                timeAgo: 4,
+                timeUnit: "horas",
+                badges: ["PREMIUM"],
+                viewers: 8,
+                proposals: 2
+            },
+            {
+                id: 21,
+                category: "Artigo de Blog",
+                title: "Blog de Marketing",
+                description: "Tendências de marketing digital 2025.",
+                fullDescription: `Artigo sobre as principais tendências de marketing digital para 2025. IA, personalização, vídeo, etc.
+
+Insights acionáveis e previsões baseadas em dados.`,
+                quantity: "1 artigo (2000 palavras)",
+                value: 250,
+                deadline: "96h",
+                level: "Avançado",
+                platform: "Fiverr",
+                rating: 4.6,
+                reviews: 134,
+                tags: ["marketing", "tendências", "digital", "2025"],
+                timeAgo: 6,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 17,
+                proposals: 6
+            },
+            {
+                id: 22,
+                category: "Artigo de Blog",
+                title: "Blog Jurídico",
+                description: "Artigo sobre LGPD para empresas. Compliance.",
+                fullDescription: `Artigo explicativo sobre LGPD. Obrigações das empresas, penalidades, como se adequar.
+
+Tom acessível para não-juristas. Foco prático.`,
+                quantity: "1 artigo (1500 palavras)",
+                value: 320,
+                deadline: "72h",
+                level: "Avançado",
+                platform: "Direto",
+                rating: 4.9,
+                reviews: 56,
+                tags: ["jurídico", "LGPD", "compliance", "empresas"],
+                timeAgo: 9,
+                timeUnit: "horas",
+                badges: ["PREMIUM", "BEM PAGO"],
+                viewers: 6,
+                proposals: 1
+            },
+            {
+                id: 23,
+                category: "Artigo de Blog",
+                title: "Blog de Moda",
+                description: "Tendências de moda verão 2025.",
+                fullDescription: `Artigo sobre tendências de moda para o verão 2025. Cores, estampas, peças-chave, como montar looks.
+
+Tom leve e inspirador. Incluir dicas de como adaptar tendências.`,
+                quantity: "1 artigo (1200 palavras)",
+                value: 140,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "Workana",
+                rating: 4.4,
+                reviews: 178,
+                tags: ["moda", "tendências", "verão", "estilo"],
+                timeAgo: 2,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 24,
+                proposals: 10
+            },
+            {
+                id: 24,
+                category: "Artigo de Blog",
+                title: "Blog de Pets",
+                description: "Cuidados com gatos filhotes. Guia completo.",
+                fullDescription: `Guia completo para novos tutores de gatos filhotes. Alimentação, vacinas, socialização, cuidados básicos.
+
+Tom carinhoso e informativo.`,
+                quantity: "1 artigo (1000 palavras)",
+                value: 95,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "99Freelas",
+                rating: 4.8,
+                reviews: 223,
+                tags: ["pets", "gatos", "filhotes", "cuidados"],
+                timeAgo: 40,
+                timeUnit: "min",
+                badges: ["NOVO"],
+                viewers: 18,
+                proposals: 7
+            },
+            {
+                id: 25,
+                category: "Artigo de Blog",
+                title: "Blog de Decoração",
+                description: "Como montar home office produtivo.",
+                fullDescription: `Artigo sobre montagem de home office. Ergonomia, iluminação, organização, móveis essenciais.
+
+Dicas práticas para diferentes orçamentos.`,
+                quantity: "1 artigo (1500 palavras)",
+                value: 160,
+                deadline: "72h",
+                level: "Fácil",
+                platform: "GetNinjas",
+                rating: 4.6,
+                reviews: 145,
+                tags: ["decoração", "home office", "produtividade", "casa"],
+                timeAgo: 5,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 15,
+                proposals: 5
+            },
+            {
+                id: 26,
+                category: "Artigo de Blog",
+                title: "Blog de Educação",
+                description: "Técnicas de estudo para concursos.",
+                fullDescription: `Artigo sobre técnicas de estudo eficientes para concurseiros. Revisão espaçada, mapas mentais, simulados.
+
+Tom motivador e prático.`,
+                quantity: "1 artigo (2000 palavras)",
+                value: 190,
+                deadline: "96h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.7,
+                reviews: 189,
+                tags: ["educação", "concursos", "estudos", "produtividade"],
+                timeAgo: 8,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 20,
+                proposals: 8
+            },
+            {
+                id: 27,
+                category: "Artigo de Blog",
+                title: "Blog de Carros",
+                description: "Comparativo SUVs compactos 2025.",
+                fullDescription: `Comparativo entre principais SUVs compactos do mercado. Preço, consumo, espaço, tecnologia.
+
+Tom técnico mas acessível. Ajudar na decisão de compra.`,
+                quantity: "1 artigo (1800 palavras)",
+                value: 210,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Fiverr",
+                rating: 4.5,
+                reviews: 98,
+                tags: ["carros", "SUV", "comparativo", "automotivo"],
+                timeAgo: 4,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 12,
+                proposals: 4
+            },
+
+            // LEGENDAS INSTAGRAM (8)
+            {
+                id: 28,
+                category: "Legenda Instagram",
+                title: "Clínica de Estética",
+                description: "Legendas para posts de procedimentos estéticos.",
+                fullDescription: `30 legendas para posts sobre procedimentos estéticos. Botox, preenchimento, harmonização facial.
+
+Tom profissional mas acolhedor. Incluir CTAs para agendamento.`,
+                quantity: "30 legendas",
+                value: 120,
+                deadline: "72h",
+                level: "Fácil",
+                platform: "99Freelas",
+                rating: 4.7,
+                reviews: 167,
+                tags: ["estética", "beleza", "Instagram", "clínica"],
+                timeAgo: 1,
+                timeUnit: "hora",
+                badges: ["HOT"],
+                viewers: 26,
+                proposals: 11
+            },
+            {
+                id: 29,
+                category: "Legenda Instagram",
+                title: "Restaurante Italiano",
+                description: "Legendas para fotos de pratos e ambiente.",
+                fullDescription: `20 legendas para restaurante italiano. Fotos de pratos, bastidores, ambiente.
+
+Tom acolhedor e apetitoso. Incluir emojis e hashtags relevantes.`,
+                quantity: "20 legendas",
+                value: 80,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "GetNinjas",
+                rating: 4.8,
+                reviews: 234,
+                tags: ["gastronomia", "restaurante", "Instagram", "comida"],
+                timeAgo: 55,
+                timeUnit: "min",
+                badges: ["NOVO"],
+                viewers: 19,
+                proposals: 8
+            },
+            {
+                id: 30,
+                category: "Legenda Instagram",
+                title: "Personal Trainer",
+                description: "Legendas motivacionais para perfil fitness.",
+                fullDescription: `40 legendas motivacionais para personal trainer. Antes/depois, treinos, dicas de nutrição.
+
+Tom energético e motivador. Engajar seguidores.`,
+                quantity: "40 legendas",
+                value: 160,
+                deadline: "96h",
+                level: "Fácil",
+                platform: "Workana",
+                rating: 4.6,
+                reviews: 156,
+                tags: ["fitness", "personal", "motivação", "Instagram"],
+                timeAgo: 3,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 22,
+                proposals: 9
+            },
+            {
+                id: 31,
+                category: "Legenda Instagram",
+                title: "Loja de Roupas",
+                description: "Legendas para looks do dia e novidades.",
+                fullDescription: `25 legendas para loja de roupas femininas. Looks, novidades, promoções.
+
+Tom jovem e atual. Incluir CTAs para link na bio.`,
+                quantity: "25 legendas",
+                value: 100,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "Fiverr",
+                rating: 4.5,
+                reviews: 189,
+                tags: ["moda", "roupas", "Instagram", "looks"],
+                timeAgo: 2,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 17,
+                proposals: 6
+            },
+            {
+                id: 32,
+                category: "Legenda Instagram",
+                title: "Psicóloga",
+                description: "Legendas sobre saúde mental e autoconhecimento.",
+                fullDescription: `30 legendas sobre saúde mental, ansiedade, autoestima, relacionamentos.
+
+Tom acolhedor e profissional. Conteúdo educativo e acessível.`,
+                quantity: "30 legendas",
+                value: 150,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Direto",
+                rating: 4.9,
+                reviews: 78,
+                tags: ["psicologia", "saúde mental", "Instagram", "terapia"],
+                timeAgo: 6,
+                timeUnit: "horas",
+                badges: ["PREMIUM"],
+                viewers: 10,
+                proposals: 3
+            },
+            {
+                id: 33,
+                category: "Legenda Instagram",
+                title: "Imobiliária",
+                description: "Legendas para imóveis à venda e locação.",
+                fullDescription: `15 legendas para posts de imóveis. Destacar diferenciais, localização, oportunidades.
+
+Tom profissional e persuasivo. CTAs para contato.`,
+                quantity: "15 legendas",
+                value: 75,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "99Freelas",
+                rating: 4.4,
+                reviews: 123,
+                tags: ["imóveis", "imobiliária", "Instagram", "vendas"],
+                timeAgo: 4,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 14,
+                proposals: 5
+            },
+            {
+                id: 34,
+                category: "Legenda Instagram",
+                title: "Salão de Beleza",
+                description: "Legendas para transformações e serviços.",
+                fullDescription: `20 legendas para salão de beleza. Cortes, coloração, tratamentos, antes/depois.
+
+Tom empoderador e estiloso.`,
+                quantity: "20 legendas",
+                value: 90,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "GetNinjas",
+                rating: 4.7,
+                reviews: 201,
+                tags: ["beleza", "cabelo", "salão", "Instagram"],
+                timeAgo: 1,
+                timeUnit: "hora",
+                badges: ["NOVO"],
+                viewers: 21,
+                proposals: 9
+            },
+            {
+                id: 35,
+                category: "Legenda Instagram",
+                title: "Coach de Carreira",
+                description: "Legendas sobre desenvolvimento profissional.",
+                fullDescription: `35 legendas sobre carreira, liderança, produtividade, transição de carreira.
+
+Tom inspirador e profissional. Engajar público corporativo.`,
+                quantity: "35 legendas",
+                value: 175,
+                deadline: "96h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.6,
+                reviews: 112,
+                tags: ["carreira", "coaching", "Instagram", "desenvolvimento"],
+                timeAgo: 7,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 13,
+                proposals: 4
+            },
+
+            // E-MAIL MARKETING (6)
+            {
+                id: 36,
+                category: "E-mail Marketing",
+                title: "E-commerce Geral",
+                description: "Sequência de boas-vindas para novos clientes.",
+                fullDescription: `5 e-mails de boas-vindas para e-commerce. Apresentação da marca, benefícios, primeira compra.
+
+Sequência estratégica para converter leads em clientes.`,
+                quantity: "5 e-mails",
+                value: 200,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.8,
+                reviews: 145,
+                tags: ["e-mail", "e-commerce", "automação", "vendas"],
+                timeAgo: 5,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 16,
+                proposals: 6
+            },
+            {
+                id: 37,
+                category: "E-mail Marketing",
+                title: "SaaS de Gestão",
+                description: "Sequência de onboarding para novos usuários.",
+                fullDescription: `7 e-mails de onboarding para SaaS. Primeiros passos, funcionalidades, cases, upgrade.
+
+Foco em ativação e retenção de usuários.`,
+                quantity: "7 e-mails",
+                value: 350,
+                deadline: "120h",
+                level: "Avançado",
+                platform: "Direto",
+                rating: 4.9,
+                reviews: 67,
+                tags: ["SaaS", "onboarding", "e-mail", "B2B"],
+                timeAgo: 9,
+                timeUnit: "horas",
+                badges: ["PREMIUM", "BEM PAGO"],
+                viewers: 7,
+                proposals: 2
+            },
+            {
+                id: 38,
+                category: "E-mail Marketing",
+                title: "Loja de Moda",
+                description: "Campanha de Black Friday.",
+                fullDescription: `3 e-mails para campanha de Black Friday. Aquecimento, dia D, últimas horas.
+
+Urgência, escassez, ofertas irresistíveis.`,
+                quantity: "3 e-mails",
+                value: 120,
+                deadline: "48h",
+                level: "Fácil",
+                platform: "99Freelas",
+                rating: 4.5,
+                reviews: 189,
+                tags: ["Black Friday", "e-mail", "promoção", "moda"],
+                timeAgo: 2,
+                timeUnit: "horas",
+                badges: ["URGENTE"],
+                viewers: 24,
+                proposals: 10
+            },
+            {
+                id: 39,
+                category: "E-mail Marketing",
+                title: "Clínica Odontológica",
+                description: "E-mails de reativação de pacientes inativos.",
+                fullDescription: `4 e-mails para reativar pacientes que não retornam há mais de 6 meses.
+
+Lembrete de cuidados, oferta de avaliação, depoimentos.`,
+                quantity: "4 e-mails",
+                value: 160,
+                deadline: "72h",
+                level: "Médio",
+                platform: "GetNinjas",
+                rating: 4.6,
+                reviews: 134,
+                tags: ["saúde", "odontologia", "e-mail", "reativação"],
+                timeAgo: 6,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 11,
+                proposals: 4
+            },
+            {
+                id: 40,
+                category: "E-mail Marketing",
+                title: "Curso Online",
+                description: "Sequência de lançamento de infoproduto.",
+                fullDescription: `10 e-mails de lançamento. Conteúdo, abertura do carrinho, objeções, escassez, fechamento.
+
+Estratégia completa de lançamento digital.`,
+                quantity: "10 e-mails",
+                value: 450,
+                deadline: "144h",
+                level: "Avançado",
+                platform: "Fiverr",
+                rating: 4.7,
+                reviews: 89,
+                tags: ["infoproduto", "lançamento", "e-mail", "curso"],
+                timeAgo: 10,
+                timeUnit: "horas",
+                badges: ["HOT", "BEM PAGO"],
+                viewers: 18,
+                proposals: 7
+            },
+            {
+                id: 41,
+                category: "E-mail Marketing",
+                title: "Academia",
+                description: "E-mails para leads frios interessados em matrícula.",
+                fullDescription: `5 e-mails para nutrir leads que baixaram e-book sobre fitness.
+
+Conteúdo de valor, depoimentos, oferta de aula experimental.`,
+                quantity: "5 e-mails",
+                value: 175,
+                deadline: "72h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.5,
+                reviews: 156,
+                tags: ["fitness", "academia", "e-mail", "leads"],
+                timeAgo: 4,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 15,
+                proposals: 5
+            },
+
+            // COPY DE ANÚNCIO (5)
+            {
+                id: 42,
+                category: "Copy de Anúncio",
+                title: "App de Delivery",
+                description: "Copies para Facebook Ads de app de delivery.",
+                fullDescription: `10 copies para anúncios de Facebook/Instagram. Diferentes ângulos: praticidade, variedade, preço.
+
+Headlines + copy + CTA. Testes A/B.`,
+                quantity: "10 copies",
+                value: 200,
+                deadline: "48h",
+                level: "Médio",
+                platform: "Workana",
+                rating: 4.7,
+                reviews: 178,
+                tags: ["Facebook Ads", "delivery", "app", "anúncio"],
+                timeAgo: 3,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 20,
+                proposals: 8
+            },
+            {
+                id: 43,
+                category: "Copy de Anúncio",
+                title: "Curso de Inglês",
+                description: "Headlines para Google Ads.",
+                fullDescription: `20 headlines para campanhas de Google Ads de escola de inglês.
+
+Diferentes públicos: viagem, carreira, intercâmbio. Headlines + descrições.`,
+                quantity: "20 headlines",
+                value: 180,
+                deadline: "48h",
+                level: "Médio",
+                platform: "99Freelas",
+                rating: 4.6,
+                reviews: 145,
+                tags: ["Google Ads", "inglês", "curso", "headline"],
+                timeAgo: 2,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 17,
+                proposals: 6
+            },
+            {
+                id: 44,
+                category: "Copy de Anúncio",
+                title: "Clínica de Estética",
+                description: "Copies para Instagram Ads de procedimentos.",
+                fullDescription: `8 copies para anúncios de procedimentos estéticos no Instagram.
+
+Foco em resultados, antes/depois, agendamento fácil.`,
+                quantity: "8 copies",
+                value: 160,
+                deadline: "48h",
+                level: "Médio",
+                platform: "Direto",
+                rating: 4.8,
+                reviews: 89,
+                tags: ["Instagram Ads", "estética", "beleza", "anúncio"],
+                timeAgo: 5,
+                timeUnit: "horas",
+                badges: ["PREMIUM"],
+                viewers: 12,
+                proposals: 4
+            },
+            {
+                id: 45,
+                category: "Copy de Anúncio",
+                title: "E-commerce de Tênis",
+                description: "Copies para TikTok Ads virais.",
+                fullDescription: `6 copies para anúncios no TikTok. Linguagem jovem, trends, urgência.
+
+Formato: hook + benefício + CTA.`,
+                quantity: "6 copies",
+                value: 150,
+                deadline: "24h",
+                level: "Médio",
+                platform: "GetNinjas",
+                rating: 4.5,
+                reviews: 167,
+                tags: ["TikTok Ads", "tênis", "viral", "jovem"],
+                timeAgo: 1,
+                timeUnit: "hora",
+                badges: ["URGENTE", "NOVO"],
+                viewers: 28,
+                proposals: 12
+            },
+            {
+                id: 46,
+                category: "Copy de Anúncio",
+                title: "Infoproduto de Finanças",
+                description: "VSL de 15 minutos para curso de investimentos.",
+                fullDescription: `Roteiro de VSL (Video Sales Letter) de 15 minutos para curso de investimentos.
+
+Estrutura: problema, agitação, solução, prova, oferta, garantia, CTA.`,
+                quantity: "1 roteiro VSL",
+                value: 800,
+                deadline: "168h",
+                level: "Avançado",
+                platform: "Fiverr",
+                rating: 4.9,
+                reviews: 45,
+                tags: ["VSL", "infoproduto", "finanças", "roteiro"],
+                timeAgo: 12,
+                timeUnit: "horas",
+                badges: ["PREMIUM", "BEM PAGO"],
+                viewers: 9,
+                proposals: 2
+            },
+
+            // TEXTOS PARA SITE (4)
+            {
+                id: 47,
+                category: "Texto para Site",
+                title: "Escritório de Advocacia",
+                description: "Página institucional completa para advogados.",
+                fullDescription: `Site institucional completo. Home, Sobre, Áreas de Atuação, Equipe, Contato.
+
+Tom sério e confiável. SEO otimizado.`,
+                quantity: "5 páginas",
+                value: 450,
+                deadline: "120h",
+                level: "Avançado",
+                platform: "Workana",
+                rating: 4.8,
+                reviews: 112,
+                tags: ["site", "advocacia", "institucional", "jurídico"],
+                timeAgo: 8,
+                timeUnit: "horas",
+                badges: ["HOT", "BEM PAGO"],
+                viewers: 14,
+                proposals: 5
+            },
+            {
+                id: 48,
+                category: "Texto para Site",
+                title: "Startup de Tech",
+                description: "Landing page de produto SaaS.",
+                fullDescription: `Landing page para SaaS. Hero, benefícios, funcionalidades, preços, depoimentos, FAQ, CTA.
+
+Tom inovador e profissional. Conversão como foco.`,
+                quantity: "1 página",
+                value: 280,
+                deadline: "72h",
+                level: "Médio",
+                platform: "99Freelas",
+                rating: 4.7,
+                reviews: 134,
+                tags: ["landing page", "SaaS", "startup", "tecnologia"],
+                timeAgo: 6,
+                timeUnit: "horas",
+                badges: ["BEM PAGO"],
+                viewers: 16,
+                proposals: 6
+            },
+            {
+                id: 49,
+                category: "Texto para Site",
+                title: "Clínica Veterinária",
+                description: "Site completo para clínica de pets.",
+                fullDescription: `Site completo: Home, Serviços, Equipe, Estrutura, Blog, Contato, Emergência.
+
+Tom carinhoso e profissional. Foco em confiança.`,
+                quantity: "8 páginas",
+                value: 640,
+                deadline: "168h",
+                level: "Médio",
+                platform: "Direto",
+                rating: 4.9,
+                reviews: 78,
+                tags: ["site", "veterinária", "pets", "saúde animal"],
+                timeAgo: 11,
+                timeUnit: "horas",
+                badges: ["PREMIUM", "BEM PAGO"],
+                viewers: 8,
+                proposals: 2
+            },
+            {
+                id: 50,
+                category: "Texto para Site",
+                title: "Agência de Marketing",
+                description: "Página de serviços e cases.",
+                fullDescription: `Páginas de serviços para agência de marketing. SEO, Social Media, Tráfego Pago, Branding + Cases.
+
+Tom estratégico e resultados.`,
+                quantity: "4 páginas",
+                value: 320,
+                deadline: "96h",
+                level: "Médio",
+                platform: "GetNinjas",
+                rating: 4.6,
+                reviews: 156,
+                tags: ["site", "agência", "marketing", "serviços"],
+                timeAgo: 7,
+                timeUnit: "horas",
+                badges: [],
+                viewers: 13,
+                proposals: 5
+            }
+        ];
+
+        // =====================================================
+        // FILTER OPTIONS
+        // =====================================================
+        const filterOptions = {
+            types: [
+                "Descrição de Produto",
+                "Artigo de Blog",
+                "Legenda Instagram",
+                "Post LinkedIn",
+                "E-mail Marketing",
+                "Texto para Site",
+                "Bio/About",
+                "Roteiro de Vídeo",
+                "Copy de Anúncio",
+                "Newsletter",
+                "Apresentação",
+                "Tradução"
+            ],
+            prices: [
+                { label: "Até R$50", min: 0, max: 50 },
+                { label: "R$50 - R$100", min: 50, max: 100 },
+                { label: "R$100 - R$200", min: 100, max: 200 },
+                { label: "R$200 - R$500", min: 200, max: 500 },
+                { label: "Acima de R$500", min: 500, max: Infinity }
+            ],
+            platforms: ["Workana", "99Freelas", "GetNinjas", "Fiverr", "Freelancer.com", "Direto"],
+            deadlines: [
+                { label: "Urgente (até 24h)", max: 24 },
+                { label: "Curto (1-3 dias)", max: 72 },
+                { label: "Médio (4-7 dias)", max: 168 },
+                { label: "Flexível (7+ dias)", max: Infinity }
+            ],
+            levels: ["Fácil", "Médio", "Avançado"]
+        };
+
+        // Active filters state
+        let activeFilters = {
+            types: [],
+            prices: [],
+            platforms: [],
+            deadlines: [],
+            levels: [],
+            search: ""
+        };
+
+        let currentSort = "recent";
+        let displayedJobs = 12;
+
+        // =====================================================
+        // COMMUNITY EARNINGS DATA
+        // =====================================================
+        const earningsData = [
+            { name: "Maria S.", value: 89, type: "Descrição de produtos" },
+            { name: "Carlos R.", value: 150, type: "Artigo de blog" },
+            { name: "Ana P.", value: 45, type: "Legendas Instagram" },
+            { name: "João M.", value: 200, type: "E-mail marketing" },
+            { name: "Fernanda L.", value: 75, type: "Copy de anúncio" },
+            { name: "Pedro H.", value: 320, type: "VSL roteiro" },
+            { name: "Julia C.", value: 95, type: "Descrições pet shop" },
+            { name: "Lucas F.", value: 180, type: "Landing page" },
+            { name: "Camila B.", value: 120, type: "Legendas fitness" },
+            { name: "Rafael M.", value: 250, type: "Artigo jurídico" },
+            { name: "Beatriz A.", value: 88, type: "Descrições bebê" },
+            { name: "Thiago S.", value: 160, type: "E-mails de vendas" },
+            { name: "Amanda R.", value: 140, type: "Blog de moda" },
+            { name: "Bruno L.", value: 210, type: "Comparativo carros" },
+            { name: "Isabela N.", value: 175, type: "Sequência e-mail" }
+        ];
+
+        let currentEarningIndex = 0;
+
+        // =====================================================
+        // INITIALIZATION
+        // =====================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initFilters();
+            renderJobs();
+            startStatsAnimation();
+            startEarningsFeed();
+            setupEventListeners();
+
+            // Remove loading skeletons after a short delay
+            setTimeout(() => {
+                document.getElementById('jobsContainer').innerHTML = '';
+                renderJobs();
+            }, 800);
+        });
+
+        // =====================================================
+        // FILTER INITIALIZATION
+        // =====================================================
+        function initFilters() {
+            // Type filters
+            const typeFiltersHtml = filterOptions.types.map((type, index) => `
+                <label class="flex items-center gap-2 cursor-pointer hover:text-accent-green transition-colors">
+                    <input type="checkbox" class="filter-checkbox accent-accent-green" data-filter="types" value="${type}">
+                    <span class="text-sm">${type}</span>
+                </label>
+            `).join('');
+            document.getElementById('typeFilters').innerHTML = typeFiltersHtml;
+
+            // Price filters
+            const priceFiltersHtml = filterOptions.prices.map((price, index) => `
+                <label class="flex items-center gap-2 cursor-pointer hover:text-accent-green transition-colors">
+                    <input type="checkbox" class="filter-checkbox accent-accent-green" data-filter="prices" value="${index}">
+                    <span class="text-sm">${price.label}</span>
+                </label>
+            `).join('');
+            document.getElementById('priceFilters').innerHTML = priceFiltersHtml;
+
+            // Platform filters
+            const platformFiltersHtml = filterOptions.platforms.map(platform => `
+                <label class="flex items-center gap-2 cursor-pointer hover:text-accent-green transition-colors">
+                    <input type="checkbox" class="filter-checkbox accent-accent-green" data-filter="platforms" value="${platform}">
+                    <span class="text-sm">${platform}</span>
+                </label>
+            `).join('');
+            document.getElementById('platformFilters').innerHTML = platformFiltersHtml;
+
+            // Deadline filters
+            const deadlineFiltersHtml = filterOptions.deadlines.map((deadline, index) => `
+                <label class="flex items-center gap-2 cursor-pointer hover:text-accent-green transition-colors">
+                    <input type="checkbox" class="filter-checkbox accent-accent-green" data-filter="deadlines" value="${index}">
+                    <span class="text-sm">${deadline.label}</span>
+                </label>
+            `).join('');
+            document.getElementById('deadlineFilters').innerHTML = deadlineFiltersHtml;
+
+            // Level filters
+            const levelFiltersHtml = filterOptions.levels.map(level => `
+                <label class="flex items-center gap-2 cursor-pointer hover:text-accent-green transition-colors">
+                    <input type="checkbox" class="filter-checkbox accent-accent-green" data-filter="levels" value="${level}">
+                    <span class="text-sm">${level}</span>
+                </label>
+            `).join('');
+            document.getElementById('levelFilters').innerHTML = levelFiltersHtml;
+
+            // Clone filters for mobile modal
+            document.getElementById('mobileFiltersContainer').innerHTML = document.getElementById('filtersContainer').innerHTML;
+        }
+
+        // =====================================================
+        // RENDER JOBS
+        // =====================================================
+        function renderJobs() {
+            const filteredJobs = filterJobs();
+            const sortedJobs = sortJobs(filteredJobs);
+            const jobsToShow = sortedJobs.slice(0, displayedJobs);
+
+            const container = document.getElementById('jobsContainer');
+            container.innerHTML = jobsToShow.map(job => createJobCard(job)).join('');
+
+            document.getElementById('resultsCount').textContent = filteredJobs.length;
+            document.getElementById('loadMore').style.display = displayedJobs >= filteredJobs.length ? 'none' : 'inline-block';
+        }
+
+        function createJobCard(job) {
+            const difficultyClass = job.level === 'Fácil' ? 'difficulty-easy' : job.level === 'Médio' ? 'difficulty-medium' : 'difficulty-advanced';
+            const platformClass = `platform-${job.platform.toLowerCase().replace(/\./g, '').replace(/\s/g, '')}`;
+
+            const badgesHtml = job.badges.map(badge => {
+                const badgeStyles = {
+                    'NOVO': 'bg-blue-500/20 text-blue-400 animate-pulse-badge',
+                    'HOT': 'bg-red-500/20 text-red-400',
+                    'URGENTE': 'bg-orange-500/20 text-orange-400',
+                    'PREMIUM': 'bg-purple-500/20 text-purple-400',
+                    'BEM PAGO': 'bg-green-500/20 text-green-400'
+                };
+                return `<span class="text-xs px-2 py-0.5 rounded-full ${badgeStyles[badge] || ''}">${badge}</span>`;
+            }).join('');
+
+            return `
+                <div class="job-card bg-bg-card rounded-2xl border border-border-color p-5 ${difficultyClass} cursor-pointer" onclick="openJobModal(${job.id})">
+                    <!-- Header -->
+                    <div class="flex items-start justify-between mb-3">
+                        <span class="${platformClass} platform-badge">${job.platform}</span>
+                        <span class="text-xs text-text-secondary">🕐 ${job.timeAgo} ${job.timeUnit} atrás</span>
+                    </div>
+
+                    <!-- Category & Value -->
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs font-medium px-2 py-1 bg-accent-green/20 text-accent-green rounded-md">${job.category.toUpperCase()}</span>
+                        <span class="text-xl font-bold text-accent-green">R$${job.value.toLocaleString('pt-BR')}</span>
+                    </div>
+
+                    <!-- Title -->
+                    <h3 class="font-semibold mb-2">📦 ${job.title}</h3>
+
+                    <!-- Description -->
+                    <p class="text-sm text-text-secondary mb-4 line-clamp-2">${job.description}</p>
+
+                    <!-- Metrics -->
+                    <div class="flex flex-wrap items-center gap-3 text-xs text-text-secondary mb-3">
+                        <span>📝 ${job.quantity}</span>
+                        <span>⏱️ ${job.deadline}</span>
+                        <span>🎯 ${job.level}</span>
+                        <span>⭐ ${job.rating}</span>
+                    </div>
+
+                    <!-- Badges -->
+                    ${badgesHtml ? `<div class="flex flex-wrap gap-2 mb-3">${badgesHtml}</div>` : ''}
+
+                    <!-- Tags -->
+                    <div class="flex flex-wrap gap-1 mb-4">
+                        ${job.tags.slice(0, 4).map(tag => `<span class="text-xs px-2 py-0.5 bg-bg-secondary rounded-full text-text-secondary">${tag}</span>`).join('')}
+                    </div>
+
+                    <!-- Viewers -->
+                    <div class="text-xs text-text-secondary mb-4">
+                        👀 ${job.viewers} visualizando • ${job.proposals} propostas
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex gap-2">
+                        <button onclick="event.stopPropagation(); openJobModal(${job.id})" class="flex-1 py-2.5 px-4 border border-border-color rounded-xl text-sm hover:border-accent-green transition-colors">
+                            Ver Detalhes
+                        </button>
+                        <button onclick="event.stopPropagation(); doWithAI(${job.id})" class="flex-1 py-2.5 px-4 btn-ai text-white rounded-xl text-sm font-semibold">
+                            🤖 FAZER COM IA
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =====================================================
+        // FILTER & SORT LOGIC
+        // =====================================================
+        function filterJobs() {
+            return jobs.filter(job => {
+                // Type filter
+                if (activeFilters.types.length > 0 && !activeFilters.types.includes(job.category)) {
+                    return false;
+                }
+
+                // Platform filter
+                if (activeFilters.platforms.length > 0 && !activeFilters.platforms.includes(job.platform)) {
+                    return false;
+                }
+
+                // Level filter
+                if (activeFilters.levels.length > 0 && !activeFilters.levels.includes(job.level)) {
+                    return false;
+                }
+
+                // Price filter
+                if (activeFilters.prices.length > 0) {
+                    const matchesPrice = activeFilters.prices.some(priceIndex => {
+                        const priceRange = filterOptions.prices[priceIndex];
+                        return job.value >= priceRange.min && job.value < priceRange.max;
+                    });
+                    if (!matchesPrice) return false;
+                }
+
+                // Deadline filter
+                if (activeFilters.deadlines.length > 0) {
+                    const jobDeadlineHours = parseInt(job.deadline);
+                    const matchesDeadline = activeFilters.deadlines.some(deadlineIndex => {
+                        const deadline = filterOptions.deadlines[deadlineIndex];
+                        return jobDeadlineHours <= deadline.max;
+                    });
+                    if (!matchesDeadline) return false;
+                }
+
+                // Search filter
+                if (activeFilters.search) {
+                    const searchLower = activeFilters.search.toLowerCase();
+                    const matchesSearch =
+                        job.title.toLowerCase().includes(searchLower) ||
+                        job.description.toLowerCase().includes(searchLower) ||
+                        job.category.toLowerCase().includes(searchLower) ||
+                        job.tags.some(tag => tag.toLowerCase().includes(searchLower));
+                    if (!matchesSearch) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function sortJobs(jobsList) {
+            const sorted = [...jobsList];
+
+            switch (currentSort) {
+                case 'highest':
+                    sorted.sort((a, b) => b.value - a.value);
+                    break;
+                case 'lowest':
+                    sorted.sort((a, b) => a.value - b.value);
+                    break;
+                case 'deadline':
+                    sorted.sort((a, b) => parseInt(a.deadline) - parseInt(b.deadline));
+                    break;
+                case 'easiest':
+                    const levelOrder = { 'Fácil': 0, 'Médio': 1, 'Avançado': 2 };
+                    sorted.sort((a, b) => levelOrder[a.level] - levelOrder[b.level]);
+                    break;
+                case 'recent':
+                default:
+                    sorted.sort((a, b) => {
+                        const aMinutes = a.timeUnit === 'min' ? a.timeAgo : a.timeAgo * 60;
+                        const bMinutes = b.timeUnit === 'min' ? b.timeAgo : b.timeAgo * 60;
+                        return aMinutes - bMinutes;
+                    });
+                    break;
+            }
+
+            return sorted;
+        }
+
+        // =====================================================
+        // STATS ANIMATION
+        // =====================================================
+        function startStatsAnimation() {
+            const baseStats = {
+                jobs: 847,
+                value: 127450,
+                newJobs: 23,
+                online: 342
+            };
+
+            function updateStats() {
+                const jobsEl = document.getElementById('jobsCount');
+                const valueEl = document.getElementById('totalValue');
+                const newJobsEl = document.getElementById('newJobs');
+                const onlineEl = document.getElementById('onlineUsers');
+                const mobileJobsEl = document.getElementById('mobileJobsCount');
+
+                // Small random variations
+                const jobsCount = baseStats.jobs + Math.floor(Math.random() * 10) - 5;
+                const valueCount = baseStats.value + Math.floor(Math.random() * 1000) - 500;
+                const newJobsCount = baseStats.newJobs + Math.floor(Math.random() * 3) - 1;
+                const onlineCount = baseStats.online + Math.floor(Math.random() * 20) - 10;
+
+                jobsEl.textContent = jobsCount;
+                jobsEl.classList.add('animate-count');
+
+                valueEl.textContent = valueCount.toLocaleString('pt-BR');
+                valueEl.classList.add('animate-count');
+
+                newJobsEl.textContent = Math.max(1, newJobsCount);
+                newJobsEl.classList.add('animate-count');
+
+                onlineEl.textContent = onlineCount;
+                onlineEl.classList.add('animate-count');
+
+                mobileJobsEl.textContent = `${jobsCount} trabalhos`;
+
+                setTimeout(() => {
+                    jobsEl.classList.remove('animate-count');
+                    valueEl.classList.remove('animate-count');
+                    newJobsEl.classList.remove('animate-count');
+                    onlineEl.classList.remove('animate-count');
+                }, 300);
+            }
+
+            updateStats();
+            setInterval(updateStats, 5000);
+        }
+
+        // =====================================================
+        // EARNINGS FEED
+        // =====================================================
+        function startEarningsFeed() {
+            const feedContainer = document.getElementById('earningsFeed');
+            const latestEarningEl = document.getElementById('latestEarning');
+
+            function addEarning() {
+                const earning = earningsData[currentEarningIndex];
+
+                const earningHtml = `
+                    <div class="earnings-item flex items-center gap-2 text-sm py-2 border-b border-border-color last:border-0">
+                        <span class="w-2 h-2 rounded-full bg-accent-green"></span>
+                        <span class="font-medium">${earning.name}</span>
+                        <span class="text-text-secondary">recebeu</span>
+                        <span class="text-accent-green font-semibold">R$${earning.value}</span>
+                    </div>
+                `;
+
+                feedContainer.insertAdjacentHTML('afterbegin', earningHtml);
+
+                // Keep only last 8 items
+                while (feedContainer.children.length > 8) {
+                    feedContainer.removeChild(feedContainer.lastChild);
+                }
+
+                // Update mobile footer
+                latestEarningEl.textContent = `${earning.name} ganhou R$${earning.value}`;
+
+                currentEarningIndex = (currentEarningIndex + 1) % earningsData.length;
+            }
+
+            // Initial earnings
+            for (let i = 0; i < 5; i++) {
+                addEarning();
+            }
+
+            // Add new earnings periodically
+            setInterval(addEarning, 4000);
+
+            // Show toast for new earnings occasionally
+            setInterval(() => {
+                const earning = earningsData[Math.floor(Math.random() * earningsData.length)];
+                showToast(`🎉 ${earning.name} acabou de ganhar R$${earning.value}!`);
+            }, 15000);
+        }
+
+        // =====================================================
+        // MODAL FUNCTIONS
+        // =====================================================
+        function openJobModal(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+
+            const modal = document.getElementById('jobModal');
+
+            // Populate modal
+            document.getElementById('modalCategory').textContent = job.category.toUpperCase();
+            document.getElementById('modalPlatform').textContent = job.platform;
+            document.getElementById('modalPlatform').className = `platform-badge platform-${job.platform.toLowerCase().replace(/\./g, '').replace(/\s/g, '')}`;
+            document.getElementById('modalTitle').textContent = job.title;
+            document.getElementById('modalValue').textContent = `R$${job.value.toLocaleString('pt-BR')}`;
+            document.getElementById('modalDeadline').textContent = job.deadline;
+            document.getElementById('modalQuantity').textContent = job.quantity.split(' ')[0];
+            document.getElementById('modalLevel').textContent = job.level;
+            document.getElementById('modalRating').textContent = job.rating;
+            document.getElementById('modalReviews').textContent = `(${job.reviews} avaliações)`;
+            document.getElementById('modalDescription').innerHTML = job.fullDescription.replace(/\n/g, '<br>');
+
+            // Calculate AI tip
+            const avgTimeMinutes = Math.floor(job.value / 10);
+            const hourlyRate = Math.floor((job.value / avgTimeMinutes) * 60);
+            document.getElementById('modalTip').textContent = `Este trabalho leva em média ${avgTimeMinutes} minutos com nossa IA. Potencial de ganho: R$${hourlyRate}/hora.`;
+
+            // Tags
+            document.getElementById('modalTags').innerHTML = job.tags.map(tag =>
+                `<span class="px-3 py-1 bg-bg-secondary rounded-full text-sm">${tag}</span>`
+            ).join('');
+
+            // Store current job ID for actions
+            modal.dataset.jobId = jobId;
+
+            // Show modal
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeJobModal() {
+            const modal = document.getElementById('jobModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function doWithAI(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+
+            const params = new URLSearchParams({
+                job_type: job.category.toLowerCase().replace(/ /g, '_'),
+                job_title: job.title,
+                quantity: job.quantity.split(' ')[0],
+                job_id: jobId
+            });
+
+            window.location.href = `https://app.sageai.com.br/chat?${params.toString()}`;
+        }
+
+        // =====================================================
+        // TOAST NOTIFICATIONS
+        // =====================================================
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+
+            const toast = document.createElement('div');
+            toast.className = 'toast bg-bg-card border border-accent-green/30 rounded-xl p-4 shadow-lg flex items-center gap-3 max-w-sm';
+            toast.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-accent-green animate-pulse"></span>
+                <span class="text-sm">${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // =====================================================
+        // EVENT LISTENERS
+        // =====================================================
+        function setupEventListeners() {
+            // Search
+            const searchInput = document.getElementById('searchInput');
+            const mobileSearchInput = document.getElementById('mobileSearchInput');
+
+            searchInput.addEventListener('input', (e) => {
+                activeFilters.search = e.target.value;
+                displayedJobs = 12;
+                renderJobs();
+            });
+
+            mobileSearchInput?.addEventListener('input', (e) => {
+                activeFilters.search = e.target.value;
+                searchInput.value = e.target.value;
+                displayedJobs = 12;
+                renderJobs();
+            });
+
+            // Mobile search toggle
+            document.getElementById('mobileSearchBtn')?.addEventListener('click', () => {
+                const mobileSearch = document.getElementById('mobileSearch');
+                mobileSearch.classList.toggle('hidden');
+            });
+
+            // Filter checkboxes
+            document.addEventListener('change', (e) => {
+                if (e.target.classList.contains('filter-checkbox')) {
+                    const filterType = e.target.dataset.filter;
+                    const value = e.target.value;
+
+                    if (e.target.checked) {
+                        if (filterType === 'prices' || filterType === 'deadlines') {
+                            activeFilters[filterType].push(parseInt(value));
+                        } else {
+                            activeFilters[filterType].push(value);
+                        }
+                    } else {
+                        if (filterType === 'prices' || filterType === 'deadlines') {
+                            activeFilters[filterType] = activeFilters[filterType].filter(v => v !== parseInt(value));
+                        } else {
+                            activeFilters[filterType] = activeFilters[filterType].filter(v => v !== value);
+                        }
+                    }
+
+                    displayedJobs = 12;
+                    renderJobs();
+                }
+            });
+
+            // Sort
+            document.getElementById('sortSelect')?.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                renderJobs();
+            });
+
+            // Clear filters
+            document.getElementById('clearFilters')?.addEventListener('click', clearAllFilters);
+            document.getElementById('clearFiltersMobile')?.addEventListener('click', () => {
+                clearAllFilters();
+                closeFilterModal();
+            });
+
+            // Load more
+            document.getElementById('loadMore')?.addEventListener('click', () => {
+                displayedJobs += 12;
+                renderJobs();
+            });
+
+            // Filter modal (mobile)
+            document.getElementById('filterToggle')?.addEventListener('click', () => {
+                document.getElementById('filterModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+
+            document.getElementById('closeFilterModal')?.addEventListener('click', closeFilterModal);
+            document.getElementById('filterModalBackdrop')?.addEventListener('click', closeFilterModal);
+            document.getElementById('applyFiltersMobile')?.addEventListener('click', closeFilterModal);
+
+            // Job modal
+            document.getElementById('closeJobModal')?.addEventListener('click', closeJobModal);
+            document.getElementById('jobModalBackdrop')?.addEventListener('click', closeJobModal);
+
+            document.getElementById('doWithAI')?.addEventListener('click', () => {
+                const jobId = parseInt(document.getElementById('jobModal').dataset.jobId);
+                doWithAI(jobId);
+            });
+
+            document.getElementById('saveFavorite')?.addEventListener('click', () => {
+                showToast('💖 Trabalho salvo nos favoritos!');
+            });
+
+            document.getElementById('goToPlatform')?.addEventListener('click', () => {
+                const jobId = parseInt(document.getElementById('jobModal').dataset.jobId);
+                const job = jobs.find(j => j.id === jobId);
+                showToast(`🔗 Redirecionando para ${job.platform}...`);
+            });
+
+            // View toggle
+            document.getElementById('viewGrid')?.addEventListener('click', () => {
+                document.getElementById('jobsContainer').className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4';
+                document.getElementById('viewGrid').classList.add('border-accent-green', 'text-accent-green');
+                document.getElementById('viewGrid').classList.remove('border-border-color', 'text-text-secondary');
+                document.getElementById('viewList').classList.remove('border-accent-green', 'text-accent-green');
+                document.getElementById('viewList').classList.add('border-border-color', 'text-text-secondary');
+            });
+
+            document.getElementById('viewList')?.addEventListener('click', () => {
+                document.getElementById('jobsContainer').className = 'grid grid-cols-1 gap-4';
+                document.getElementById('viewList').classList.add('border-accent-green', 'text-accent-green');
+                document.getElementById('viewList').classList.remove('border-border-color', 'text-text-secondary');
+                document.getElementById('viewGrid').classList.remove('border-accent-green', 'text-accent-green');
+                document.getElementById('viewGrid').classList.add('border-border-color', 'text-text-secondary');
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeJobModal();
+                    closeFilterModal();
+                }
+            });
+        }
+
+        function clearAllFilters() {
+            activeFilters = {
+                types: [],
+                prices: [],
+                platforms: [],
+                deadlines: [],
+                levels: [],
+                search: ""
+            };
+
+            document.querySelectorAll('.filter-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('searchInput').value = '';
+            document.getElementById('mobileSearchInput').value = '';
+
+            displayedJobs = 12;
+            renderJobs();
+        }
+
+        function closeFilterModal() {
+            document.getElementById('filterModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    </script>
+</body>
+</html>
